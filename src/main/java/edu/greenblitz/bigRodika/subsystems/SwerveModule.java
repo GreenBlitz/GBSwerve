@@ -1,6 +1,7 @@
 package edu.greenblitz.bigRodika.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
@@ -8,25 +9,26 @@ import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.gblib.encoder.IEncoder;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.greenblitz.gblib.encoder.TalonEncoder;
-import edu.greenblitz.gblib.gears.GearDependentValue;
+
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.*;
 
 public class SwerveModule extends GBSubsystem {
 
-    private final WPI_TalonSRX m_Rotation;
-    private final CANSparkMax m_Drive;
+    private final WPI_TalonSRX rotationMotor;
+    private final CANSparkMax driveMotor;
     private final IEncoder angleEncoder;
     private final SparkEncoder driveEncoder;
     private int ID;
-    private boolean isDriverInverted, isRotatorInverted;
+    private boolean isDriveInverted, isRotateInverted;
 
-    SwerveModule(int rotatePort, int drivePort, int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
+    public SwerveModule(int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
         this.ID = ID;
-        isDriverInverted = false;
-        isRotatorInverted = false;
-        m_Rotation = new WPI_TalonSRX(rotatePort);
-        m_Drive = new CANSparkMax(drivePort, CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
-        angleEncoder = new TalonEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SRX, m_Rotation);// again, values from past code
-        driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, m_Drive);
+        isDriveInverted = false;
+        isRotateInverted = false;
+        rotationMotor = new WPI_TalonSRX(ROTATION_MOTOR_PORTS[ID]);
+        driveMotor = new CANSparkMax(DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
+        angleEncoder = new TalonEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SRX, rotationMotor);// again, values from past code
+        driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
     }
 
     public int getTicks() {
@@ -34,27 +36,27 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public int getNormalizedTicks() {
-        return getTicks() % RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+        return getTicks() % TICKS_TO_ROTATIONS;
     }
 
     public int getDegrees() {
-        return getTicks() * 360 / RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+        return getTicks() * 360 / TICKS_TO_ROTATIONS;
     }
 
     public int getNormalizedDegrees() {
-        return getNormalizedTicks() * 360 / RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+        return getNormalizedTicks() * 360 / TICKS_TO_ROTATIONS;
     }
 
     public int getID() {
         return ID;
     }
 
-    public WPI_TalonSRX getM_Rotation() {
-        return m_Rotation;
+    public WPI_TalonSRX getRotationMotor() {
+        return rotationMotor;
     }
 
-    public CANSparkMax getM_Drive() {
-        return m_Drive;
+    public CANSparkMax getDriveMotor() {
+        return driveMotor;
     }
 
     public IEncoder getAngleEncoder() {
@@ -73,37 +75,32 @@ public class SwerveModule extends GBSubsystem {
         return angleEncoder.getNormalizedVelocity();
     }
     
-    public boolean isDriverInverted() {
-        return isDriverInverted;
+    public boolean isDriveInverted() {
+        return isDriveInverted;
     }
 
-    public boolean isRotatorInverted() {
-        return isRotatorInverted;
+    public boolean isRotateInverted() {
+        return isRotateInverted;
     }
 
-    public void totalInvert(){
-        isDriverInverted = true;
-        isRotatorInverted = true;
+    public void driveInvert(){
+        isDriveInverted = !isDriveInverted;
     }
 
-    public void driverInvert(){
-        isDriverInverted = true;
+    public void rotateInvert(){
+        isRotateInverted = !isRotateInverted;
     }
 
-    public void rotatorInvert(){
-        isRotatorInverted = true;
-    }
-
-    public void setAsFollowerOf(double portID){
-        m_Rotation.set(ControlMode.Follower, portID);
+    public void setAsFollowerOf(TalonSRX motor){
+        rotationMotor.follow(motor);
     }
 
     public void setPower(double power){
-        m_Drive.set(power);
+        driveMotor.set(power);
     }
 
     public void setAngle(double destDegrees){
-        double destTicks = destDegrees * 1024/360;
-        m_Rotation.set(ControlMode.Position, destTicks);
+        double destTicks = destDegrees * TICKS_TO_ROTATIONS/360;
+        rotationMotor.set(ControlMode.Position, destTicks);
     }
 }

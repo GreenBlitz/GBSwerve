@@ -30,29 +30,14 @@ public class RobotMap {
                 public static final int PIGEON_DEVICE_NUMBER = 0; //random number
             }
 
-            public static class Motor {
+            public static class Modules {
                 public static final double MOTOR_LIMITER = 1;
+                public static final int TICKS_TO_ROTATIONS = 1024;
 
-                public static class FRONT_RIGHT {
-                    public static final int ROTATE_PORT = 1;
-                    public static final int DRIVE_PORT = 1;
-                    public static final int ID = 0;
-                }
-                public static class FRONT_LEFT {
-                    public static final int ROTATE_PORT = 1 ;
-                    public static final int DRIVE_PORT = 1;
-                    public static final int ID = 1;
-                }
-                public static class BACK_LEFT {
-                    public static final int ROTATE_PORT = 1;
-                    public static final int DRIVE_PORT = 1;
-                    public static final int ID = 2;
-                }
-                public static class BACK_RIGHT {
-                    public static final int ROTATE_PORT = 1;
-                    public static final int DRIVE_PORT = 1;
-                    public static final int ID = 3;
-                }
+                public static final int[] DRIVE_MOTOR_PORTS = {0, 1, 2, 3};
+                public static final int[] ROTATION_MOTOR_PORTS = {4, 5, 6, 7};
+
+
             }
             public static class SwerveModule{
                 public static final GearDependentValue<Double> NORMALIZER_SRX = new GearDependentValue<>(28672.0,
