@@ -29,12 +29,21 @@ public class SwerveModule extends GBSubsystem {
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, m_Drive);
     }
 
-    public int getTicks(){ return angleEncoder.getRawTicks();}
-    public int getNormalizedTicks(){ return getTicks()%1024; }
+    public int getTicks() {
+        return angleEncoder.getRawTicks();
+    }
 
-    public int getDegrees(){ return getTicks() * 360/1024;}
+    public int getNormalizedTicks() {
+        return getTicks() % RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+    }
 
-    public int getNormalizedDegrees(){return getNormalizedTicks() * 360/1024;}
+    public int getDegrees() {
+        return getTicks() * 360 / RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+    }
+
+    public int getNormalizedDegrees() {
+        return getNormalizedTicks() * 360 / RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+    }
 
     public int getID() {
         return ID;
