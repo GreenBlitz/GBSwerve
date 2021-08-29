@@ -8,7 +8,6 @@ import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.gblib.encoder.IEncoder;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.greenblitz.gblib.encoder.TalonEncoder;
-import edu.greenblitz.gblib.gears.GearDependentValue;
 
 public class SwerveModule extends GBSubsystem {
 
@@ -17,14 +16,14 @@ public class SwerveModule extends GBSubsystem {
     private final IEncoder angleEncoder;
     private final SparkEncoder driveEncoder;
     private int ID;
-    private boolean isDriverInverted, isRotatorInverted;
+    private boolean isDriverInverted, isRotateInverted;
 
-    SwerveModule(int rotatePort, int drivePort, int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
+    SwerveModule(int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
         this.ID = ID;
         isDriverInverted = false;
-        isRotatorInverted = false;
-        m_Rotation = new WPI_TalonSRX(rotatePort);
-        m_Drive = new CANSparkMax(drivePort, CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
+        isRotateInverted = false;
+        m_Rotation = new WPI_TalonSRX(RobotMap.Limbo2.Chassis.Modules.ROTATE_PORTS[ID]);
+        m_Drive = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
         angleEncoder = new TalonEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SRX, m_Rotation);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, m_Drive);
     }
@@ -68,13 +67,13 @@ public class SwerveModule extends GBSubsystem {
         return isDriverInverted;
     }
 
-    public boolean isRotatorInverted() {
-        return isRotatorInverted;
+    public boolean isRotateInverted() {
+        return isRotateInverted;
     }
 
     public void totalInvert(){
         isDriverInverted = true;
-        isRotatorInverted = true;
+        isRotateInverted = true;
     }
 
     public void driverInvert(){
@@ -82,7 +81,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public void rotatorInvert(){
-        isRotatorInverted = true;
+        isRotateInverted = true;
     }
 
     public void setAsFollowerOf(double portID){

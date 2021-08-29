@@ -17,17 +17,17 @@ public class Chassis extends GBSubsystem {
 //    private PowerDistributionPanel robotPDP;
 
     private Chassis() {
-        SwerveModule frontRight = new SwerveModule(RobotMap.Limbo2.Chassis.Motor.FRONT_RIGHT.ROTATE_PORT,
-                RobotMap.Limbo2.Chassis.Motor.FRONT_RIGHT.DRIVE_PORT, RobotMap.Limbo2.Chassis.Motor.FRONT_RIGHT.ID);
+        SwerveModule frontRight = new SwerveModule(RobotMap.Limbo2.Chassis.Modules.FRONT_RIGHT.ROTATE_PORT,
+                RobotMap.Limbo2.Chassis.Modules.FRONT_RIGHT.DRIVE_PORT, RobotMap.Limbo2.Chassis.Modules.FRONT_RIGHT.ID);
         swerveModules[frontRight.getID()] = frontRight;
-        SwerveModule frontLeft = new SwerveModule(RobotMap.Limbo2.Chassis.Motor.FRONT_LEFT.ROTATE_PORT,
-                RobotMap.Limbo2.Chassis.Motor.FRONT_LEFT.DRIVE_PORT, RobotMap.Limbo2.Chassis.Motor.FRONT_LEFT.ID);
+        SwerveModule frontLeft = new SwerveModule(RobotMap.Limbo2.Chassis.Modules.FRONT_LEFT.ROTATE_PORT,
+                RobotMap.Limbo2.Chassis.Modules.FRONT_LEFT.DRIVE_PORT, RobotMap.Limbo2.Chassis.Modules.FRONT_LEFT.ID);
         swerveModules[frontLeft.getID()] = frontLeft;
-        SwerveModule backLeft = new SwerveModule(RobotMap.Limbo2.Chassis.Motor.BACK_LEFT.ROTATE_PORT,
-                RobotMap.Limbo2.Chassis.Motor.BACK_LEFT.DRIVE_PORT, RobotMap.Limbo2.Chassis.Motor.BACK_LEFT.ID);
+        SwerveModule backLeft = new SwerveModule(RobotMap.Limbo2.Chassis.Modules.BACK_LEFT.ROTATE_PORT,
+                RobotMap.Limbo2.Chassis.Modules.BACK_LEFT.DRIVE_PORT, RobotMap.Limbo2.Chassis.Modules.BACK_LEFT.ID);
         swerveModules[backLeft.getID()] = backLeft;
-        SwerveModule backRight = new SwerveModule(RobotMap.Limbo2.Chassis.Motor.BACK_RIGHT.ROTATE_PORT,
-                RobotMap.Limbo2.Chassis.Motor.BACK_RIGHT.DRIVE_PORT, RobotMap.Limbo2.Chassis.Motor.BACK_RIGHT.ID);
+        SwerveModule backRight = new SwerveModule(RobotMap.Limbo2.Chassis.Modules.BACK_RIGHT.ROTATE_PORT,
+                RobotMap.Limbo2.Chassis.Modules.BACK_RIGHT.DRIVE_PORT, RobotMap.Limbo2.Chassis.Modules.BACK_RIGHT.ID);
         swerveModules[backRight.getID()] = backRight;
 
         gyro = new PigeonGyro(new PigeonIMU(RobotMap.Limbo2.Chassis.Pigeon.PIGEON_DEVICE_NUMBER));
@@ -48,7 +48,7 @@ public class Chassis extends GBSubsystem {
 
     public void moveMotors(double[] powers, double[] angles) throws MotorPowerOutOfRangeException {
         for (double power : powers){
-            if (power > RobotMap.Limbo2.Chassis.Motor.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Motor.MOTOR_LIMITER){
+            if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER){
                 stopMotors();
                 throw new MotorPowerOutOfRangeException();
             }
