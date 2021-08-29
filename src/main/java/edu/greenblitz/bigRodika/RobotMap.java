@@ -32,6 +32,7 @@ public class RobotMap {
 
             public static class Modules {
                 public static final double MOTOR_LIMITER = 1;
+                public static final int TICKS_TO_ROTATIONS = 1024;
 
                 // IDs:
                 //      FRONT_RIGHT: 0
