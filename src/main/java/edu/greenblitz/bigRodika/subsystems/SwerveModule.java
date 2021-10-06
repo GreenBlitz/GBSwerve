@@ -35,7 +35,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getTicks() {
-        return angleEncoder.getPosition();
+        return angleEncoder.getVoltage();
     }
 
     public double getNormalizedTicks() {

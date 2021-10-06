@@ -47,8 +47,8 @@ public class RobotMap {
                 public static final double MOTOR_LIMITER = 1;
                 public static final int TICKS_TO_ROTATIONS = 1024;
 
-                public static final int[] DRIVE_MOTOR_PORTS = {2, 1, 2, 3};
-                public static final int[] ROTATION_MOTOR_PORTS = {4, 5, 6, 7};
+                public static final int[] DRIVE_MOTOR_PORTS = {4, 1, 2, 3};
+                public static final int[] ROTATION_MOTOR_PORTS = {2, 5, 6, 7};
 
 
             }

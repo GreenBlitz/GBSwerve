@@ -29,11 +29,13 @@ public class OneModuleTestByConstants extends GBCommand {
     @Override
     public void execute() {
         module.getDriveMotor().set(this.velocity);
-        module.setAngle(this.angle);
+        module.getRotationMotor().set(0.1);
+//        module.setAngle(this.angle);
         logger.report((System.currentTimeMillis() - this.t0) / 1000.0, module.getLinVel(), module.getDegrees());
     }
 
     public void end(boolean interrupted) {
         module.setPower(0);
+        module.getRotationMotor().set(0);
     }
 }

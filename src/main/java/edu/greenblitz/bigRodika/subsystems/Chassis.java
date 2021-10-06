@@ -16,7 +16,7 @@ public class Chassis extends GBSubsystem {
 
     private final SwerveModule[] swerveModules = new SwerveModule[4];
 
-    private final IGyroscope gyro;
+//    private final IGyroscope gyro;
 //    private PowerDistributionPanel robotPDP;
 
     private Chassis() {
@@ -24,8 +24,8 @@ public class Chassis extends GBSubsystem {
             swerveModules[i] = new SwerveModule(i);
         }
 
-        gyro = new PigeonGyro(new PigeonIMU(RobotMap.Limbo2.Chassis.Pigeon.PIGEON_DEVICE_NUMBER));
-        gyro.reset();
+//        gyro = new PigeonGyro(new PigeonIMU(RobotMap.Limbo2.Chassis.Pigeon.PIGEON_DEVICE_NUMBER));
+//        gyro.reset();
 //        gyroscope.inverse();
     }
 
@@ -44,7 +44,7 @@ public class Chassis extends GBSubsystem {
         if (fieldOriented){
             for (int i = 0; i < angles.length; i++){
                 // TODO: 14/10/2020 check clockwise = positive in gyro
-                angles[i] = angles[i] - getAngle();
+//                angles[i] = angles[i] - getAngle();
             }
         }
         for (double power : powers){
@@ -137,21 +137,21 @@ public class Chassis extends GBSubsystem {
 //    public double getLinearVelocity() {}
 //    public double getAngularVelocityByWheels() {}
 
-    public double getAngle() {
-        return gyro.getNormalizedYaw();
-    }
-
-    public double getRawAngle() {
-        return gyro.getRawYaw();
-    }
-
-    public double getAngularVelocityByGyro() {
-        return gyro.getYawRate();
-    }
-
-    public void resetGyro() {
-        gyro.reset();
-    }
+//    public double getAngle() {
+//        return gyro.getNormalizedYaw();
+//    }
+//
+//    public double getRawAngle() {
+//        return gyro.getRawYaw();
+//    }
+//
+//    public double getAngularVelocityByGyro() {
+//        return gyro.getYawRate();
+//    }
+//
+//    public void resetGyro() {
+//        gyro.reset();
+//    }
 
     public SwerveModule[] getSwerveModules(){
         return swerveModules;
@@ -164,9 +164,9 @@ public class Chassis extends GBSubsystem {
         putString("Module 1", swerveModules[1].toString());
         putString("Module 2", swerveModules[2].toString());
         putString("Module 3", swerveModules[3].toString());
-        putNumber("Gyro Rate", gyro.getYawRate()    );
-        putNumber("Raw Gyro", gyro.getRawYaw());
-        putNumber("Normalized Gyro", gyro.getNormalizedYaw());
+//        putNumber("Gyro Rate", gyro.getYawRate()    );
+//        putNumber("Raw Gyro", gyro.getRawYaw());
+//        putNumber("Normalized Gyro", gyro.getNormalizedYaw());
 
     }
 
