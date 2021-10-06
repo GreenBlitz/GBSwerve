@@ -1,19 +1,19 @@
 package edu.greenblitz.bigRodika.commands.tests.singleModule;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import edu.greenblitz.bigRodika.subsystems.SingleModule;
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
 import edu.greenblitz.gblib.command.GBCommand;
 import org.greenblitz.debug.RemoteCSVTarget;
 
-public class oneModuleTestByConstants extends GBCommand {
+public class OneModuleTestByConstants extends GBCommand {
 
-    private SwerveModule module;
+    private static SwerveModule module = SingleModule.getInstance().getModule();
     private double angle, velocity;
     private RemoteCSVTarget logger;
     private long t0;
 
-    public oneModuleTestByConstants(SwerveModule module, double angle, double velocity) {
-        this.module = module;
+    public OneModuleTestByConstants(double angle, double velocity) {
         this.angle = angle;
         this.velocity = velocity;
         this.logger = RemoteCSVTarget.initTarget("SwerveModuleByConstants", "time", "vel", "angle");
@@ -31,5 +31,9 @@ public class oneModuleTestByConstants extends GBCommand {
         module.getDriveMotor().set(this.velocity);
         module.setAngle(this.angle);
         logger.report((System.currentTimeMillis() - this.t0) / 1000.0, module.getLinVel(), module.getDegrees());
+    }
+
+    public void end(boolean interrupted) {
+        module.setPower(0);
     }
 }

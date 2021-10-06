@@ -3,20 +3,23 @@ package edu.greenblitz.bigRodika.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANAnalog;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.gblib.encoder.IEncoder;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.greenblitz.gblib.encoder.TalonEncoder;
+import edu.greenblitz.bigRodika.commands.tests.singleModule.OneModuleTestByJoystick;
+import edu.greenblitz.gblib.hid.SmartJoystick;
 
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.*;
 
 public class SwerveModule extends GBSubsystem {
 
-    private final WPI_TalonSRX rotationMotor;
+    private final CANSparkMax rotationMotor;
     private final CANSparkMax driveMotor;
-    private final IEncoder angleEncoder;
+    private final CANAnalog angleEncoder;
     private final SparkEncoder driveEncoder;
     private int ID;
     private boolean isDriveInverted, isRotateInverted;
@@ -25,25 +28,25 @@ public class SwerveModule extends GBSubsystem {
         this.ID = ID;
         isDriveInverted = false;
         isRotateInverted = false;
-        rotationMotor = new WPI_TalonSRX(ROTATION_MOTOR_PORTS[ID]);
+        rotationMotor = new CANSparkMax(ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
         driveMotor = new CANSparkMax(DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
-        angleEncoder = new TalonEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SRX, rotationMotor);// again, values from past code
+        angleEncoder = new CANAnalog(rotationMotor, CANAnalog.AnalogMode.kAbsolute);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
     }
 
-    public int getTicks() {
-        return angleEncoder.getRawTicks();
+    public double getTicks() {
+        return angleEncoder.getPosition();
     }
 
-    public int getNormalizedTicks() {
+    public double getNormalizedTicks() {
         return getTicks() % TICKS_TO_ROTATIONS;
     }
 
-    public int getDegrees() {
+    public double getDegrees() {
         return getTicks() * 360 / TICKS_TO_ROTATIONS;
     }
 
-    public int getNormalizedDegrees() {
+    public double getNormalizedDegrees() {
         return getNormalizedTicks() * 360 / TICKS_TO_ROTATIONS;
     }
 
@@ -51,7 +54,7 @@ public class SwerveModule extends GBSubsystem {
         return ID;
     }
 
-    public WPI_TalonSRX getRotationMotor() {
+    public CANSparkMax getRotationMotor() {
         return rotationMotor;
     }
 
@@ -59,7 +62,7 @@ public class SwerveModule extends GBSubsystem {
         return driveMotor;
     }
 
-    public IEncoder getAngleEncoder() {
+    public CANAnalog getAngleEncoder() {
         return angleEncoder;
     }
 
@@ -72,7 +75,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getAngVel(){
-        return angleEncoder.getNormalizedVelocity();
+        return angleEncoder.getVelocity();
     }
 
     public boolean isDriveInverted() {
@@ -91,7 +94,7 @@ public class SwerveModule extends GBSubsystem {
         isRotateInverted = !isRotateInverted;
     }
 
-    public void setAsFollowerOf(TalonSRX motor){
+    public void setAsFollowerOf(CANSparkMax motor){
         rotationMotor.follow(motor);
     }
 
@@ -101,6 +104,11 @@ public class SwerveModule extends GBSubsystem {
 
     public void setAngle(double destDegrees){
         double destTicks = destDegrees * TICKS_TO_ROTATIONS/360;
-        rotationMotor.set(ControlMode.Position, destTicks);
+        rotationMotor.set(destTicks);
+    }
+
+    public void initDefaultCommand() {
+        setDefaultCommand(new OneModuleTestByJoystick(new SmartJoystick(RobotMap.Limbo2.Joystick.MAIN,
+                RobotMap.Limbo2.Joystick.MAIN_DEADZONE), this));
     }
 }

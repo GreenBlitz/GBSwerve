@@ -7,12 +7,11 @@ import edu.greenblitz.gblib.hid.SmartJoystick;
 public class OneModuleTestByJoystick extends GBCommand {
     private SwerveModule module;
     private final SmartJoystick joystick;
-    public static final int TEST_MOTOR_ID = 0;
     private final double POWER_SCALE = 0.5;
 
-    public OneModuleTestByJoystick(SmartJoystick joystick) {
+    public OneModuleTestByJoystick(SmartJoystick joystick, SwerveModule module) {
         this.joystick = joystick;
-        module = new SwerveModule(TEST_MOTOR_ID);
+        this.module = module;
     }
 
     @Override
