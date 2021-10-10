@@ -28,7 +28,7 @@ public class SingleModule extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-
+        System.out.println("TAVOR TAVORB");
         SmartDashboard.putNumber("lamprey value", module.getDegrees());
     }
 }

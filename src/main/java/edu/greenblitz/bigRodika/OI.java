@@ -31,7 +31,7 @@ public class OI {
     private void initTestButtons() {
 
         SwerveModule s = new SwerveModule(0);
-        mainJoystick.B.whileHeld(new OneModuleTestByConstants(90, 0.1));
+        mainJoystick.B.whileHeld(new OneModuleTestByConstants(90, 0));
 //        mainJoystick.A.whenPressed(new OneModuleTestByJoystick(mainJoystick, s));
     }
 

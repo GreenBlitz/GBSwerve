@@ -12,6 +12,7 @@ import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.greenblitz.gblib.encoder.TalonEncoder;
 import edu.greenblitz.bigRodika.commands.tests.singleModule.OneModuleTestByJoystick;
 import edu.greenblitz.gblib.hid.SmartJoystick;
+import org.greenblitz.debug.RemoteCSVTarget;
 
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.*;
 
@@ -23,6 +24,9 @@ public class SwerveModule extends GBSubsystem {
     private final SparkEncoder driveEncoder;
     private int ID;
     private boolean isDriveInverted, isRotateInverted;
+    private RemoteCSVTarget logger;
+    private long t0;
+
 
     public SwerveModule(int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
         this.ID = ID;
@@ -32,6 +36,8 @@ public class SwerveModule extends GBSubsystem {
         driveMotor = new CANSparkMax(DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
         angleEncoder = new CANAnalog(rotationMotor, CANAnalog.AnalogMode.kAbsolute);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+        logger = RemoteCSVTarget.initTarget("SwerveModuleByConstants", "time", "vel", "angle");
+        this.t0 = System.currentTimeMillis();
     }
 
     public double getTicks() {
@@ -43,7 +49,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getDegrees() {
-        return getTicks() * 360 / TICKS_TO_ROTATIONS;
+        return getNormalizedTicks() / TICKS_TO_ROTATIONS;
     }
 
     public double getNormalizedDegrees() {
@@ -70,11 +76,11 @@ public class SwerveModule extends GBSubsystem {
         return driveEncoder;
     }
 
-    public double getLinVel(){
+    public double getLinVel() {
         return driveEncoder.getNormalizedVelocity();
     }
 
-    public double getAngVel(){
+    public double getAngVel() {
         return angleEncoder.getVelocity();
     }
 
@@ -86,29 +92,37 @@ public class SwerveModule extends GBSubsystem {
         return isRotateInverted;
     }
 
-    public void driveInvert(){
+    public void driveInvert() {
         isDriveInverted = !isDriveInverted;
     }
 
-    public void rotateInvert(){
+    public void rotateInvert() {
         isRotateInverted = !isRotateInverted;
     }
 
-    public void setAsFollowerOf(CANSparkMax motor){
+    public void setAsFollowerOf(CANSparkMax motor) {
         rotationMotor.follow(motor);
     }
 
-    public void setPower(double power){
+    public void setPower(double power) {
         driveMotor.set(power);
     }
 
-    public void setAngle(double destDegrees){
-        double destTicks = destDegrees * TICKS_TO_ROTATIONS/360;
+    public void setAngle(double destDegrees) {
+        double destTicks = destDegrees * TICKS_TO_ROTATIONS / 360;
         rotationMotor.set(destTicks);
     }
 
     public void initDefaultCommand() {
         setDefaultCommand(new OneModuleTestByJoystick(new SmartJoystick(RobotMap.Limbo2.Joystick.MAIN,
                 RobotMap.Limbo2.Joystick.MAIN_DEADZONE), this));
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
+        if ((System.currentTimeMillis() - this.t0) % 4 == 0) {
+            logger.report((System.currentTimeMillis() - this.t0) / 1000.0, this.getLinVel(), this.getDegrees());
+        }
     }
 }
