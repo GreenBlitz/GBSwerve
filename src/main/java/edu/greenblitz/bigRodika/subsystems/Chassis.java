@@ -20,9 +20,11 @@ public class Chassis extends GBSubsystem {
 //    private PowerDistributionPanel robotPDP;
 
     private Chassis() {
+/*
         for( int i = 0; i < 4; i++){
             swerveModules[i] = new SwerveModule(i);
         }
+*/
 
 //        gyro = new PigeonGyro(new PigeonIMU(RobotMap.Limbo2.Chassis.Pigeon.PIGEON_DEVICE_NUMBER));
 //        gyro.reset();
@@ -160,10 +162,10 @@ public class Chassis extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        putString("Module 0", swerveModules[0].toString());
-        putString("Module 1", swerveModules[1].toString());
-        putString("Module 2", swerveModules[2].toString());
-        putString("Module 3", swerveModules[3].toString());
+//        putString("Module 0", swerveModules[0].toString());
+//        putString("Module 1", swerveModules[1].toString());
+//        putString("Module 2", swerveModules[2].toString());
+//        putString("Module 3", swerveModules[3].toString());
 //        putNumber("Gyro Rate", gyro.getYawRate()    );
 //        putNumber("Raw Gyro", gyro.getRawYaw());
 //        putNumber("Normalized Gyro", gyro.getNormalizedYaw());

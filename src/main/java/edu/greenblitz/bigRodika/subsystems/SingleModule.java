@@ -1,5 +1,7 @@
 package edu.greenblitz.bigRodika.subsystems;
 
+import edu.greenblitz.bigRodika.OI;
+import edu.greenblitz.bigRodika.commands.tests.singleModule.DumbSwerve;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SingleModule extends GBSubsystem {
@@ -28,7 +30,13 @@ public class SingleModule extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        System.out.println("TAVOR TAVORB");
-        SmartDashboard.putNumber("lamprey value", module.getDegrees());
+        SmartDashboard.putNumber("lamprey voltage", module.getTicks());
+        SmartDashboard.putNumber("lamprey angle", module.getDegrees());
     }
+
+    public void initDefaultCommand() {
+        setDefaultCommand(new DumbSwerve(this.module, OI.getInstance().getMainJoystick()));
+    }
+
+
 }

@@ -45,10 +45,11 @@ public class RobotMap {
 
             public static class Modules {
                 public static final double MOTOR_LIMITER = 1;
-                public static final double TICKS_TO_ROTATIONS = 1.373291015625;
+                public static final double TICKS_TO_ROTATIONS = 3.2690426340000003;
 
                 public static final int[] DRIVE_MOTOR_PORTS = {4, 1, 2, 3};
                 public static final int[] ROTATION_MOTOR_PORTS = {2, 5, 6, 7};
+                public static final int[] LAMPREY_ANALOG_PORTS = {3, 0, 0, 0};
 
 
             }

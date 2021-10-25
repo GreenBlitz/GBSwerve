@@ -6,12 +6,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANAnalog;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.greenblitz.bigRodika.Robot;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.gblib.encoder.IEncoder;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.greenblitz.gblib.encoder.TalonEncoder;
 import edu.greenblitz.bigRodika.commands.tests.singleModule.OneModuleTestByJoystick;
 import edu.greenblitz.gblib.hid.SmartJoystick;
+import edu.wpi.first.wpilibj.AnalogInput;
 import org.greenblitz.debug.RemoteCSVTarget;
 
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.*;
@@ -20,11 +22,10 @@ public class SwerveModule extends GBSubsystem {
 
     private final CANSparkMax rotationMotor;
     private final CANSparkMax driveMotor;
-    private final CANAnalog angleEncoder;
+    private final AnalogInput angleEncoder;
     private final SparkEncoder driveEncoder;
     private int ID;
     private boolean isDriveInverted, isRotateInverted;
-    private RemoteCSVTarget logger;
     private long t0;
 
 
@@ -34,9 +35,8 @@ public class SwerveModule extends GBSubsystem {
         isRotateInverted = false;
         rotationMotor = new CANSparkMax(ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
         driveMotor = new CANSparkMax(DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
-        angleEncoder = new CANAnalog(rotationMotor, CANAnalog.AnalogMode.kAbsolute);// again, values from past code
+        angleEncoder = new AnalogInput(3);//RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
-        logger = RemoteCSVTarget.initTarget("SwerveModuleByConstants", "time", "vel", "angle");
         this.t0 = System.currentTimeMillis();
     }
 
@@ -49,7 +49,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getDegrees() {
-        return getNormalizedTicks() / TICKS_TO_ROTATIONS;
+        return getNormalizedTicks() / TICKS_TO_ROTATIONS * 360;
     }
 
     public double getNormalizedDegrees() {
@@ -68,7 +68,7 @@ public class SwerveModule extends GBSubsystem {
         return driveMotor;
     }
 
-    public CANAnalog getAngleEncoder() {
+    public AnalogInput getAngleEncoder() {
         return angleEncoder;
     }
 
@@ -78,10 +78,6 @@ public class SwerveModule extends GBSubsystem {
 
     public double getLinVel() {
         return driveEncoder.getNormalizedVelocity();
-    }
-
-    public double getAngVel() {
-        return angleEncoder.getVelocity();
     }
 
     public boolean isDriveInverted() {
@@ -121,8 +117,5 @@ public class SwerveModule extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        if ((System.currentTimeMillis() - this.t0) % 4 == 0) {
-            logger.report((System.currentTimeMillis() - this.t0) / 1000.0, this.getLinVel(), this.getDegrees());
-        }
     }
 }
