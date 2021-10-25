@@ -1,20 +1,18 @@
 package edu.greenblitz.bigRodika.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.greenblitz.bigRodika.RobotMap;
-import edu.greenblitz.gblib.encoder.IEncoder;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
-import edu.greenblitz.gblib.encoder.TalonEncoder;
+import edu.wpi.first.wpilibj.AnalogInput;
+
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
 
 public class SwerveModule extends GBSubsystem {
 
-    private final WPI_TalonSRX rotationMotor;
+    private final CANSparkMax rotationMotor;
     private final CANSparkMax driveMotor;
-    private final IEncoder angleEncoder;
+    private final AnalogInput angleEncoder;
     private final SparkEncoder driveEncoder;
     private int ID;
     private boolean isDriveInverted, isRotateInverted;
@@ -23,33 +21,30 @@ public class SwerveModule extends GBSubsystem {
         this.ID = ID;
         isDriveInverted = false;
         isRotateInverted = false;
-        rotationMotor = new WPI_TalonSRX(RobotMap.Limbo2.Chassis.Modules.ROTATE_PORTS[ID]);
-        driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
-        angleEncoder = new TalonEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SRX, rotationMotor);// again, values from past code
+        rotationMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
+        driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
+        angleEncoder = new AnalogInput(3);//RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
     }
 
-    public int getTicks() {
-        return angleEncoder.getRawTicks();
+    public double getNormalizedAngle() {
+        return getTicks() % TICKS_TO_ROTATIONS;
     }
 
-    public int getNormalizedTicks() {
-        return getTicks() % RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+    public double getTicks() {
+        return angleEncoder.getVoltage();
     }
 
-    public int getDegrees() {
-        return getTicks() * 360 / RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+    public double getDegrees() {
+        return getNormalizedAngle() / TICKS_TO_ROTATIONS * 360;
     }
 
-    public int getNormalizedDegrees() {
-        return getNormalizedTicks() * 360 / RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
-    }
 
     public int getID() {
         return ID;
     }
 
-    public WPI_TalonSRX getRotationMotor() {
+    public CANSparkMax getRotationMotor() {
         return rotationMotor;
     }
 
@@ -57,7 +52,7 @@ public class SwerveModule extends GBSubsystem {
         return driveMotor;
     }
 
-    public IEncoder getAngleEncoder() {
+    public AnalogInput getAngleEncoder() {
         return angleEncoder;
     }
 
@@ -67,10 +62,6 @@ public class SwerveModule extends GBSubsystem {
 
     public double getLinVel() {
         return driveEncoder.getNormalizedVelocity();
-    }
-
-    public double getAngVel() {
-        return angleEncoder.getNormalizedVelocity();
     }
 
     public boolean isDriveInverted() {
@@ -89,7 +80,7 @@ public class SwerveModule extends GBSubsystem {
         isRotateInverted = !isRotateInverted;
     }
 
-    public void setAsFollowerOf(TalonSRX motor) {
+    public void setAsFollowerOf(CANSparkMax motor) {
         rotationMotor.follow(motor);
     }
 
@@ -97,8 +88,31 @@ public class SwerveModule extends GBSubsystem {
         driveMotor.set(power);
     }
 
-    public void setAngle(double destDegrees) {
+    /*public void setAngle(double destDegrees) {
         double destTicks = destDegrees * RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS / 360;
         rotationMotor.set(ControlMode.Position, destTicks);
+    }*/ // TODO: PID for angle
+
+
+    public void driveInvert() {
+        isDriveInverted = !isDriveInverted;
+    }
+
+    public void rotateInvert() {
+        isRotateInverted = !isRotateInverted;
+    }
+
+
+    public void setAngle(double destDegrees) {
+        double destTicks = destDegrees * TICKS_TO_ROTATIONS / 360;
+        rotationMotor.set(destTicks);
+    }
+
+    public void initDefaultCommand() {
+    }
+
+    @Override
+    public void periodic() {
+        super.periodic();
     }
 }

@@ -21,26 +21,45 @@ public class RobotMap {
 
         public static class Chassis {
 
+            // TODO: 06/10/2020 check real values of all constants
             public static class Sizes {
-                public static final double WHEEL_DIST_WIDTH = 0.622;
-                public static final double WHEEL_DIST_LENGTH = 1; //random number
+                public static final double WHEEL_DIST_WIDTH = 0;
+                public static final double WHEEL_DIST_LENGTH = 0;
             }
+
+            public static class MiniCIM {
+                public static final double DRIVE_KV = 1;
+                public static final double DRIVE_KA = 1;
+                public static final double ROTATION_KV = 1;
+                public static final double ROTATION_KA = 1;
+            }
+
+            public static class Spark {
+                public static final double DRIVE_KV = 1;
+                public static final double DRIVE_KA = 1;
+                public static final double ROTATION_KV = 1;
+                public static final double ROTATION_KA = 1;
+            }
+
+            public static final double MAX_LINEAR_VELOCITY = 3;
+            public static final double MAX_ANGULAR_VELOCITY = 3;
 
             public static class Pigeon {
                 public static final int PIGEON_DEVICE_NUMBER = 0; //random number
             }
 
             public static class Modules {
-                public static final double MOTOR_LIMITER = 1;
-                public static final int TICKS_TO_ROTATIONS = 1024;
-
                 // IDs:
                 //      FRONT_RIGHT: 0
                 //      FRONT_LEFT:  1
                 //      BACK_LEFT:   2
                 //      BACK_LEFT:   3
-                public static final int[] ROTATE_PORTS = {1, 2, 3, 4};
-                public static final int[] DRIVE_PORTS = {1, 2, 3, 4};
+                public static final double MOTOR_LIMITER = 1;
+                public static final double TICKS_TO_ROTATIONS = 3.2690426340000003;
+
+                public static final int[] DRIVE_MOTOR_PORTS = {4, 1, 2, 3};
+                public static final int[] ROTATION_MOTOR_PORTS = {2, 5, 6, 7};
+                public static final int[] LAMPREY_ANALOG_PORTS = {3, 0, 0, 0};
             }
 
             public static class SwerveModule {
@@ -49,6 +68,12 @@ public class RobotMap {
                 public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<>(2300.0 * 0.64,
                         1234.0 / 2.0);
             }
+        }
+
+        public static class Measures {
+            public static final double LENGTH = 1.5;
+            public static final double WIDTH = 1;
+            public static final double WHEEL_DIST_FROM_CENTER = Math.sqrt(Math.pow(LENGTH, 2) + Math.pow(WIDTH, 2));
         }
     }
 }

@@ -7,14 +7,12 @@ import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
 
-
 public class Chassis extends GBSubsystem {
     private static Chassis instance;
 
     private final SwerveModule[] swerveModules = new SwerveModule[4];
 
     private final IGyroscope gyro;
-//    private PowerDistributionPanel robotPDP;
 
     private Chassis() {
 
@@ -30,7 +28,6 @@ public class Chassis extends GBSubsystem {
     public static void init() {
         if (instance == null) {
             instance = new Chassis();
-//            instance.setDefaultCommand();
         }
     }
 
@@ -38,7 +35,13 @@ public class Chassis extends GBSubsystem {
         return instance;
     }
 
-    public void moveMotors(double[] powers, double[] angles) throws MotorPowerOutOfRangeException {
+    public void moveMotors(double[] powers, double[] angles, boolean fieldOriented) throws MotorPowerOutOfRangeException {
+        if (fieldOriented) {
+            for (int i = 0; i < angles.length; i++) {
+                // TODO: 14/10/2020 check clockwise = positive in gyro
+//                angles[i] = angles[i] - getAngle();
+            }
+        }
         for (double power : powers) {
             if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
                 stopMotors();
@@ -55,9 +58,49 @@ public class Chassis extends GBSubsystem {
         }
     }
 
+    public void moveDriveMotors(double[] powers) throws MotorPowerOutOfRangeException {
+        for (double power : powers) {
+            if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+                stopMotors();
+                throw new MotorPowerOutOfRangeException();
+            }
+        }
+        for (SwerveModule swerveModule : swerveModules) {
+            swerveModule.setPower(powers[swerveModule.getID()]);
+        }
+    }
+
+    public void moveRotationMotors(double[] powers) throws MotorPowerOutOfRangeException {
+        for (double power : powers) {
+            if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+                stopMotors();
+                throw new MotorPowerOutOfRangeException();
+            }
+        }
+        for (SwerveModule swerveModule : swerveModules) {
+            swerveModule.setAngle(powers[swerveModule.getID()]);
+        }
+    }
+
     public void stopMotors() {
         for (SwerveModule swerveModule : swerveModules) {
             swerveModule.setPower(0);
+        }
+    }
+
+    public void rotateWheelsBySpeedAcceleration(double[] speeds, double[] accelerations) throws MotorPowerOutOfRangeException {
+        double[] powers = new double[speeds.length];
+        for (int i = 0; i < speeds.length; i++) {
+            powers[i] = speeds[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KV + accelerations[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KA;
+        }
+        for (double power : powers) {
+            if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+                stopMotors();
+                throw new MotorPowerOutOfRangeException();
+            }
+        }
+        for (SwerveModule swerveModule : swerveModules) {
+            swerveModule.setAngle(powers[swerveModule.getID()]);
         }
     }
 
@@ -76,7 +119,7 @@ public class Chassis extends GBSubsystem {
     public void arcadeDrive(double power, double rotate) throws MotorPowerOutOfRangeException {
         double[] powers = {power + rotate, power - rotate, power - rotate, power + rotate};
         double[] angles = {0, 0, 0, 0};
-        moveMotors(powers, angles);
+        moveMotors(powers, angles, true);
     }
 
     public double[] getMeters() {
@@ -117,12 +160,22 @@ public class Chassis extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+//        putString("Module 0", swerveModules[0].toString());
+//        putString("Module 1", swerveModules[1].toString());
+//        putString("Module 2", swerveModules[2].toString());
+//        putString("Module 3", swerveModules[3].toString());
+//        putNumber("Gyro Rate", gyro.getYawRate()    );
+//        putNumber("Raw Gyro", gyro.getRawYaw());
+//        putNumber("Normalized Gyro", gyro.getNormalizedYaw());
+
     }
 
+/*
     public void resetEncoders() {
         for (SwerveModule swerveModule : swerveModules) {
             swerveModule.getAngleEncoder().reset();
         }
     }
+*/
 
 }
