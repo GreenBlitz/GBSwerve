@@ -12,6 +12,7 @@ import org.greenblitz.motion.pid.PIDController;
 import org.greenblitz.motion.pid.PIDObject;
 
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.*;
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.SwerveModule.*;
 
 public class SwerveModule extends GBSubsystem {
 
@@ -30,6 +31,8 @@ public class SwerveModule extends GBSubsystem {
         driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
         angleEncoder = new AnalogInput(3);//RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+
+        configureDrive(DRIVE_P, DRIVE_I, DRIVE_D, DRIVE_FF);
     }
 
     public void configureDrive(double p, double i, double d, double ff) {
