@@ -7,12 +7,12 @@ import com.revrobotics.ControlType;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import org.greenblitz.motion.pid.PIDController;
-import org.greenblitz.motion.pid.PIDObject;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.greenblitz.debug.RemoteCSVTarget;
 
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.*;
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.SwerveModule.*;
+
 
 public class SwerveModule extends GBSubsystem {
 
@@ -22,6 +22,9 @@ public class SwerveModule extends GBSubsystem {
     private final SparkEncoder driveEncoder;
     private int ID;
     private boolean isDriveInverted, isRotateInverted;
+    private RemoteCSVTarget logger;
+    private long t0 = -1;
+    private int target = -1;
 
     SwerveModule(int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
         this.ID = ID;
@@ -33,6 +36,8 @@ public class SwerveModule extends GBSubsystem {
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 
         configureDrive(DRIVE_P, DRIVE_I, DRIVE_D, DRIVE_FF);
+
+        this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
     }
 
     public void configureDrive(double p, double i, double d, double ff) {
@@ -48,7 +53,8 @@ public class SwerveModule extends GBSubsystem {
         return this.driveMotor.getPIDController();
     }
 
-    public void setSpeed(double speed) {
+    public void setSpeed(int speed) {
+        this.target = speed;
         this.driveMotor.getPIDController().setReference(speed, ControlType.kVelocity);
     }
 
@@ -61,7 +67,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getAngle() {
-        return getNormalizedAngle() / VOLTAGE_TO_ROTATIONS * 360;
+        return getNormalizedAngle() / VOLTAGE_TO_ROTATIONS * 2 * Math.PI;
     }
 
 
@@ -133,5 +139,18 @@ public class SwerveModule extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
+
+        SmartDashboard.putNumber(String.format("DriveVel%d: ", this.ID), this.getLinVel());
+        SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
+
+        double time;
+        if (t0 == -1) {
+            time = 0;
+            t0 = System.currentTimeMillis();
+        } else {
+            time = System.currentTimeMillis() - t0;
+        }
+
+        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), target);
     }
 }

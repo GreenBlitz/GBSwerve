@@ -25,7 +25,7 @@ public class OneModuleTestByConstants extends GBCommand {
     @Override
     public void execute() {
         module.getDriveMotor().set(this.velocity);
-        module.setAngle(this.angle);
+//        module.setAngle(this.angle); TODO: fix setAngle and uncomment this
     }
 
     public void end(boolean interrupted) {

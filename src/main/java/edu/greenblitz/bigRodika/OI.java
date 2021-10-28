@@ -31,9 +31,9 @@ public class OI {
     }
 
     private void initTestButtons() {
-
-        mainJoystick.A.whileHeld(new GraphEncoderVoltage());
-        mainJoystick.B.whileHeld(new DumbSwerveByConstants(SingleModule.getInstance().getModule(), 0, 0.03));
+        mainJoystick.X.whenPressed(new SetSingleModuleSpeed(300));
+        mainJoystick.B.whenPressed(new SetSingleModuleSpeed(0));
+        mainJoystick.A.whileHeld(new DumbSwerveByConstants(SingleModule.getInstance().getModule(), 0, 0));
     }
 
     private void initOfficalButtons() {
