@@ -1,7 +1,9 @@
 package edu.greenblitz.bigRodika.subsystems;
 
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.revrobotics.ControlType;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
@@ -28,6 +30,23 @@ public class SwerveModule extends GBSubsystem {
         driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
         angleEncoder = new AnalogInput(3);//RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+    }
+
+    public void configureDrive(double p, double i, double d, double ff) {
+        CANPIDController controller = this.driveMotor.getPIDController();
+
+        controller.setP(p);
+        controller.setI(i);
+        controller.setD(d);
+        controller.setFF(ff);
+    }
+
+    public CANPIDController getDrivePID() {
+        return this.driveMotor.getPIDController();
+    }
+
+    public void setSpeed(double speed) {
+        this.driveMotor.getPIDController().setReference(speed, ControlType.kVelocity);
     }
 
     public double getNormalizedAngle() {
@@ -103,12 +122,6 @@ public class SwerveModule extends GBSubsystem {
 
     public void rotateInvert() {
         isRotateInverted = !isRotateInverted;
-    }
-
-
-    public void setAngle(double destDegrees) {
-        double destTicks = destDegrees * TICKS_TO_ROTATIONS / 360;
-        rotationMotor.set(destTicks);
     }
 
     public void initDefaultCommand() {
