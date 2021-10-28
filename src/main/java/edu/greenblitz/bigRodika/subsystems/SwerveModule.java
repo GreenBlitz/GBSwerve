@@ -5,8 +5,11 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import org.greenblitz.motion.pid.PIDController;
+import org.greenblitz.motion.pid.PIDObject;
 
-import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.TICKS_TO_ROTATIONS;
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.*;
 
 public class SwerveModule extends GBSubsystem {
 
@@ -28,15 +31,15 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getNormalizedAngle() {
-        return getTicks() % TICKS_TO_ROTATIONS;
+        return getEncoderValue() % VOLTAGE_TO_ROTATIONS;
     }
 
-    public double getTicks() {
+    public double getEncoderValue() {
         return angleEncoder.getVoltage();
     }
 
-    public double getDegrees() {
-        return getNormalizedAngle() / TICKS_TO_ROTATIONS * 360;
+    public double getAngle() {
+        return getNormalizedAngle() / VOLTAGE_TO_ROTATIONS * 360;
     }
 
 

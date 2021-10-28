@@ -30,8 +30,8 @@ public class SingleModule extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        SmartDashboard.putNumber("lamprey voltage", module.getTicks());
-        SmartDashboard.putNumber("lamprey angle", module.getDegrees());
+        SmartDashboard.putNumber("lamprey voltage", module.getEncoderValue());
+        SmartDashboard.putNumber("lamprey angle", module.getAngle());
     }
 
     public void initDefaultCommand() {

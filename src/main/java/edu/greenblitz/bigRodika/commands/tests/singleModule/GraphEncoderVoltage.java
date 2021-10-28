@@ -4,7 +4,6 @@ import edu.greenblitz.bigRodika.subsystems.SingleModule;
 import edu.greenblitz.gblib.command.GBCommand;
 import org.greenblitz.debug.RemoteCSVTarget;
 
-import java.security.KeyPair;
 import java.util.*;
 
 public class GraphEncoderVoltage extends GBCommand {
@@ -31,7 +30,7 @@ public class GraphEncoderVoltage extends GBCommand {
         System.out.println("running");
         SingleModule instance = SingleModule.getInstance();
 //        logger.report((System.currentTimeMillis() - this.t0) / 1000.0, instance.getModule().getTicks());
-        values.add(new Pair<>(System.currentTimeMillis() - this.t0, instance.getModule().getTicks()));
+        values.add(new Pair<>(System.currentTimeMillis() - this.t0, instance.getModule().getEncoderValue()));
     }
 
     @Override

@@ -55,11 +55,15 @@ public class RobotMap {
                 //      BACK_LEFT:   2
                 //      BACK_LEFT:   3
                 public static final double MOTOR_LIMITER = 1;
-                public static final double TICKS_TO_ROTATIONS = 3.2690426340000003;
+                public static final double VOLTAGE_TO_ROTATIONS = 3.2690426340000003;
+                public static final double TICKS_TO_METERS = 2048;
 
                 public static final int[] DRIVE_MOTOR_PORTS = {4, 1, 2, 3};
                 public static final int[] ROTATION_MOTOR_PORTS = {2, 5, 6, 7};
                 public static final int[] LAMPREY_ANALOG_PORTS = {3, 0, 0, 0};
+
+                public static final double MAX_OUTPUT_DRIVE = 1;
+                public static final double MAX_OUTPUT_ANGLE = 1;
             }
 
             public static class SwerveModule {
