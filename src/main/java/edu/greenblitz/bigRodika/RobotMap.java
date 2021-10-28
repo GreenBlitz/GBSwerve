@@ -69,8 +69,8 @@ public class RobotMap {
             public static class SwerveModule {
                 public static final double DRIVE_P = 0.1, DRIVE_I = 0, DRIVE_D = 0, DRIVE_FF = 0,
                                             ANGLE_P = 0.5, ANGLE_I = 0, ANGLE_D = 2;
-                public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<>(2300.0 * 0.64,
-                        1234.0 / 2.0); // TODO: GearDependentValues are deprecated, should be a constant value.
+                public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<Double>(42.0,
+                        42.0); // TODO: GearDependentValues are deprecated, should be a constant value.
             }
         }
 

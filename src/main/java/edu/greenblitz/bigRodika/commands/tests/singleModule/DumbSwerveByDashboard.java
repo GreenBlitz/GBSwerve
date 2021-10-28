@@ -7,6 +7,19 @@ import org.greenblitz.debug.RemoteCSVTarget;
 public class DumbSwerveByDashboard extends DumbSwerveByConstants {
 
     public DumbSwerveByDashboard(SwerveModule swerve) {
-        super(swerve, SmartDashboard.getNumber(String.format("SwerveModule%dDrive", swerve.getID()), 0), SmartDashboard.getNumber(String.format("SwerveModule%dTurn", swerve.getID()), 0));
+        super(swerve, 0, 0);
+
+        String key = String.format("SwerveModule%d", swerve.getID());
+        SmartDashboard.putNumber(key + "Drive", 0);
+        SmartDashboard.putNumber(key + "Turn", 0);
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
+
+        String key = String.format("SwerveModule%d", swerve.getID());
+        this.forward = SmartDashboard.getNumber(key + "Drive", 0);
+        this.turn = SmartDashboard.getNumber(key + "Turn", 0);
     }
 }

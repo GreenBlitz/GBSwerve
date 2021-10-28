@@ -18,7 +18,7 @@ public class DumbSwerveByConstants extends GBCommand {
         this.forward = forward;
         this.turn = turn;
 
-        String key = String.format("SwerveModule%d", swerve.getID());
+        String key = String.format("DumbSwerveByConstants%d", swerve.getID());
         logger = RemoteCSVTarget.initTarget(key, "time", "linVel", "angle");
     }
 

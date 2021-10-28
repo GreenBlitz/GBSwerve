@@ -31,9 +31,9 @@ public class OI {
     }
 
     private void initTestButtons() {
-        mainJoystick.X.whenPressed(new SetSingleModuleSpeed());
-        mainJoystick.B.whenPressed(new SetSingleModuleSpeed());
-        mainJoystick.A.whileHeld(new DumbSwerveByConstants(SingleModule.getInstance().getModule(), 0, 0));
+        SwerveModule swerve = SingleModule.getInstance().getModule();
+        mainJoystick.A.whenPressed(new DumbSwerveByDashboard(swerve));
+        mainJoystick.B.whenPressed(new DumbSwerveByConstants(swerve, 0, 0));
     }
 
     private void initOfficalButtons() {
