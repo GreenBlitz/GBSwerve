@@ -92,7 +92,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getLinVel() {
-        return driveEncoder.getNormalizedVelocity();
+        return driveEncoder.getTickRate() * TICKS_TO_METERS;
     }
 
     public boolean isDriveInverted() {
