@@ -33,6 +33,7 @@ public class SingleModule extends GBSubsystem {
         super.periodic();
         SmartDashboard.putNumber("lamprey voltage", module.getEncoderValue());
         SmartDashboard.putNumber("lamprey angle", module.getAngle());
+        SmartDashboard.putNumber("drive ticks", module.getDriveEncoder().getRawTicks());
     }
 
     public void initDefaultCommand() {
