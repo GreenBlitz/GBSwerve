@@ -79,17 +79,17 @@ public class RobotMap {
                 public static Dataset SPEED_TO_FF = new Dataset(2);
 
                 static {
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.025622150692418782,new double[]{0.05});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.05784468842910955,new double[]{0.1});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.12217383172192706,new double[]{0.2});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.1868448022306453,new double[]{0.3});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.252499376683109,new double[]{0.4});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.31614872575868314,new double[]{0.5});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.38144475060222066,new double[]{0.6});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.44575686253390745,new double[]{0.7});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.5131285121903226,new double[]{0.8});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.5770942062081239,new double[]{0.9});
-                    SwerveModule.SPEED_TO_FF.addDatapoint(0.6378760665940705,new double[]{1});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(0.15874853129485736,new double[]{0.05});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(0.36219983433057434,new double[]{0.1});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(0.7855288332582557,new double[]{0.2});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(1.1745280432855925,new double[]{0.3});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(1.5679483142460156,new double[]{0.4});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(2.018132357679125,new double[]{0.5});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(2.4253292179198764,new double[]{0.6});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(2.841689838182813,new double[]{0.7});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(3.153622487669066,new double[]{0.8});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(3.6464959043498486,new double[]{0.9});
+                    SwerveModule.SPEED_TO_FF.addDatapoint(4.049262404948307,new double[]{1});
             }
         }
     }
