@@ -57,7 +57,10 @@ public class RobotMap {
                 public static final double MOTOR_LIMITER = 1;
                 public static final double VOLTAGE_TO_ROTATIONS = 3.2690426340000003;
                 public static final double WHEEL_PERIMETER = 0.31918581360576;
-                public static final double TICKS_TO_METERS = WHEEL_PERIMETER / 2048; // TODO: insert gear conversion in swerve module to constant
+                public static final double TICKS_PER_ROTATION = 42;
+                public static final double TICKS_TO_METERS = WHEEL_PERIMETER / TICKS_PER_ROTATION; // TODO: insert gear conversion in swerve module to constant
+                public static final double DRIVE_GEAR_RATIO = 0.125;
+                public static final double ROTATION_GEAR_RATIO = 1.0/6;
 
 
                 public static final int[] DRIVE_MOTOR_PORTS = {4, 1, 2, 3};

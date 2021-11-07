@@ -11,6 +11,7 @@ public class SingleModule extends GBSubsystem {
     private SingleModule() {
         SmartDashboard.putNumber("referenceSpeed", -1);
         module = new SwerveModule(0);
+
     }
 
     public static SingleModule getInstance() {

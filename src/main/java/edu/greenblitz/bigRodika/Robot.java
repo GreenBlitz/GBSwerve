@@ -14,6 +14,7 @@ public class Robot extends TimedRobot {
 //        Chassis.init();
         OI.getInstance();
         SingleModule.getInstance();
+        SingleModule.getInstance().initDefaultCommand();
     }
 
     @Override

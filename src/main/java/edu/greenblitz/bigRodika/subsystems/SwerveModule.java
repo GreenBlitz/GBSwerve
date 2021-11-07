@@ -32,7 +32,7 @@ public class SwerveModule extends GBSubsystem {
         isRotateInverted = false;
         rotationMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
         driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
-        angleEncoder = new AnalogInput(3);//RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
+        angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 
         configureDrive(DRIVE_P, DRIVE_I, DRIVE_D, DRIVE_FF);
@@ -92,7 +92,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getLinVel() {
-        return driveEncoder.getTickRate() * TICKS_TO_METERS;
+        return driveEncoder.getTickRate() * TICKS_TO_METERS * DRIVE_GEAR_RATIO;
     }
 
     public boolean isDriveInverted() {
