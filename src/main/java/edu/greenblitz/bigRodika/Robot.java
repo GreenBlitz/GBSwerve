@@ -1,5 +1,6 @@
 package edu.greenblitz.bigRodika;
 
+import edu.greenblitz.bigRodika.commands.tests.singleModule.TestPID;
 import edu.greenblitz.bigRodika.subsystems.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -14,7 +15,7 @@ public class Robot extends TimedRobot {
 //        Chassis.init();
         OI.getInstance();
         SingleModule.getInstance();
-        SingleModule.getInstance().initDefaultCommand();
+        //SingleModule.getInstance().initDefaultCommand();
     }
 
     @Override
@@ -40,6 +41,5 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
-
     }
 }

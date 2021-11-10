@@ -24,7 +24,8 @@ public class SwerveModule extends GBSubsystem {
     private boolean isDriveInverted, isRotateInverted;
     private RemoteCSVTarget logger;
     private long t0 = -1;
-    private int target = -1;
+    private double target = -1;
+
 
     SwerveModule(int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
         this.ID = ID;
@@ -35,27 +36,28 @@ public class SwerveModule extends GBSubsystem {
         angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 
-        configureDrive(DRIVE_P, DRIVE_I, DRIVE_D, DRIVE_FF);
+        configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
 
         this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
     }
 
-    public void configureDrive(double p, double i, double d, double ff) {
+    public void configureDrive(double p, double i, double d) {
         CANPIDController controller = this.driveMotor.getPIDController();
 
         controller.setP(p);
         controller.setI(i);
         controller.setD(d);
-        controller.setFF(ff);
     }
 
     public CANPIDController getDrivePID() {
         return this.driveMotor.getPIDController();
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(double speed) {
         this.target = speed;
         this.driveMotor.getPIDController().setReference(speed, ControlType.kVelocity);
+        System.out.println(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
+        getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
     }
 
     public double getNormalizedAngle() {

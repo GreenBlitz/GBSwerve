@@ -72,13 +72,14 @@ public class RobotMap {
             }
 
             public static class SwerveModule {
-                public static final double DRIVE_P = 0, DRIVE_I = 0, DRIVE_D = 0, DRIVE_FF = 0,
+                public static final double DRIVE_P = 0, DRIVE_I = 0, DRIVE_D = 0,
                         ANGLE_P = 0.5, ANGLE_I = 0, ANGLE_D = 2;
                 public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<Double>(42.0,
                         2048.0); // TODO: GearDependentValues are deprecated, should be a constant value.
                 public static Dataset SPEED_TO_FF = new Dataset(2);
 
                 static {
+                    SwerveModule.SPEED_TO_FF.addDatapoint(-0.000000000000001,new double[]{0.0});
                     SwerveModule.SPEED_TO_FF.addDatapoint(0.15874853129485736,new double[]{0.05});
                     SwerveModule.SPEED_TO_FF.addDatapoint(0.36219983433057434,new double[]{0.1});
                     SwerveModule.SPEED_TO_FF.addDatapoint(0.7855288332582557,new double[]{0.2});
