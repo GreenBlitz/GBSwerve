@@ -2,6 +2,7 @@ package edu.greenblitz.bigRodika.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
+import edu.greenblitz.bigRodika.Robot;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.tests.singleModule.GraphEncoderVoltage;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
@@ -180,8 +181,27 @@ public class Chassis extends GBSubsystem {
 */
 
     public double[] calculateSwerveMovement(double Vx, double Vy, double omega, double alpha) {
+        /**
+            transforms Swerve motion to certain module movement.
+
+            @param Vx: the velocity the robot will move in the x axis
+            @param Vy: the velocity the robot will move in the y axis
+            @param omega: the robot's rotational velocity
+            @param alpha: the module's angle in relation to the horizontal axis of the robot
+
+            @returns: double[] {angle to set the module at, velocity to set the module at}
+         */
         //insert calculations here
         return new double[]{};
+    }
+
+    public void fullSwerve(double Vx, double Vy, double omega) {
+        for(int i = 0; i < swerveModules.length; i++) {
+            SwerveModule s = swerveModules[i];
+            double[] params = calculateSwerveMovement(Vx, Vy, omega, RobotMap.Limbo2.Measures.ALPHAS[i]);
+            s.setSpeed(params[1]);
+            s.set(params[1]);
+        }
     }
 
 }
