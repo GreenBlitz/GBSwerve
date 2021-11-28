@@ -15,7 +15,7 @@ public class Robot extends TimedRobot {
 //        Chassis.init();
         OI.getInstance();
         SingleModule.getInstance();
-        //SingleModule.getInstance().initDefaultCommand();
+        SingleModule.getInstance().initDefaultCommand();
     }
 
     @Override
@@ -41,5 +41,6 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
+        SingleModule.getInstance().initDefaultCommand();
     }
 }
