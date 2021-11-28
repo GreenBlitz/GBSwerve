@@ -9,7 +9,9 @@ public class SingleModule extends GBSubsystem {
     private static SingleModule instance;
 
     private SingleModule() {
+        SmartDashboard.putNumber("referenceSpeed", -1);
         module = new SwerveModule(0);
+
     }
 
     public static SingleModule getInstance() {
@@ -30,8 +32,9 @@ public class SingleModule extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-        SmartDashboard.putNumber("lamprey voltage", module.getTicks());
-        SmartDashboard.putNumber("lamprey angle", module.getDegrees());
+        SmartDashboard.putNumber("lamprey voltage", module.getEncoderValue());
+        SmartDashboard.putNumber("lamprey angle", module.getAngle());
+        SmartDashboard.putNumber("drive ticks", module.getDriveEncoder().getRawTicks());
     }
 
     public void initDefaultCommand() {

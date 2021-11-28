@@ -54,7 +54,7 @@ public class Chassis extends GBSubsystem {
     public void moveMotorsLimited(double[] powers, double[] angles) {
         for (SwerveModule swerveModule : swerveModules) {
             swerveModule.setPower(powers[swerveModule.getID()]);
-            swerveModule.setAngle(angles[swerveModule.getID()]);
+//            swerveModule.setAngle(angles[swerveModule.getID()]); TODO: fix setAngle and uncomment this
         }
     }
 
@@ -78,7 +78,7 @@ public class Chassis extends GBSubsystem {
             }
         }
         for (SwerveModule swerveModule : swerveModules) {
-            swerveModule.setAngle(powers[swerveModule.getID()]);
+//            swerveModule.setAngle(powers[swerveModule.getID()]); TODO: fix setAngle and uncomment this
         }
     }
 
@@ -100,7 +100,7 @@ public class Chassis extends GBSubsystem {
             }
         }
         for (SwerveModule swerveModule : swerveModules) {
-            swerveModule.setAngle(powers[swerveModule.getID()]);
+//            swerveModule.setAngle(powers[swerveModule.getID()]); TODO: fix setAngle and uncomment this
         }
     }
 
