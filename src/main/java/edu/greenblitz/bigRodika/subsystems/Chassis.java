@@ -200,7 +200,7 @@ public class Chassis extends GBSubsystem {
             SwerveModule s = swerveModules[i];
             double[] params = calculateSwerveMovement(Vx, Vy, omega, RobotMap.Limbo2.Measures.ALPHAS[i]);
             s.setSpeed(params[1]);
-            s.set(params[1]);
+            s.setAngle(params[0]);
         }
     }
 
