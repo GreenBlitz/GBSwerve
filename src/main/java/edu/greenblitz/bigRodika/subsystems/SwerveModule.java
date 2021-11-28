@@ -24,7 +24,8 @@ public class SwerveModule extends GBSubsystem {
     private boolean isDriveInverted, isRotateInverted;
     private RemoteCSVTarget logger;
     private long t0 = -1;
-    private double target = -1;
+    private double driveTarget = -1;
+    private double angleTarget = -1;
 
 
     SwerveModule(int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
@@ -49,15 +50,28 @@ public class SwerveModule extends GBSubsystem {
         controller.setD(d);
     }
 
+    public void configureRotation(double p, double i, double d) {
+        CANPIDController controller = this.rotationMotor.getPIDController();
+
+        controller.setP(p);
+        controller.setI(i);
+        controller.setD(d);
+    }
+
     public CANPIDController getDrivePID() {
         return this.driveMotor.getPIDController();
     }
 
     public void setSpeed(double speed) {
-        this.target = speed;
+        this.driveTarget = speed;
         this.driveMotor.getPIDController().setReference(speed, ControlType.kVelocity);
-        System.out.println(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
+//        System.out.println(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
         getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
+    }
+
+    public void setAngle(double angle) {
+        this.angleTarget = angle;
+        this.rotationMotor.getPIDController().setReference(angle, ControlType.kPosition);
     }
 
     public double getNormalizedAngle() {
@@ -153,6 +167,6 @@ public class SwerveModule extends GBSubsystem {
             time = System.currentTimeMillis() - t0;
         }
 
-        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), target);
+        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), driveTarget);
     }
 }
