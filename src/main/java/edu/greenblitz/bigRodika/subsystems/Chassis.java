@@ -8,6 +8,9 @@ import edu.greenblitz.bigRodika.commands.tests.singleModule.GraphEncoderVoltage;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
+import org.opencv.core.Mat;
+
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measures.WHEEL_DIST_FROM_CENTER;
 
 public class Chassis extends GBSubsystem {
     private static Chassis instance;
@@ -191,8 +194,27 @@ public class Chassis extends GBSubsystem {
 
             @returns: double[] {angle to set the module at, velocity to set the module at}
          */
+
         //insert calculations here
-        return new double[]{};
+        double deltaT = RobotMap.Limbo2.MathConstants.deltaT;
+        double r = WHEEL_DIST_FROM_CENTER;
+
+        //holonomic case
+        double holonomicDeltaX = Vx * deltaT;
+        double holonomicDeltaY = Vy * deltaT;
+
+        //rotation case
+        double deltaTheta = omega * deltaT;
+        double rotationDeltaX = r * (Math.cos(deltaTheta + alpha) - Math.cos(alpha));
+        double rotationDeltaY = r * (Math.sin(deltaTheta + alpha) - Math.sin(alpha));
+
+        //combined case
+        double combinedDeltaX = holonomicDeltaX + rotationDeltaX;
+        double combinedDeltaY = holonomicDeltaY + rotationDeltaY;
+        double theta = Math.atan(combinedDeltaY/combinedDeltaX);
+        double wheelVelocity = (Math.hypot(combinedDeltaX, combinedDeltaY))/(deltaT);
+
+        return new double[]{theta, wheelVelocity};
     }
 
     public void fullSwerve(double Vx, double Vy, double omega) {

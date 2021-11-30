@@ -9,7 +9,9 @@ public class RobotMap {
     public static class Limbo2 {
 
         // TODO: check values in robotmap
-
+        public static class MathConstants {
+            public static final double deltaT = Math.pow(10, -5);
+        }
 
         public static class Joystick {
             public static final int MAIN = 0;
@@ -17,7 +19,6 @@ public class RobotMap {
             public static final int SIDE = 1;
             public static final double SIDE_DEADZONE = 0.05;
         }
-
 
         public static class Chassis {
 
