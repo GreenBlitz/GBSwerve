@@ -8,8 +8,10 @@ import edu.greenblitz.bigRodika.commands.tests.singleModule.GraphEncoderVoltage;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
+import org.greenblitz.motion.base.Vector2D;
 import org.opencv.core.Mat;
 
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measures.ALPHAS;
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measures.WHEEL_DIST_FROM_CENTER;
 
 public class Chassis extends GBSubsystem {
@@ -133,8 +135,13 @@ public class Chassis extends GBSubsystem {
     }
 
     public double[] getRates() {
-        return new double[]{swerveModules[0].getDriveEncoder().getNormalizedVelocity(), swerveModules[1].getDriveEncoder().getNormalizedVelocity(),
-                swerveModules[2].getDriveEncoder().getNormalizedVelocity(), swerveModules[3].getDriveEncoder().getNormalizedVelocity()};
+        return new double[]{swerveModules[0].getLinVel(), swerveModules[1].getLinVel(), swerveModules[2].getLinVel(),
+                swerveModules[3].getLinVel()};
+    }
+
+    public double[] getAngles() {
+        return new double[]{swerveModules[0].getNormalizedAngle(), swerveModules[1].getNormalizedAngle(),
+                swerveModules[2].getNormalizedAngle(), swerveModules[3].getNormalizedAngle()};
     }
 
 // TODO: 04/10/2020
@@ -151,6 +158,11 @@ public class Chassis extends GBSubsystem {
 
     public double getAngularVelocityByGyro() {
         return gyro.getYawRate();
+    }
+
+    public Vector2D getLinearVelocity(){
+        double[] vels = getRates();
+        double[] angs =
     }
 
     public void resetGyro() {
@@ -220,7 +232,7 @@ public class Chassis extends GBSubsystem {
     public void fullSwerve(double Vx, double Vy, double omega) {
         for(int i = 0; i < swerveModules.length; i++) {
             SwerveModule s = swerveModules[i];
-            double[] params = calculateSwerveMovement(Vx, Vy, omega, RobotMap.Limbo2.Measures.ALPHAS[i]);
+            double[] params = calculateSwerveMovement(Vx, Vy, omega, ALPHAS[i]);
             s.setSpeed(params[1]);
             s.setAngle(params[0]);
         }
