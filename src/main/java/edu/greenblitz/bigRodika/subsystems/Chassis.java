@@ -174,6 +174,26 @@ public class Chassis extends GBSubsystem {
         // returning double array with distance between
     }
 
+    public Vector2D getLinVel() {
+        double vySum = 0;
+        for (int i = 0; i < 4; i++) {
+            vySum += swerveModules[i].getLinVel() * Math.cos(swerveModules[i].getAngle());
+        }
+        double vy = vySum / 4;
+        // calculating avg velocity on y-axis
+        double vxSum = 0;
+        for (int i = 0; i < 4; i++) {
+            vxSum += swerveModules[i].getLinVel() * -Math.sin(swerveModules[i].getAngle());
+        }
+        double vx = vxSum / 4;
+        //calculating avg velocity on the x-axis
+
+        double vTotal = Math.hypot(vx, vy);
+        double angle = Math.atan(vx / vy);
+        return new Vector2D(vTotal, angle);
+        //speeeeeeeeeed
+    }
+
     @Override
     public void periodic() {
         super.periodic();
@@ -197,14 +217,14 @@ public class Chassis extends GBSubsystem {
 
     public double[] calculateSwerveMovement(double Vx, double Vy, double omega, double alpha) {
         /**
-            transforms Swerve motion to certain module movement.
+         transforms Swerve motion to certain module movement.
 
-            @param Vx: the velocity the robot will move in the x axis
-            @param Vy: the velocity the robot will move in the y axis
-            @param omega: the robot's rotational velocity
-            @param alpha: the module's angle in relation to the horizontal axis of the robot
+         @param Vx: the velocity the robot will move in the x axis
+         @param Vy: the velocity the robot will move in the y axis
+         @param omega: the robot's rotational velocity
+         @param alpha: the module's angle in relation to the horizontal axis of the robot
 
-            @returns: double[] {angle to set the module at, velocity to set the module at}
+         @returns: double[] {angle to set the module at, velocity to set the module at}
          */
 
         //insert calculations here
@@ -223,14 +243,14 @@ public class Chassis extends GBSubsystem {
         //combined case
         double combinedDeltaX = holonomicDeltaX + rotationDeltaX;
         double combinedDeltaY = holonomicDeltaY + rotationDeltaY;
-        double theta = Math.atan(combinedDeltaY/combinedDeltaX);
-        double wheelVelocity = (Math.hypot(combinedDeltaX, combinedDeltaY))/(deltaT);
+        double theta = Math.atan(combinedDeltaY / combinedDeltaX);
+        double wheelVelocity = (Math.hypot(combinedDeltaX, combinedDeltaY)) / (deltaT);
 
         return new double[]{theta, wheelVelocity};
     }
 
     public void fullSwerve(double Vx, double Vy, double omega) {
-        for(int i = 0; i < swerveModules.length; i++) {
+        for (int i = 0; i < swerveModules.length; i++) {
             SwerveModule s = swerveModules[i];
             double[] params = calculateSwerveMovement(Vx, Vy, omega, ALPHAS[i]);
             s.setSpeed(params[1]);
