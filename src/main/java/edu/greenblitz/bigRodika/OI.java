@@ -33,10 +33,20 @@ public class OI {
     private void initTestButtons() {
         SwerveModule swerve = SingleModule.getInstance().getModule();
         mainJoystick.A.whenPressed(new DumbSwerveByDashboard(swerve));
-        mainJoystick.B.whenPressed(new DumbSwerveByConstants(swerve, 0, 0));
+        mainJoystick.B.whenPressed(new GBCommand() {
+            @Override
+            public void initialize() {
+                swerve.setAngle(swerve.getAngle() + Math.PI/2);
+            }
+
+            @Override
+            public boolean isFinished() {
+                return true;
+            }
+        });
     }
 
-    private void initOfficalButtons() {
+    private void initOfficialButtons() {
 
    }
 

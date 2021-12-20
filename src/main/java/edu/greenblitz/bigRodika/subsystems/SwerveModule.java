@@ -38,6 +38,7 @@ public class SwerveModule extends GBSubsystem {
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 
         configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
+        configureRotation(ANGLE_P, ANGLE_I, ANGLE_D);
 
         this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
     }
