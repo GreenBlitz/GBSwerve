@@ -188,13 +188,14 @@ public class Chassis extends GBSubsystem {
 
     // TODO: check if getLinVel works
     public double getAngVelByWheels() {
-        double wheelAngleFromCenter = Math.atan(RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_WIDTH / RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_LENGTH);
+        double[] wheelAngleFromCenter = ALPHAS;
         double wheelRotationAngle = 0; // beta       alpha /\ (one line above)
         double[] angleWheelToTangent = new double[4]; // gamma
 
         for (int i = 0; i < 4; i++) {
             wheelRotationAngle = swerveModules[i].getAngle();
-            angleWheelToTangent[i] =wheelAngleFromCenter + (Math.PI * 0.5)-wheelRotationAngle; //TODO check if needs to be 1.5 pi to change rotation direction
+            angleWheelToTangent[i] =(0.5*Math.PI-wheelAngleFromCenter[i])+ (Math.PI * 0.5)-wheelRotationAngle; //TODO decide a universal 0 point for radians
+            //TODO and change here this /\. because ALPHAS start at x axis and most code with y axis
         } //gets all wheel angles compared to tangent in an array
 
         double avgTanVel = 0;
@@ -202,7 +203,7 @@ public class Chassis extends GBSubsystem {
             avgTanVel += 0.25 * Math.cos(angleWheelToTangent[i]) * swerveModules[i].getLinVel();
         } // calculates all tangent velocities and adds them to get the total tan vel
 
-        return avgTanVel/RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_RADIUS; // tanVel/radius= angVel (in Rads)
+        return avgTanVel/WHEEL_DIST_FROM_CENTER; // tanVel/radius= angVel (in Rads)
     }
 
     @Override

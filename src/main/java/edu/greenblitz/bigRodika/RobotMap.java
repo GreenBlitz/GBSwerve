@@ -96,7 +96,7 @@ public class RobotMap {
         public static class Measurements {
             public static final double LENGTH = 1.5; // Half the vertical distance between the modules
             public static final double WIDTH = 1; // Half the horizontal distance between the modules
-            public static final double WHEEL_DIST_FROM_CENTER = Math.sqrt(Math.pow(LENGTH, 2) + Math.pow(WIDTH, 2));
+            public static final double WHEEL_DIST_FROM_CENTER = Math.hypot(LENGTH,WIDTH);
             public static final double ALPHA = Math.atan(LENGTH / WIDTH); // General angle disposition from parallel to horizontal size of robot
             public static final double[] ALPHAS = {ALPHA, Math.PI - ALPHA, Math.PI + ALPHA, -ALPHA};
         }
