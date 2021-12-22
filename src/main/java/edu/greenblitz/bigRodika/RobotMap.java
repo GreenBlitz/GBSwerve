@@ -26,6 +26,7 @@ public class RobotMap {
             public static class Sizes {
                 public static final double WHEEL_DIST_WIDTH = 0;
                 public static final double WHEEL_DIST_LENGTH = 0;
+                public static final double WHEEL_DIST_RADIUS = Math.hypot(WHEEL_DIST_LENGTH,WHEEL_DIST_WIDTH);
             }
 
             public static class MiniCIM {

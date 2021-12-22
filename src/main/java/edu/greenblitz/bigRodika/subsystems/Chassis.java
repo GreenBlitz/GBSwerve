@@ -160,10 +160,6 @@ public class Chassis extends GBSubsystem {
         return gyro.getYawRate();
     }
 
-    public Vector2D getLinearVelocity(){
-        double[] vels = getRates();
-        double[] angs =
-    }
 
     public void resetGyro() {
         gyro.reset();
@@ -174,7 +170,13 @@ public class Chassis extends GBSubsystem {
         // returning double array with distance between
     }
 
+    /**
+     * getLinVel calculates the lin vel of the chassis
+     *
+     * @return vector2D
+     */
     public Vector2D getLinVel() {
+
         double vySum = 0;
         for (int i = 0; i < 4; i++) {
             vySum += swerveModules[i].getLinVel() * Math.cos(swerveModules[i].getAngle());
@@ -187,11 +189,27 @@ public class Chassis extends GBSubsystem {
         }
         double vx = vxSum / 4;
         //calculating avg velocity on the x-axis
+        return new Vector2D(vx, vy);
+        //speeeeeeeeeed @TODO tal \
+    }
 
-        double vTotal = Math.hypot(vx, vy);
-        double angle = Math.atan(vx / vy);
-        return new Vector2D(vTotal, angle);
-        //speeeeeeeeeed
+    // TODO: check if getLinVel works
+    public double getAngVelByWheels() {
+        double wheelAngleFromCenter = Math.atan(RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_WIDTH / RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_LENGTH);
+        double wheelRotationAngle = 0; // beta       alpha /\ (one line above)
+        double[] wheelAngleToTangent = new double[4]; // gamma
+
+        for (int i = 0; i < 4; i++) {
+            wheelRotationAngle = swerveModules[i].getAngle();
+            wheelAngleToTangent[i] = wheelRotationAngle - (wheelAngleFromCenter + (Math.PI * 0.5)); //TODO check if needs to be 1.5 pi to change rotation direction
+        } //gets all wheel angles compared to tangent in an array
+
+        double avgTanVel = 0;
+        for (int i = 0; i < 4; i++) {
+            avgTanVel += 0.25 * Math.cos(wheelAngleToTangent[i]) * swerveModules[i].getLinVel();
+        } // calculates all tangent velocities and adds them to get the total tan vel
+
+        return avgTanVel/RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_RADIUS; // tanVel/radius= angVel (in Rads)
     }
 
     @Override
