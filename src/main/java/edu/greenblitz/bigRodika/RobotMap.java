@@ -22,12 +22,7 @@ public class RobotMap {
 
         public static class Chassis {
 
-            // TODO: 06/10/2020 check real values of all constants
-            public static class Sizes {
-                public static final double WHEEL_DIST_WIDTH = 0;
-                public static final double WHEEL_DIST_LENGTH = 0;
-                public static final double WHEEL_DIST_RADIUS = Math.hypot(WHEEL_DIST_LENGTH,WHEEL_DIST_WIDTH);
-            }
+
 
             public static class MiniCIM {
                 public static final double DRIVE_KV = 1;
@@ -97,7 +92,8 @@ public class RobotMap {
             }
         }
 
-        public static class Measures {
+        // TODO: 06/10/2020 check real values of all constants
+        public static class Measurements {
             public static final double LENGTH = 1.5; // Half the vertical distance between the modules
             public static final double WIDTH = 1; // Half the horizontal distance between the modules
             public static final double WHEEL_DIST_FROM_CENTER = Math.sqrt(Math.pow(LENGTH, 2) + Math.pow(WIDTH, 2));

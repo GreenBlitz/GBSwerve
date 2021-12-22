@@ -2,17 +2,14 @@ package edu.greenblitz.bigRodika.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
-import edu.greenblitz.bigRodika.Robot;
 import edu.greenblitz.bigRodika.RobotMap;
-import edu.greenblitz.bigRodika.commands.tests.singleModule.GraphEncoderVoltage;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
 import org.greenblitz.motion.base.Vector2D;
-import org.opencv.core.Mat;
 
-import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measures.ALPHAS;
-import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measures.WHEEL_DIST_FROM_CENTER;
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.ALPHAS;
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.WHEEL_DIST_FROM_CENTER;
 
 public class Chassis extends GBSubsystem {
     private static Chassis instance;
@@ -165,10 +162,6 @@ public class Chassis extends GBSubsystem {
         gyro.reset();
     }
 
-    public double[] getWheelDistance() {
-        return new double[]{RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_WIDTH, RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_LENGTH};
-        // returning double array with distance between
-    }
 
     /**
      * getLinVel calculates the lin vel of the chassis
@@ -197,16 +190,16 @@ public class Chassis extends GBSubsystem {
     public double getAngVelByWheels() {
         double wheelAngleFromCenter = Math.atan(RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_WIDTH / RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_LENGTH);
         double wheelRotationAngle = 0; // beta       alpha /\ (one line above)
-        double[] wheelAngleToTangent = new double[4]; // gamma
+        double[] angleWheelToTangent = new double[4]; // gamma
 
         for (int i = 0; i < 4; i++) {
             wheelRotationAngle = swerveModules[i].getAngle();
-            wheelAngleToTangent[i] = wheelRotationAngle - (wheelAngleFromCenter + (Math.PI * 0.5)); //TODO check if needs to be 1.5 pi to change rotation direction
+            angleWheelToTangent[i] =wheelAngleFromCenter + (Math.PI * 0.5)-wheelRotationAngle; //TODO check if needs to be 1.5 pi to change rotation direction
         } //gets all wheel angles compared to tangent in an array
 
         double avgTanVel = 0;
         for (int i = 0; i < 4; i++) {
-            avgTanVel += 0.25 * Math.cos(wheelAngleToTangent[i]) * swerveModules[i].getLinVel();
+            avgTanVel += 0.25 * Math.cos(angleWheelToTangent[i]) * swerveModules[i].getLinVel();
         } // calculates all tangent velocities and adds them to get the total tan vel
 
         return avgTanVel/RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_RADIUS; // tanVel/radius= angVel (in Rads)
