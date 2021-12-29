@@ -5,6 +5,7 @@ import edu.greenblitz.gblib.command.GBCommand;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 import edu.greenblitz.bigRodika.commands.tests.singleModule.*;
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class OI {
     private static OI instance;
@@ -33,10 +34,12 @@ public class OI {
     private void initTestButtons() {
         SwerveModule swerve = SingleModule.getInstance().getModule();
         mainJoystick.A.whenPressed(new DumbSwerveByDashboard(swerve));
+//        mainJoystick.B.whenPressed(new DumbSwerveByConstants(swerve, 0, 0.20));
         mainJoystick.B.whenPressed(new GBCommand() {
             @Override
             public void initialize() {
                 swerve.setAngle(swerve.getAngle() + Math.PI/2);
+                SmartDashboard.putNumber("angle target", swerve.getAngle() + Math.PI/2);
             }
 
             @Override
