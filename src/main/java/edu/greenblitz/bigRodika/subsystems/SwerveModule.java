@@ -48,7 +48,7 @@ public class SwerveModule extends GBSubsystem {
     public void init() {
         angleTarget = getAngle();
         configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
-        configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.05, 0.25);
+        configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.01, 0.01);
         this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
     }
 
@@ -66,13 +66,9 @@ public class SwerveModule extends GBSubsystem {
 
     public void configureRotation(double p, double i, double d, double tolerance, double thresh) {
         anglePID = new CollapsingPIDController(new PIDObject(p, i, d), thresh);
-        anglePID.configure(getAngle(), angleTarget, -0.15, 0.15, 0);
-        anglePID.setTolerance(new ITolerance() {
-            @Override
-            public boolean onTarget(double goal, double current) {
-                return Math.abs(goal - current) < tolerance;
-            }
-        });
+        anglePID.configure(getAngle(), angleTarget, -0.3, 0.3, 0);
+        SmartDashboard.putNumber("angle target", getAngle());
+        anglePID.setTolerance((goal, current) -> Math.abs(goal - current) < tolerance);
     }
 
     public CANPIDController getDrivePID() {
@@ -88,8 +84,10 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public void setAngle(double angle) {
+        angle = angle % (Math.PI*2);
         this.angleTarget = angle;
         this.anglePID.setGoal(angle);
+        SmartDashboard.putNumber("angle target", angleTarget);
     }
 
     public double getNormalizedAngle() {
@@ -173,11 +171,18 @@ public class SwerveModule extends GBSubsystem {
         double currAngle = getAngle();
         double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
         double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
+        /*
         if (Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleA)) //checking which representation has the lowest travel distance
             currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleB) ? currAngle : currAngleB;
         else
             currAngle = Math.abs(angleTarget - currAngleA) < Math.abs(angleTarget - currAngleB) ? currAngleA : currAngleB;
+        */
 
+        currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleA) ? currAngle : currAngleA;
+        currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleB) ? currAngle : currAngleB;
+
+
+        SmartDashboard.putNumber("min err angle", currAngle);
         getRotationMotor().set(anglePID.calculatePID(currAngle));
         SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
 
@@ -192,6 +197,6 @@ public class SwerveModule extends GBSubsystem {
             time = System.currentTimeMillis() - t0;
         }
 
-        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), driveTarget);
+        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
     }
 }

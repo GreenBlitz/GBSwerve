@@ -39,7 +39,6 @@ public class OI {
             @Override
             public void initialize() {
                 swerve.setAngle(swerve.getAngle() + Math.PI/2);
-                SmartDashboard.putNumber("angle target", swerve.getAngle() + Math.PI/2);
             }
 
             @Override
