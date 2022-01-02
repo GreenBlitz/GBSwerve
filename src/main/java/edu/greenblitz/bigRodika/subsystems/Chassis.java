@@ -2,15 +2,14 @@ package edu.greenblitz.bigRodika.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
-import edu.greenblitz.bigRodika.Robot;
 import edu.greenblitz.bigRodika.RobotMap;
-import edu.greenblitz.bigRodika.commands.tests.singleModule.GraphEncoderVoltage;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
-import org.opencv.core.Mat;
+import org.greenblitz.motion.base.Vector2D;
 
-import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measures.WHEEL_DIST_FROM_CENTER;
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.ALPHAS;
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.WHEEL_DIST_FROM_CENTER;
 
 public class Chassis extends GBSubsystem {
     private static Chassis instance;
@@ -133,8 +132,13 @@ public class Chassis extends GBSubsystem {
     }
 
     public double[] getRates() {
-        return new double[]{swerveModules[0].getDriveEncoder().getNormalizedVelocity(), swerveModules[1].getDriveEncoder().getNormalizedVelocity(),
-                swerveModules[2].getDriveEncoder().getNormalizedVelocity(), swerveModules[3].getDriveEncoder().getNormalizedVelocity()};
+        return new double[]{swerveModules[0].getLinVel(), swerveModules[1].getLinVel(), swerveModules[2].getLinVel(),
+                swerveModules[3].getLinVel()};
+    }
+
+    public double[] getAngles() {
+        return new double[]{swerveModules[0].getNormalizedAngle(), swerveModules[1].getNormalizedAngle(),
+                swerveModules[2].getNormalizedAngle(), swerveModules[3].getNormalizedAngle()};
     }
 
 // TODO: 04/10/2020
@@ -153,13 +157,53 @@ public class Chassis extends GBSubsystem {
         return gyro.getYawRate();
     }
 
+
     public void resetGyro() {
         gyro.reset();
     }
 
-    public double[] getWheelDistance() {
-        return new double[]{RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_WIDTH, RobotMap.Limbo2.Chassis.Sizes.WHEEL_DIST_LENGTH};
-        // returning double array with distance between
+
+    /**
+     * getLinVel calculates the lin vel of the chassis
+     *
+     * @return vector2D
+     */
+    public Vector2D getLinVel() {
+
+        double vySum = 0;
+        for (int i = 0; i < 4; i++) {
+            vySum += swerveModules[i].getLinVel() * Math.cos(swerveModules[i].getAngle());
+        }
+        double vy = vySum / 4;
+        // calculating avg velocity on y-axis
+        double vxSum = 0;
+        for (int i = 0; i < 4; i++) {
+            vxSum += swerveModules[i].getLinVel() * -Math.sin(swerveModules[i].getAngle());
+        }
+        double vx = vxSum / 4;
+        //calculating avg velocity on the x-axis
+        return new Vector2D(vx, vy);
+        //speeeeeeeeeed @TODO tal \
+    }
+
+    // TODO: check if getLinVel works
+    public double getAngVelByWheels() {
+        double[] wheelAngleFromCenter = ALPHAS;
+        double wheelRotationAngle = 0; // beta       alpha /\ (one line above)
+        double[] angleWheelToTangent = new double[4]; // gamma
+
+        for (int i = 0; i < 4; i++) {
+            wheelRotationAngle = swerveModules[i].getAngle();
+            angleWheelToTangent[i] =(0.5*Math.PI-wheelAngleFromCenter[i])+ (Math.PI * 0.5)-wheelRotationAngle; //TODO decide a universal 0 point for radians
+            //TODO and change here this /\. because ALPHAS start at x axis and most code with y axis
+        } //gets all wheel angles compared to tangent in an array
+
+        double avgTanVel = 0;
+        for (int i = 0; i < 4; i++) {
+            avgTanVel += 0.25 * Math.cos(angleWheelToTangent[i]) * swerveModules[i].getLinVel();
+        } // calculates all tangent velocities and adds them to get the total tan vel
+
+        return avgTanVel/WHEEL_DIST_FROM_CENTER; // tanVel/radius= angVel (in Rads)
     }
 
     @Override
@@ -185,14 +229,14 @@ public class Chassis extends GBSubsystem {
 
     public double[] calculateSwerveMovement(double Vx, double Vy, double omega, double alpha) {
         /**
-            transforms Swerve motion to certain module movement.
+         transforms Swerve motion to certain module movement.
 
-            @param Vx: the velocity the robot will move in the x axis
-            @param Vy: the velocity the robot will move in the y axis
-            @param omega: the robot's rotational velocity
-            @param alpha: the module's angle in relation to the horizontal axis of the robot
+         @param Vx: the velocity the robot will move in the x axis
+         @param Vy: the velocity the robot will move in the y axis
+         @param omega: the robot's rotational velocity
+         @param alpha: the module's angle in relation to the horizontal axis of the robot
 
-            @returns: double[] {angle to set the module at, velocity to set the module at}
+         @returns: double[] {angle to set the module at, velocity to set the module at}
          */
 
         //insert calculations here
@@ -211,16 +255,16 @@ public class Chassis extends GBSubsystem {
         //combined case
         double combinedDeltaX = holonomicDeltaX + rotationDeltaX;
         double combinedDeltaY = holonomicDeltaY + rotationDeltaY;
-        double theta = Math.atan(combinedDeltaY/combinedDeltaX);
-        double wheelVelocity = (Math.hypot(combinedDeltaX, combinedDeltaY))/(deltaT);
+        double theta = Math.atan(combinedDeltaY / combinedDeltaX);
+        double wheelVelocity = (Math.hypot(combinedDeltaX, combinedDeltaY)) / (deltaT);
 
         return new double[]{theta, wheelVelocity};
     }
 
     public void fullSwerve(double Vx, double Vy, double omega) {
-        for(int i = 0; i < swerveModules.length; i++) {
+        for (int i = 0; i < swerveModules.length; i++) {
             SwerveModule s = swerveModules[i];
-            double[] params = calculateSwerveMovement(Vx, Vy, omega, RobotMap.Limbo2.Measures.ALPHAS[i]);
+            double[] params = calculateSwerveMovement(Vx, Vy, omega, ALPHAS[i]);
             s.setSpeed(params[1]);
             s.setAngle(params[0]);
         }
