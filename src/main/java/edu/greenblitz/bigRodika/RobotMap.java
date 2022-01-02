@@ -73,10 +73,8 @@ public class RobotMap {
             }
 
             public static class SwerveModule {
-                public static final double DRIVE_P = 0, DRIVE_I = 0, DRIVE_D = 0,
-                        ANGLE_P = 0.5, ANGLE_I = 0, ANGLE_D = 2;
-                public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<Double>(42.0,
-                        2048.0); // TODO: GearDependentValues are deprecated, should be a constant value.
+                public static final double DRIVE_P = 0, DRIVE_I = 0, DRIVE_D = 0, ANGLE_P = 0.2, ANGLE_I = 0.000, ANGLE_D = 0.0;
+                public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<Double>(42.0, 2048.0); // TODO: GearDependentValues are deprecated, should be a constant value.
                 public static Dataset SPEED_TO_FF = new Dataset(2);
 
                 static {
@@ -102,6 +100,7 @@ public class RobotMap {
             public static final double WHEEL_DIST_FROM_CENTER = Math.sqrt(Math.pow(LENGTH, 2) + Math.pow(WIDTH, 2));
             public static final double ALPHA = Math.atan(LENGTH / WIDTH); // General angle disposition from parallel to horizontal size of robot
             public static final double[] ALPHAS = {ALPHA, Math.PI - ALPHA, Math.PI + ALPHA, -ALPHA};
+
         }
     }
 }
