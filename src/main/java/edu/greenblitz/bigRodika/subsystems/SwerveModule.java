@@ -90,7 +90,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public double getNormalizedAngle() {
-        return getEncoderValue() % VOLTAGE_TO_ROTATIONS;
+        return (getEncoderValue()- LAMPREY_ANALOG_ZERO[ID]) % VOLTAGE_TO_ROTATIONS;
     }
 
     public double getEncoderValue() {

@@ -162,6 +162,11 @@ public class Chassis extends GBSubsystem {
         gyro.reset();
     }
 
+    public void printAllEncoderValues (){
+        for (SwerveModule modulE :swerveModules) {
+            System.out.println("ID:"+modulE.getID()+"value:"+modulE.getEncoderValue());
+        }
+    }
 
     /**
      * getLinVel calculates the lin vel of the chassis
