@@ -22,9 +22,9 @@ import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.SwerveModule.*;
 public class SwerveModule extends GBSubsystem {
 
     private final CANSparkMax rotationMotor;
-    //    private final CANSparkMax driveMotor;
+    private final CANSparkMax driveMotor;
     private final AnalogInput angleEncoder;
-    //    private final SparkEncoder driveEncoder;
+    private final SparkEncoder driveEncoder;
     private CollapsingPIDController anglePID;
     private int ID;
     private boolean isDriveInverted, isRotateInverted;
@@ -39,9 +39,9 @@ public class SwerveModule extends GBSubsystem {
         isDriveInverted = false;
         isRotateInverted = false;
         rotationMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
-        //driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
+        driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
         angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
-//        driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+        driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 
     }
 
@@ -53,11 +53,11 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public void configureDrive(double p, double i, double d) {
-        /*CANPIDController controller = this.driveMotor.getPIDController();
+        CANPIDController controller = this.driveMotor.getPIDController();
 
         controller.setP(p);
         controller.setI(i);
-        controller.setD(d);*/
+        controller.setD(d);
     }
 
     public PIDController getAnglePID() {
@@ -72,15 +72,14 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public CANPIDController getDrivePID() {
-        return null;
-//        return this.driveMotor.getPIDController();
+        return this.driveMotor.getPIDController();
     }
 
     public void setSpeed(double speed) {
         this.driveTarget = speed;
-        //this.driveMotor.getPIDController().setReference(speed, ControlType.kVelocity);
+        this.driveMotor.getPIDController().setReference(speed, ControlType.kVelocity);
         System.out.println(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
-        //getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
+        getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
     }
 
     public void setAngle(double angle) {
@@ -111,8 +110,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public CANSparkMax getDriveMotor() {
-        return null;
-//        return driveMotor;
+        return driveMotor;
     }
 
     public AnalogInput getAngleEncoder() {
@@ -120,13 +118,11 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public SparkEncoder getDriveEncoder() {
-        return null;
-//        return driveEncoder;
+        return driveEncoder;
     }
 
     public double getLinVel() {
-        return 0.0;
-//        return driveEncoder.getTickRate() * TICKS_TO_METERS * DRIVE_GEAR_RATIO;
+        return driveEncoder.getTickRate() * TICKS_TO_METERS * DRIVE_GEAR_RATIO;
     }
 
     public boolean isDriveInverted() {
@@ -150,7 +146,7 @@ public class SwerveModule extends GBSubsystem {
     }
 
     public void setPower(double power) {
-//        driveMotor.set(power);
+        driveMotor.set(power);
     }
 
     public void driveInvert() {
@@ -171,12 +167,6 @@ public class SwerveModule extends GBSubsystem {
         double currAngle = getAngle();
         double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
         double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
-        /*
-        if (Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleA)) //checking which representation has the lowest travel distance
-            currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleB) ? currAngle : currAngleB;
-        else
-            currAngle = Math.abs(angleTarget - currAngleA) < Math.abs(angleTarget - currAngleB) ? currAngleA : currAngleB;
-        */
 
         currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleA) ? currAngle : currAngleA;
         currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleB) ? currAngle : currAngleB;
