@@ -2,7 +2,10 @@ package edu.greenblitz.bigRodika.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
+import edu.greenblitz.bigRodika.OI;
 import edu.greenblitz.bigRodika.RobotMap;
+import edu.greenblitz.bigRodika.commands.HolonomicDrive;
+import edu.greenblitz.bigRodika.commands.tests.singleModule.DumbSwerve;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
@@ -40,10 +43,10 @@ public class Chassis extends GBSubsystem {
     }
 
     public void moveMotors(double[] powers, double[] angles, boolean fieldOriented) throws MotorPowerOutOfRangeException {
-        if (fieldOriented) {
+        if (!fieldOriented) {
             for (int i = 0; i < angles.length; i++) {
-                // TODO: 14/10/2020 check clockwise = positive in gyro
-//                angles[i] = angles[i] - getAngle();
+                // TODO: 14/10/2020 check if offset needed for fieldOriented or !fieldOriented
+                angles[i] = angles[i] + getAngle();
             }
         }
         for (double power : powers) {
@@ -274,5 +277,9 @@ public class Chassis extends GBSubsystem {
             s.setAngle(params[0]);
         }
     }
+
+	public void initDefaultCommand() {
+		setDefaultCommand(new HolonomicDrive(OI.getInstance().getMainJoystick()));
+	}
 
 }
