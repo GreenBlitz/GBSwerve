@@ -1,12 +1,15 @@
 package edu.greenblitz.bigRodika;
 
 import edu.greenblitz.bigRodika.commands.ChassisCommand;
+import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
+import edu.greenblitz.bigRodika.subsystems.Chassis;
 import edu.greenblitz.bigRodika.subsystems.SingleModule;
 import edu.greenblitz.gblib.command.GBCommand;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 import edu.greenblitz.bigRodika.commands.tests.singleModule.*;
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 public class OI {
     private static OI instance;
@@ -46,6 +49,52 @@ public class OI {
                 return true;
             }
         });
+
+		mainJoystick.POV_UP.whenHeld(new ChassisCommand() {
+			@Override
+			public void initialize() {
+				super.initialize();
+				Chassis.getInstance().toBrake();
+			}
+
+			@Override
+			public void execute() {
+				super.execute();
+				try {
+					Chassis.getInstance().moveMotors(new double[]{0.2,0.2,0.2,0.2}, new double[]{0,0,0,0}, true);
+				} catch (MotorPowerOutOfRangeException e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void end(boolean interrupted) {
+				super.end(interrupted);
+				try {
+					Chassis.getInstance().moveMotors(new double[]{0,0,0,0}, new double[]{0,0,0,0}, true);
+				} catch (MotorPowerOutOfRangeException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+	    mainJoystick.POV_DOWN.whenHeld(new ChassisCommand() {
+		    @Override
+		    public void initialize() {
+			    super.initialize();
+			    Chassis.getInstance().toBrake();
+		    }
+
+		    @Override
+		    public void execute() {
+			    super.execute();
+			    try {
+				    Chassis.getInstance().moveMotors(new double[]{0,0,0,0}, new double[]{0.5,0.5,0.5,0.5}, true);
+			    } catch (MotorPowerOutOfRangeException e) {
+				    e.printStackTrace();
+			    }
+		    }
+	    });
     }
 
     private void initOfficialButtons() {
