@@ -7,7 +7,7 @@ import edu.greenblitz.gblib.command.GBCommand;
 import org.greenblitz.debug.RemoteCSVTarget;
 
 public class OneModuleTestByConstants extends GBCommand {
-	
+
 	private static SwerveModule module = SingleModule.getInstance().getModule();
 	private double angle, velocity;
 	
