@@ -24,7 +24,7 @@ public class OneModuleTestByJoystick extends GBCommand {
         double xVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_X);
         double yVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_Y);
         module.setPower(yVal * POWER_SCALE);
-//        module.setAngle(xVal); TODO: fix setAngle and uncomment this
+        module.setAngle(xVal);
         module.putString("One Module Chassis", module.toString());
     }
 }

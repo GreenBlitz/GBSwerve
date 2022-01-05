@@ -197,8 +197,7 @@ public class Chassis extends GBSubsystem {
 
         for (int i = 0; i < 4; i++) {
             wheelRotationAngle = swerveModules[i].getAngle();
-            angleWheelToTangent[i] =(0.5*Math.PI-wheelAngleFromCenter[i])+ (Math.PI * 0.5)-wheelRotationAngle; //TODO decide a universal 0 point for radians
-            //TODO and change here this /\. because ALPHAS start at x axis and most code with y axis
+            angleWheelToTangent[i] =(wheelAngleFromCenter[i])+ (Math.PI * 0.5)-wheelRotationAngle;
         } //gets all wheel angles compared to tangent in an array
 
         double avgTanVel = 0;
