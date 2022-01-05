@@ -60,8 +60,8 @@ public class RobotMap {
                 public static final double ROTATION_GEAR_RATIO = 1.0 / 6;
 
 
-                public static final int[] DRIVE_MOTOR_PORTS = {4, 1, 2, 3};
-                public static final int[] ROTATION_MOTOR_PORTS = {2, 5, 6, 7};
+                public static final int[] DRIVE_MOTOR_PORTS = {8, 5, 6, 3};
+                public static final int[] ROTATION_MOTOR_PORTS = {7, 9, 1, 4};
                 public static final int[] LAMPREY_ANALOG_PORTS = {3, 0, 0, 0};
                 public static final double[] LAMPREY_ANALOG_ZERO={0,0,0,0};
                 public static final double MAX_OUTPUT_DRIVE = 1;
