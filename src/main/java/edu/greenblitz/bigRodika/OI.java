@@ -61,7 +61,7 @@ public class OI {
 			public void execute() {
 				super.execute();
 				try {
-					Chassis.getInstance().moveMotors(new double[]{0.2,0.2,0.2,0.2}, new double[]{0,0,0,0}, true);
+					Chassis.getInstance().moveMotors(new double[]{0.2,0.2,0.2,0.2}, new double[]{0,0,0,0});
 				} catch (MotorPowerOutOfRangeException e) {
 					e.printStackTrace();
 				}
@@ -71,7 +71,7 @@ public class OI {
 			public void end(boolean interrupted) {
 				super.end(interrupted);
 				try {
-					Chassis.getInstance().moveMotors(new double[]{0,0,0,0}, new double[]{0,0,0,0}, true);
+					Chassis.getInstance().moveMotors(new double[]{0,0,0,0}, new double[]{0,0,0,0});
 				} catch (MotorPowerOutOfRangeException e) {
 					e.printStackTrace();
 				}
@@ -89,7 +89,7 @@ public class OI {
 		    public void execute() {
 			    super.execute();
 			    try {
-				    Chassis.getInstance().moveMotors(new double[]{0,0,0,0}, new double[]{0.5,0.5,0.5,0.5}, true);
+				    Chassis.getInstance().moveMotors(new double[]{0,0,0,0}, new double[]{0.5,0.5,0.5,0.5});
 			    } catch (MotorPowerOutOfRangeException e) {
 				    e.printStackTrace();
 			    }

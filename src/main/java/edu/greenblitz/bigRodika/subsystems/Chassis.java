@@ -5,7 +5,7 @@ import com.revrobotics.CANSparkMax;
 import edu.greenblitz.bigRodika.OI;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.HolonomicDrive;
-import edu.greenblitz.bigRodika.commands.tests.singleModule.DumbSwerve;
+import edu.greenblitz.bigRodika.commands.SimpleHolonomicDrive;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
@@ -42,13 +42,8 @@ public class Chassis extends GBSubsystem {
         return instance;
     }
 
-    public void moveMotors(double[] powers, double[] angles, boolean fieldOriented) throws MotorPowerOutOfRangeException {
-        if (!fieldOriented) {
-            for (int i = 0; i < angles.length; i++) {
-                // TODO: 14/10/2020 check if offset needed for fieldOriented or !fieldOriented
-                angles[i] = angles[i] + getAngle();
-            }
-        }
+    public void moveMotors(double[] powers, double[] angles) throws MotorPowerOutOfRangeException {
+
         for (double power : powers) {
             if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
                 stopMotors();
@@ -126,7 +121,7 @@ public class Chassis extends GBSubsystem {
     public void arcadeDrive(double power, double rotate) throws MotorPowerOutOfRangeException {
         double[] powers = {power + rotate, power - rotate, power - rotate, power + rotate};
         double[] angles = {0, 0, 0, 0};
-        moveMotors(powers, angles, true);
+        moveMotors(powers, angles);
     }
 
     public double[] getMeters() {
@@ -202,8 +197,7 @@ public class Chassis extends GBSubsystem {
 
         for (int i = 0; i < 4; i++) {
             wheelRotationAngle = swerveModules[i].getAngle();
-            angleWheelToTangent[i] =(0.5*Math.PI-wheelAngleFromCenter[i])+ (Math.PI * 0.5)-wheelRotationAngle; //TODO decide a universal 0 point for radians
-            //TODO and change here this /\. because ALPHAS start at x axis and most code with y axis
+            angleWheelToTangent[i] =(wheelAngleFromCenter[i])+ (Math.PI * 0.5)-wheelRotationAngle;
         } //gets all wheel angles compared to tangent in an array
 
         double avgTanVel = 0;
@@ -279,7 +273,7 @@ public class Chassis extends GBSubsystem {
     }
 
 	public void initDefaultCommand() {
-		setDefaultCommand(new HolonomicDrive(OI.getInstance().getMainJoystick()));
+		setDefaultCommand(new HolonomicDrive(OI.getInstance().getMainJoystick(), true, 0.4));
 	}
 
 }
