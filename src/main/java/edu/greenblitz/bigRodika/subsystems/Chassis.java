@@ -48,7 +48,8 @@ public class Chassis extends GBSubsystem {
         }
         for (double power : powers) {
             if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-                stopMotors();
+                stopMotors(); //TODO: Anda: HOW IS THAT EVEN FUCKING POSSIBLE???????
+                                //TODO: Anda: How swerve motors can even be out of range?!??!?!
                 throw new MotorPowerOutOfRangeException();
             }
         }
@@ -94,7 +95,7 @@ public class Chassis extends GBSubsystem {
 
     public void rotateWheelsBySpeedAcceleration(double[] speeds, double[] accelerations) throws MotorPowerOutOfRangeException {
         double[] powers = new double[speeds.length];
-        for (int i = 0; i < speeds.length; i++) {
+        for (int i = 0; i < speeds.length; i++) { //TODO: Anda: Wasn't for each an option. Consistency boys, code consistency.
             powers[i] = speeds[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KV + accelerations[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KA;
         }
         for (double power : powers) {
@@ -110,7 +111,7 @@ public class Chassis extends GBSubsystem {
 
     public void toBrake() {
         for (SwerveModule swerveModule : swerveModules) {
-            swerveModule.getDriveMotor().setIdleMode(CANSparkMax.IdleMode.kBrake);
+            swerveModule.getDriveMotor().setIdleMode(CANSparkMax.IdleMode.kBrake); //TODO: Anda: Why is it possible to mess with the motor outside of subsystem?
         }
     }
 

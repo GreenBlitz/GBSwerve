@@ -36,12 +36,12 @@ public class SwerveModule extends GBSubsystem {
 
     SwerveModule(int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
         this.ID = ID;
-        isDriveInverted = false;
-        isRotateInverted = false;
-        rotationMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
-        driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
-        angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
-        driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+        this.isDriveInverted = false;   //TODO: Anda: Should be global like other parameters
+        this.isRotateInverted = false;  //TODO: Anda: What if module 1 has inverted motor, and 2 normal?!?!
+        this.rotationMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
+        this.driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
+        this.angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
+        this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 
     }
 
@@ -81,14 +81,15 @@ public class SwerveModule extends GBSubsystem {
         System.out.println(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
         getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(speed)[0]);
     }
-
+    //TODO: Anda: Why shouldn't here be a function for both. Less functions, less latency.
     public void setAngle(double angle) {
         angle = angle % (Math.PI*2);
         this.angleTarget = angle;
         this.anglePID.setGoal(angle);
         SmartDashboard.putNumber("angle target", angleTarget);
     }
-
+    //TODO: Anda: Why do you assume that the ratio between the angle and Voltage is linear? Is our world ideal in any way?
+    //TODO: Anda: In which unit of measurement? Radians? Degrees? My scrotums per ass?
     public double getNormalizedAngle() {
         return (getEncoderValue()- LAMPREY_ANALOG_ZERO[ID]) % VOLTAGE_TO_ROTATIONS;
     }
@@ -104,7 +105,7 @@ public class SwerveModule extends GBSubsystem {
     public int getID() {
         return ID;
     }
-
+	//TODO: Anda: Why should it be possible to mess with motors from outside?
     public CANSparkMax getRotationMotor() {
         return rotationMotor;
     }

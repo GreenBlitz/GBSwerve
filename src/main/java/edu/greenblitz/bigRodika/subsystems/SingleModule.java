@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SingleModule extends GBSubsystem {
 	private SwerveModule module;
-	private static SingleModule instance;
+	private static SingleModule instance; //TODO: Anda: Why is it singleton here? It should not be.
 
 	private SingleModule() {
 		SmartDashboard.putNumber("referenceSpeed", -1);
@@ -35,7 +35,7 @@ public class SingleModule extends GBSubsystem {
 
 	@Override
 	public void periodic() {
-		super.periodic();
+		super.periodic(); //TODO: Anda: Why here and not in SwerveModule, is it so general for all possible single modules?
 		SmartDashboard.putNumber("lamprey voltage", module.getEncoderValue());
 		SmartDashboard.putNumber("lamprey angle", module.getAngle());
 		SmartDashboard.putNumber("drive ticks", module.getDriveEncoder().getRawTicks());
