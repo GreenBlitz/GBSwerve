@@ -176,33 +176,33 @@ public class SwerveModule extends GBSubsystem {
 	public void initDefaultCommand() {
 	}
 	
-	@Override
-	public void periodic() {
-		super.periodic();
-		
-		double currAngle = getAngle();
-		double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
-		double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
-		
-		currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleA) ? currAngle : currAngleA;
-		currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleB) ? currAngle : currAngleB;
-		
-		
-		SmartDashboard.putNumber("min err angle", currAngle);
-		getRotationMotor().set(anglePID.calculatePID(currAngle));
-		SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
-		
-		SmartDashboard.putNumber(String.format("DriveVel%d: ", this.ID), this.getLinVel());
-		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
-		
-		double time;
-		if (t0 == -1) {
-			time = 0;
-			t0 = System.currentTimeMillis();
-		} else {
-			time = System.currentTimeMillis() - t0;
-		}
-		
-		logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
-	}
+    @Override
+    public void periodic() {
+        super.periodic();
+/*
+        double currAngle = getAngle();
+        double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
+        double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
+
+        currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleA) ? currAngle : currAngleA;
+        currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleB) ? currAngle : currAngleB;
+
+
+        SmartDashboard.putNumber("min err angle", currAngle);
+        getRotationMotor().set(anglePID.calculatePID(currAngle));
+        SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
+
+        SmartDashboard.putNumber(String.format("DriveVel%d: ", this.ID), this.getLinVel());
+        SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
+
+        double time;
+        if (t0 == -1) {
+            time = 0;
+            t0 = System.currentTimeMillis();
+        } else {
+            time = System.currentTimeMillis() - t0;
+        }*/
+
+//        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
+    }
 }
