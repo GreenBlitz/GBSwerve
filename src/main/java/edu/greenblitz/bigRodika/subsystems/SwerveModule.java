@@ -40,9 +40,11 @@ public class SwerveModule extends GBSubsystem {
         isRotateInverted = false;
         rotationMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
         driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
-        angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
+        angleEncoder  = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);
         driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 
+		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, ANGLE_TOLERANCE, ANGLE_TOLERANCE);
+		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
     }
 
     public void init() {
@@ -163,7 +165,7 @@ public class SwerveModule extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-
+/*
         double currAngle = getAngle();
         double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
         double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
@@ -185,8 +187,8 @@ public class SwerveModule extends GBSubsystem {
             t0 = System.currentTimeMillis();
         } else {
             time = System.currentTimeMillis() - t0;
-        }
+        }*/
 
-        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
+//        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
     }
 }

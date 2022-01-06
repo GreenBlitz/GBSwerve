@@ -9,6 +9,7 @@ import edu.greenblitz.bigRodika.commands.SimpleHolonomicDrive;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import org.greenblitz.motion.base.Vector2D;
 
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.ALPHAS;
@@ -53,12 +54,26 @@ public class Chassis extends GBSubsystem {
         moveMotorsLimited(powers, angles);
     }
 
+	public void moveMotor(int id, double power,double angle) throws MotorPowerOutOfRangeException {
+			if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+				stopMotors();
+				throw new MotorPowerOutOfRangeException();
+			}
+		moveMotorLimited(id, power, angle);
+
+	}
+
     public void moveMotorsLimited(double[] powers, double[] angles) {
         for (SwerveModule swerveModule : swerveModules) {
             swerveModule.setPower(powers[swerveModule.getID()]);
             swerveModule.setAngle(angles[swerveModule.getID()]);
         }
     }
+
+	public void moveMotorLimited(int id, double power, double angle) {
+		swerveModules[id].setPower(power);
+		swerveModules[id].setAngle(angle);
+	}
 
     public void moveDriveMotors(double[] powers) throws MotorPowerOutOfRangeException {
         for (double power : powers) {
@@ -90,7 +105,11 @@ public class Chassis extends GBSubsystem {
         }
     }
 
-    public void rotateWheelsBySpeedAcceleration(double[] speeds, double[] accelerations) throws MotorPowerOutOfRangeException {
+	public void stopMotor(int id) {
+		swerveModules[id].setPower(0);
+	}
+
+	public void rotateWheelsBySpeedAcceleration(double[] speeds, double[] accelerations) throws MotorPowerOutOfRangeException {
         double[] powers = new double[speeds.length];
         for (int i = 0; i < speeds.length; i++) {
             powers[i] = speeds[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KV + accelerations[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KA;

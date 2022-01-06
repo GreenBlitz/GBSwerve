@@ -1,6 +1,7 @@
 package edu.greenblitz.bigRodika;
 
 import edu.greenblitz.bigRodika.commands.ChassisCommand;
+import edu.greenblitz.bigRodika.commands.TestSingleModule;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.bigRodika.subsystems.Chassis;
 import edu.greenblitz.bigRodika.subsystems.SingleModule;
@@ -36,7 +37,11 @@ public class OI {
     }
 
     private void initTestButtons() {
-        SwerveModule swerve = SingleModule.getInstance().getModule();
+		mainJoystick.POV_DOWN.whileHeld(new TestSingleModule(0,0.3,Math.PI/4));
+	    mainJoystick.POV_LEFT.whileHeld(new TestSingleModule(1,0.3,Math.PI/4));
+	    mainJoystick.POV_UP.whileHeld(new TestSingleModule(2,0.3,Math.PI/4));
+	    mainJoystick.POV_RIGHT.whileHeld(new TestSingleModule(3,0.3,Math.PI/4));
+		/*
         mainJoystick.A.whenPressed(new ChassisCommand() {
             @Override
             public void initialize() {
@@ -94,7 +99,7 @@ public class OI {
 				    e.printStackTrace();
 			    }
 		    }
-	    });
+	    });*/
     }
 
     private void initOfficialButtons() {
