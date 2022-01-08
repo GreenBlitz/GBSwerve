@@ -49,7 +49,7 @@ public class RobotMap {
                 // IDs:
                 //      FRONT_RIGHT: 0
                 //      FRONT_LEFT:  1
-                //      BACK_LEFT:   2
+                //      BACK_RIGHT:   2
                 //      BACK_LEFT:   3
                 public static final double MOTOR_LIMITER = 1;
                 public static final double VOLTAGE_TO_ROTATIONS = 3.2690426340000003;
@@ -59,10 +59,13 @@ public class RobotMap {
                 public static final double DRIVE_GEAR_RATIO = 0.125;
                 public static final double ROTATION_GEAR_RATIO = 1.0 / 6;
 
-                public static final int[] DRIVE_MOTOR_PORTS = {8, 9, 6, 3};
-                public static final int[] ROTATION_MOTOR_PORTS = {7, 5, 1, 4};
-                public static final int[] LAMPREY_ANALOG_PORTS = {3, 0, 0, 0};
-                public static final double[] LAMPREY_ANALOG_ZERO={0,0,0,0};
+
+
+                public static final int[] DRIVE_MOTOR_PORTS = {6, 9, 8, 3};
+                public static final int[] ROTATION_MOTOR_PORTS = {1, 5, 7, 4};
+                public static final int[] LAMPREY_ANALOG_PORTS = {2, 3, 1, 0};
+                public static final double[] LAMPREY_ANALOG_ZERO={0, 0, 0, 0};
+
                 public static final double MAX_OUTPUT_DRIVE = 1;
                 public static final double MAX_OUTPUT_ANGLE = 1;
             }

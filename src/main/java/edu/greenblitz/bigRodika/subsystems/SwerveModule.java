@@ -176,9 +176,9 @@ public class SwerveModule extends GBSubsystem {
 	public void initDefaultCommand() {
 	}
 	
-    @Override
-    public void periodic() {
-        super.periodic();
+	@Override
+	public void periodic() {
+		super.periodic();
 /*
         double currAngle = getAngle();
         double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
@@ -204,5 +204,5 @@ public class SwerveModule extends GBSubsystem {
         }*/
 
 //        logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
-    }
+	}
 }
