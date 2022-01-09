@@ -183,11 +183,13 @@ public class SwerveModule extends GBSubsystem {
 		double currAngle = getAngle();
 		double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
 		double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
-		
+		//TODO: Anda WIFI: It's if else construct, wouldn't it be nice to write it as such? Or get a function that checks it.
 		currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleA) ? currAngle : currAngleA;
 		currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleB) ? currAngle : currAngleB;
 		
 		
+		// TODO: Wifi: I think setting motor speed in the subsystem is improper and should be done inside the subsystem's default command
+		// TODO: Wifi: To be fair, it doesn't make that big of a difference and andrey doesn't fully agree with me but I think it breaks structure
 		SmartDashboard.putNumber("min err angle", currAngle);
 		getRotationMotor().set(anglePID.calculatePID(currAngle));
 		SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
@@ -195,6 +197,8 @@ public class SwerveModule extends GBSubsystem {
 		SmartDashboard.putNumber(String.format("DriveVel%d: ", this.ID), this.getLinVel());
 		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
 		
+		// TODO: Wifi and Anda: t0 should be given an initial value during init or construction and not during the first run of periodic
+		// TODO: Wifi and Anda: Furhtermore, why the fuck are you creating a double each time periodic runs
 		double time;
 		if (t0 == -1) {
 			time = 0;
@@ -202,7 +206,7 @@ public class SwerveModule extends GBSubsystem {
 		} else {
 			time = System.currentTimeMillis() - t0;
 		}
-		
+		//TODO: Anda: Check if it Asynchronous function, else it f*cks the perfomance.
 		logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
 	}
 }

@@ -14,6 +14,7 @@ import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.WHEEL_DIST_F
 public class Chassis extends GBSubsystem {
 	private static Chassis instance;
 	
+	// TODO: Wifi: What if we want to add a swerve module during runtime? Sounds like a design flaw...
 	private final SwerveModule[] swerveModules = new SwerveModule[4];
 	
 	private final IGyroscope gyro;
@@ -66,7 +67,7 @@ public class Chassis extends GBSubsystem {
 	public void moveDriveMotors(double[] powers) throws MotorPowerOutOfRangeException {
 		for (double power : powers) {
 			if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-				stopMotors();
+				stopMotors();	//TODO: Anda Wifi: Why to stop the motor? Just set it to the limit.
 				throw new MotorPowerOutOfRangeException();
 			}
 		}

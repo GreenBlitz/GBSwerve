@@ -23,7 +23,7 @@ public class HolonomicDrive extends ChassisCommand {
 
     @Override
     public void initialize(){
-        chassis.toBrake();
+        chassis.toBrake();  //TODO: Anda: Why swerve motors should be in brake mode?
     }
 
     @Override
