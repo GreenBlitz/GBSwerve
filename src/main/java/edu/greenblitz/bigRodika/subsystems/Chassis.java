@@ -3,9 +3,11 @@ package edu.greenblitz.bigRodika.subsystems;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import edu.greenblitz.bigRodika.RobotMap;
+import edu.greenblitz.bigRodika.commands.swervemodule.AngleByPID;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.greenblitz.motion.base.Vector2D;
 
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.ALPHAS;
@@ -123,6 +125,12 @@ public class Chassis extends GBSubsystem {
 	public void toCoast() {
 		for (SwerveModule swerveModule : swerveModules) {
 			swerveModule.setDriveIdleMode(CANSparkMax.IdleMode.kCoast);
+		}
+	}
+	
+	public void setModuleAngleByPID(){
+		for (SwerveModule module : swerveModules) {
+			CommandScheduler.getInstance().schedule(new AngleByPID(module));
 		}
 	}
 	

@@ -30,6 +30,11 @@ public class SwerveModule extends GBSubsystem {
 //	private long t0;
 //	private double time;
 	private double driveTarget = -1;
+	
+	public double getAngleTarget() {
+		return angleTarget;
+	}
+	
 	private double angleTarget;
 	
 	
@@ -134,7 +139,32 @@ public class SwerveModule extends GBSubsystem {
 	
 	public void setAnglePower(double anglePower) {
 		getRotationMotor().set(anglePower);
-		setAngle(getAngle());
+	}
+	
+	public void setAnglePowerByPID(){
+		double currAngle = getAngle();
+		double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
+		double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
+		currAngle = maxAngle(maxAngle(currAngle, currAngleA, getAngleTarget()), currAngleB, getAngleTarget());
+		
+		SmartDashboard.putNumber("min err angle", currAngle);
+		getRotationMotor().set(anglePID.calculatePID(currAngle));
+		SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
+	}
+	
+	
+	/**
+	 * finds the angle representation with lower difference compared to target
+	 * @param angleA representation A of angle
+	 * @param angleB representation B of angle
+	 * @param target target
+	 * @return the representation with lower difference
+	 */
+	private double maxAngle(double angleA, double angleB, double target){
+		if(Math.abs(target - angleA) < Math.abs(target - angleB)){
+			return angleA;
+		}
+		else return angleB;
 	}
 	
 	public void driveInvert() {
@@ -153,31 +183,12 @@ public class SwerveModule extends GBSubsystem {
 		getRotationMotor().setIdleMode(mode);
 	}
 	
-	// Find the representation of the angle that is smaller when compared to a target angle.
-	private double maxAngle(double angleA, double angleB, double target) {
-		if (Math.abs(target - angleA) < Math.abs(target - angleB))
-			return angleA;
-		else
-			return angleB;
-	}
-	
 	public void initDefaultCommand() {
 	}
 	
 	@Override
 	public void periodic() {
 		super.periodic();
-		
-		double currAngle = getAngle();
-		double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
-		double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
-		currAngle = maxAngle(maxAngle(currAngle, currAngleA, angleTarget), currAngleB, angleTarget);
-		
-		// TODO: Wifi: I think setting motor speed in the subsystem is improper and should be done inside the subsystem's default command
-		// TODO: Wifi: To be fair, it doesn't make that big of a difference and andrey doesn't fully agree with me but I think it breaks structure
-		SmartDashboard.putNumber("min err angle", currAngle);
-		getRotationMotor().set(anglePID.calculatePID(currAngle));
-		SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
 		
 		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
 		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
