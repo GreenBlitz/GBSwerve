@@ -6,6 +6,7 @@ import edu.greenblitz.bigRodika.OI;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.HolonomicDrive;
 import edu.greenblitz.bigRodika.commands.SimpleHolonomicDrive;
+import edu.greenblitz.bigRodika.commands.tests.chassis.DumbHolonomic;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
@@ -36,6 +37,9 @@ public class Chassis extends GBSubsystem {
 	public static void init() {
 		if (instance == null) {
 			instance = new Chassis();
+		}
+		for(int i = 0; i < 4; i++){
+			Chassis.getInstance().swerveModules[i].init();
 		}
 	}
 	
@@ -285,6 +289,10 @@ public class Chassis extends GBSubsystem {
 
 	public void initDefaultCommand() {
 		setDefaultCommand(new HolonomicDrive(OI.getInstance().getMainJoystick(), true, 0.4));
+	}
+
+	public void initTestCommand() {
+		setDefaultCommand(new DumbHolonomic());
 	}
 
 }

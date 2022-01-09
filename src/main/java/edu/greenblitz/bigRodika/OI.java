@@ -1,5 +1,7 @@
 package edu.greenblitz.bigRodika;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.greenblitz.bigRodika.commands.ChassisCommand;
 import edu.greenblitz.bigRodika.commands.TestSingleModule;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
@@ -13,104 +15,42 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 public class OI {
-    private static OI instance;
+	private static OI instance;
 
-    private final SmartJoystick mainJoystick;
-    private final SmartJoystick secondJoyStick;
+	private final SmartJoystick mainJoystick;
+	private final SmartJoystick secondJoyStick;
 
-    private OI() {
-        mainJoystick = new SmartJoystick(RobotMap.Limbo2.Joystick.MAIN,
-                RobotMap.Limbo2.Joystick.MAIN_DEADZONE);
-        secondJoyStick = new SmartJoystick(RobotMap.Limbo2.Joystick.SIDE,
-                RobotMap.Limbo2.Joystick.SIDE_DEADZONE);
+	private OI() {
+		mainJoystick = new SmartJoystick(RobotMap.Limbo2.Joystick.MAIN,
+				RobotMap.Limbo2.Joystick.MAIN_DEADZONE);
+		secondJoyStick = new SmartJoystick(RobotMap.Limbo2.Joystick.SIDE,
+				RobotMap.Limbo2.Joystick.SIDE_DEADZONE);
 
-        initTestButtons();
+		initTestButtons();
 //        initOfficalButtons();
-    }
+	}
 
 
-    public static OI getInstance() {
-        if (instance == null) {
-            instance = new OI();
-        }
-        return instance;
-    }
+	public static OI getInstance() {
+		if (instance == null) {
+			instance = new OI();
+		}
+		return instance;
+	}
 
-    private void initTestButtons() {
-		mainJoystick.POV_DOWN.whileHeld(new TestSingleModule(0,0.3,Math.PI/4));
-	    mainJoystick.POV_LEFT.whileHeld(new TestSingleModule(1,0.3,Math.PI/4));
-	    mainJoystick.POV_UP.whileHeld(new TestSingleModule(2,0.3,Math.PI/4));
-	    mainJoystick.POV_RIGHT.whileHeld(new TestSingleModule(3,0.3,Math.PI/4));
-		/*
-        mainJoystick.A.whenPressed(new ChassisCommand() {
-            @Override
-            public void initialize() {
-                super.initialize();
-                chassis.printAllEncoderValues();
-            }
+	private void initTestButtons() {
 
-            @Override
-            public boolean isFinished() {
-                return true;
-            }
-        });
+	}
 
-		mainJoystick.POV_UP.whenHeld(new ChassisCommand() {
-			@Override
-			public void initialize() {
-				super.initialize();
-				Chassis.getInstance().toBrake();
-			}
+	private void initOfficialButtons() {
 
-			@Override
-			public void execute() {
-				super.execute();
-				try {
-					Chassis.getInstance().moveMotors(new double[]{0.2,0.2,0.2,0.2}, new double[]{0,0,0,0});
-				} catch (MotorPowerOutOfRangeException e) {
-					e.printStackTrace();
-				}
-			}
+	}
 
-			@Override
-			public void end(boolean interrupted) {
-				super.end(interrupted);
-				try {
-					Chassis.getInstance().moveMotors(new double[]{0,0,0,0}, new double[]{0,0,0,0});
-				} catch (MotorPowerOutOfRangeException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	public SmartJoystick getMainJoystick() {
+		return mainJoystick;
+	}
 
-	    mainJoystick.POV_DOWN.whenHeld(new ChassisCommand() {
-		    @Override
-		    public void initialize() {
-			    super.initialize();
-			    Chassis.getInstance().toBrake();
-		    }
-
-		    @Override
-		    public void execute() {
-			    super.execute();
-			    try {
-				    Chassis.getInstance().moveMotors(new double[]{0,0,0,0}, new double[]{0.5,0.5,0.5,0.5});
-			    } catch (MotorPowerOutOfRangeException e) {
-				    e.printStackTrace();
-			    }
-		    }
-	    });*/
-    }
-
-    private void initOfficialButtons() {
-
-   }
-
-    public SmartJoystick getMainJoystick() {
-        return mainJoystick;
-    }
-
-    public SmartJoystick getSideStick()  {
-        return secondJoyStick;
-    }
+	public SmartJoystick getSideStick() {
+		return secondJoyStick;
+	}
 }
