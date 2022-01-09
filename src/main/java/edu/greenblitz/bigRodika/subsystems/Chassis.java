@@ -14,7 +14,6 @@ import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.WHEEL_DIST_F
 public class Chassis extends GBSubsystem {
 	private static Chassis instance;
 	
-	// TODO: Wifi: What if we want to add a swerve module during runtime? Sounds like a design flaw...
 	private final SwerveModule[] swerveModules = new SwerveModule[4];
 	
 	private final IGyroscope gyro;
@@ -40,18 +39,20 @@ public class Chassis extends GBSubsystem {
 		return instance;
 	}
 	
-	public void moveMotors(double[] powers, double[] angles, boolean fieldOriented) throws MotorPowerOutOfRangeException {
+	public void moveMotors(double[] powers, double[] angles, boolean fieldOriented) {
 		if (fieldOriented) {
 			for (int i = 0; i < angles.length; i++) {
 				// TODO: 14/10/2020 check clockwise = positive in gyro
 //                angles[i] = angles[i] - getAngle();
 			}
 		}
-		for (double power : powers) {
-			if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-				stopMotors(); //TODO: Anda: HOW IS THAT EVEN FUCKING POSSIBLE???????
-				//TODO: Anda: How swerve motors can even be out of range?!??!?!
-				throw new MotorPowerOutOfRangeException();
+		// Using regular for so that we can change the values
+		for (int i = 0; i < powers.length; i++) {
+			if (powers[i] > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+				powers[i] = RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
+			}
+			else if (powers[i] < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+				powers[i] = -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
 			}
 		}
 		moveMotorsLimited(powers, angles);
@@ -60,15 +61,17 @@ public class Chassis extends GBSubsystem {
 	public void moveMotorsLimited(double[] powers, double[] angles) {
 		for (SwerveModule swerveModule : swerveModules) {
 			swerveModule.moveMotors(powers[swerveModule.getID()], angles[swerveModule.getID()]);
-			;
 		}
 	}
 	
-	public void moveDriveMotors(double[] powers) throws MotorPowerOutOfRangeException {
-		for (double power : powers) {
-			if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER || power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-				stopMotors();	//TODO: Anda Wifi: Why to stop the motor? Just set it to the limit.
-				throw new MotorPowerOutOfRangeException();
+	public void moveDriveMotors(double[] powers) {
+		// Using regular for so that we can change the values
+		for (int i = 0; i < powers.length; i++) {
+			if (powers[i] > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+				powers[i] = RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
+			}
+			else if (powers[i] < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+				powers[i] = -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
 			}
 		}
 		for (SwerveModule swerveModule : swerveModules) {
@@ -96,7 +99,8 @@ public class Chassis extends GBSubsystem {
 	
 	public void rotateWheelsBySpeedAcceleration(double[] speeds, double[] accelerations) throws MotorPowerOutOfRangeException {
 		double[] powers = new double[speeds.length];
-		for (int i = 0; i < speeds.length; i++) { //TODO: Anda: Wasn't for each an option. Consistency boys, code consistency.
+		// Not using for each as we need to use both powers and speeds
+		for (int i = 0; i < speeds.length; i++) {
 			powers[i] = speeds[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KV + accelerations[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KA;
 		}
 		for (double power : powers) {
@@ -142,10 +146,6 @@ public class Chassis extends GBSubsystem {
 		return new double[]{swerveModules[0].getAngle(), swerveModules[1].getAngle(),
 				swerveModules[2].getAngle(), swerveModules[3].getAngle()};
 	}
-
-// TODO: 04/10/2020
-//    public double getLinearVelocity() {}
-//    public double getAngularVelocityByWheels() {}
 	
 	public double getAngle() {
 		return gyro.getNormalizedYaw();
@@ -202,7 +202,7 @@ public class Chassis extends GBSubsystem {
 		for (int i = 0; i < 4; i++) {
 			wheelRotationAngle = swerveModules[i].getAngle();
 			angleWheelToTangent[i] = (0.5 * Math.PI - wheelAngleFromCenter[i]) + (Math.PI * 0.5) - wheelRotationAngle; //TODO decide a universal 0 point for radians
-			//TODO and change here this /\. because ALPHAS start at x axis and most code with y axis
+			//TODO and change the line above. because ALPHAS start at x axis and most code with y axis
 		} //gets all wheel angles compared to tangent in an array
 		
 		double avgTanVel = 0;

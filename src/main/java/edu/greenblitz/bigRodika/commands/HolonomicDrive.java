@@ -22,21 +22,12 @@ public class HolonomicDrive extends ChassisCommand {
     }
 
     @Override
-    public void initialize(){
-        chassis.toBrake();  //TODO: Anda: Why swerve motors should be in brake mode?
-    }
-
-    @Override
     public void execute() {
         double xVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_X);
         double yVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_Y);
         double power = getLinearPower(xVal, yVal);
         double angle = getDriveAngle(xVal, yVal);
-        try {
-            chassis.moveMotors(new double[]{power, power, power, power}, new double[]{angle, angle, angle, angle}, fieldOriented);
-        } catch (MotorPowerOutOfRangeException e) {
-            e.printStackTrace();
-        }
+        chassis.moveMotors(new double[]{power, power, power, power}, new double[]{angle, angle, angle, angle}, fieldOriented);
     }
 
     public double getLinearPower(double xVal, double yVal){

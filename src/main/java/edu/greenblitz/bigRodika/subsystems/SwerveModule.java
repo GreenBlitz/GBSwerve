@@ -27,24 +27,25 @@ public class SwerveModule extends GBSubsystem {
 	private int ID;
 	private boolean isDriveInverted, isRotateInverted;
 	private RemoteCSVTarget logger;
-	private long t0 = -1;
+//	private long t0;
+//	private double time;
 	private double driveTarget = -1;
 	private double angleTarget;
 	
 	
-	SwerveModule(int ID) { // I'm not sure how to give port numbers in init' should i just add theme to init?
+	SwerveModule(int ID) {
 		this.ID = ID;
-		this.isDriveInverted = false;   //TODO: Anda: Should be global like other parameters
-		this.isRotateInverted = false;  //TODO: Anda: What if module 1 has inverted motor, and 2 normal?!?!
 		this.rotationMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
-		this.driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless); // TODO: check device type (2nd arg)
-		this.angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);// again, values from past code
+		this.rotationMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTORS_REVERSED[ID]);
+		this.driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
+		this.driveMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTORS_REVERSED[ID]);
+		this.angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);
 		this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
-		
 	}
 	
 	public void init() {
 		angleTarget = getAngle();
+//		t0 = System.currentTimeMillis();
 		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
 		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.01, 0.01);
 		this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
@@ -84,18 +85,13 @@ public class SwerveModule extends GBSubsystem {
 		SmartDashboard.putNumber("angle target", angleTarget);
 	}
 	
-	//TODO: Anda: Why do you assume that the ratio between the angle and Voltage is linear? Is our world ideal in any way?
-	//TODO: Anda: In which unit of measurement? Radians? Degrees? My scrotums per ass?
-	private double getNormalizedAngle() {
-		return (getAngleEncoderValue() - LAMPREY_ANALOG_ZERO[ID]) % VOLTAGE_TO_ROTATIONS;
-	}
-	
 	public double getAngleEncoderValue() {
 		return angleEncoder.getVoltage();
 	}
 	
+	// Angle is measured in radians
 	public double getAngle() {
-		return getNormalizedAngle() / VOLTAGE_TO_ROTATIONS * 2 * Math.PI;
+		return ((getAngleEncoderValue() - LAMPREY_ANALOG_ZERO[ID]) % VOLTAGE_TO_ROTATIONS) / VOLTAGE_TO_ROTATIONS * 2 * Math.PI;
 	}
 	
 	public int getID() {
@@ -120,22 +116,6 @@ public class SwerveModule extends GBSubsystem {
 	
 	public double getLinVel() {
 		return driveEncoder.getTickRate() * TICKS_TO_METERS * DRIVE_GEAR_RATIO;
-	}
-	
-	public boolean isDriveInverted() {
-		return isDriveInverted;
-	}
-	
-	public boolean isRotateInverted() {
-		return isRotateInverted;
-	}
-	
-	public void invertDrive() {
-		isDriveInverted = !isDriveInverted;
-	}
-	
-	public void invertRotate() {
-		isRotateInverted = !isRotateInverted;
 	}
 	
 	public void setAsFollowerOf(CANSparkMax motor) {
@@ -173,6 +153,14 @@ public class SwerveModule extends GBSubsystem {
 		getRotationMotor().setIdleMode(mode);
 	}
 	
+	// Find the representation of the angle that is smaller when compared to a target angle.
+	private double maxAngle(double angleA, double angleB, double target) {
+		if (Math.abs(target - angleA) < Math.abs(target - angleB))
+			return angleA;
+		else
+			return angleB;
+	}
+	
 	public void initDefaultCommand() {
 	}
 	
@@ -183,10 +171,7 @@ public class SwerveModule extends GBSubsystem {
 		double currAngle = getAngle();
 		double currAngleA = currAngle + 2 * Math.PI; //different representation of angle
 		double currAngleB = currAngle - 2 * Math.PI; //different representation of angle
-		//TODO: Anda WIFI: It's if else construct, wouldn't it be nice to write it as such? Or get a function that checks it.
-		currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleA) ? currAngle : currAngleA;
-		currAngle = Math.abs(angleTarget - currAngle) < Math.abs(angleTarget - currAngleB) ? currAngle : currAngleB;
-		
+		currAngle = maxAngle(maxAngle(currAngle, currAngleA, angleTarget), currAngleB, angleTarget);
 		
 		// TODO: Wifi: I think setting motor speed in the subsystem is improper and should be done inside the subsystem's default command
 		// TODO: Wifi: To be fair, it doesn't make that big of a difference and andrey doesn't fully agree with me but I think it breaks structure
@@ -194,19 +179,13 @@ public class SwerveModule extends GBSubsystem {
 		getRotationMotor().set(anglePID.calculatePID(currAngle));
 		SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
 		
-		SmartDashboard.putNumber(String.format("DriveVel%d: ", this.ID), this.getLinVel());
+		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
 		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
+		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
+//		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
 		
-		// TODO: Wifi and Anda: t0 should be given an initial value during init or construction and not during the first run of periodic
-		// TODO: Wifi and Anda: Furhtermore, why the fuck are you creating a double each time periodic runs
-		double time;
-		if (t0 == -1) {
-			time = 0;
-			t0 = System.currentTimeMillis();
-		} else {
-			time = System.currentTimeMillis() - t0;
-		}
-		//TODO: Anda: Check if it Asynchronous function, else it f*cks the perfomance.
-		logger.report(time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
+//		this.time = System.currentTimeMillis() - t0;
+
+//		logger.report(this.time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
 	}
 }
