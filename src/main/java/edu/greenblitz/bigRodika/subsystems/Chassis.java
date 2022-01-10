@@ -7,7 +7,6 @@ import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.chassis.HolonomicDrive;
 import edu.greenblitz.bigRodika.commands.swervemodule.AngleByPID;
 import edu.greenblitz.bigRodika.commands.tests.chassis.DumbHolonomic;
-import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;

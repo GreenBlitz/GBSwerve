@@ -1,6 +1,5 @@
 package edu.greenblitz.bigRodika.commands;
 
-import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.bigRodika.subsystems.Chassis;
 import edu.greenblitz.gblib.command.GBCommand;
 
