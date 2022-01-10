@@ -1,6 +1,5 @@
 package edu.greenblitz.bigRodika.commands.chassis;
 
-import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.bigRodika.subsystems.Chassis;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 import org.greenblitz.motion.base.Vector2D;

@@ -62,7 +62,7 @@ public class RobotMap {
                 public static final int[] DRIVE_MOTOR_PORTS = {6, 9, 8, 3};
                 public static final int[] ROTATION_MOTOR_PORTS = {1, 5, 7, 4};
                 public static final int[] LAMPREY_ANALOG_PORTS = {2, 3, 1, 0};
-                public static final double[] LAMPREY_ANALOG_ZERO={0, 0, 0, 0};
+                public static final double[] LAMPREY_ANALOG_ZERO = {0, 0, 0, 0};
 
                 public static final double MAX_OUTPUT_DRIVE = 1;
                 public static final double MAX_OUTPUT_ANGLE = 1;
@@ -94,8 +94,8 @@ public class RobotMap {
         public static class Measurements {
             public static final double LENGTH = 0.6; // Half the vertical distance between the modules
             public static final double WIDTH = 0.5; // Half the horizontal distance between the modules
-            public static final double WHEEL_DIST_FROM_CENTER = Math.hypot(LENGTH,WIDTH);
-            public static final double ALPHA = Math.atan(WIDTH/LENGTH); // General angle disposition from parallel to horizontal size of robot
+            public static final double WHEEL_DIST_FROM_CENTER = Math.hypot(LENGTH, WIDTH);
+            public static final double ALPHA = Math.atan(WIDTH / LENGTH); // General angle disposition from parallel to horizontal size of robot
             public static final double[] ALPHAS = {ALPHA, Math.PI - ALPHA, Math.PI + ALPHA, -ALPHA};
 
         }

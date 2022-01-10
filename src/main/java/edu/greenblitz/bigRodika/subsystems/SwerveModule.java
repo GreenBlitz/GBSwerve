@@ -16,7 +16,6 @@ import org.greenblitz.motion.pid.PIDObject;
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.*;
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.SwerveModule.*;
 
-
 public class SwerveModule extends GBSubsystem {
 
     private final CANSparkMax rotationMotor;
@@ -36,7 +35,6 @@ public class SwerveModule extends GBSubsystem {
     }
 
     private double angleTarget;
-
 
     SwerveModule(int ID) {
         this.ID = ID;
@@ -63,7 +61,6 @@ public class SwerveModule extends GBSubsystem {
         controller.setI(i);
         controller.setD(d);
     }
-
 
     public void configureRotation(double p, double i, double d, double tolerance, double thresh) {
         anglePID = new CollapsingPIDController(new PIDObject(p, i, d), thresh);

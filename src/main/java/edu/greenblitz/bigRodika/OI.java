@@ -10,10 +10,8 @@ public class OI {
     private final SmartJoystick secondJoyStick;
 
     private OI() {
-        mainJoystick = new SmartJoystick(RobotMap.Limbo2.Joystick.MAIN,
-                RobotMap.Limbo2.Joystick.MAIN_DEADZONE);
-        secondJoyStick = new SmartJoystick(RobotMap.Limbo2.Joystick.SIDE,
-                RobotMap.Limbo2.Joystick.SIDE_DEADZONE);
+        mainJoystick = new SmartJoystick(RobotMap.Limbo2.Joystick.MAIN, RobotMap.Limbo2.Joystick.MAIN_DEADZONE);
+        secondJoyStick = new SmartJoystick(RobotMap.Limbo2.Joystick.SIDE, RobotMap.Limbo2.Joystick.SIDE_DEADZONE);
 
         initTestButtons();
 //        initOfficalButtons();

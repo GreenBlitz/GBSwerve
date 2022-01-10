@@ -7,30 +7,26 @@ import edu.greenblitz.gblib.command.GBCommand;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 
 public class DumbHolonomic extends GBCommand {
-	@Override
-	public void initialize() {
-		super.initialize();
-	}
+    @Override
+    public void initialize() {
+        super.initialize();
+    }
 
-	public DumbHolonomic() {
-		require(Chassis.getInstance());
-	}
+    public DumbHolonomic() {
+        require(Chassis.getInstance());
+    }
 
-	@Override
-	public void execute() {
-		super.execute();
+    @Override
+    public void execute() {
+        super.execute();
 
-		double speed = OI.getInstance().getMainJoystick().getAxisValue(SmartJoystick.Axis.LEFT_Y);
-		double angleSpeed = OI.getInstance().getMainJoystick().getAxisValue(SmartJoystick.Axis.RIGHT_X);
+        double speed = OI.getInstance().getMainJoystick().getAxisValue(SmartJoystick.Axis.LEFT_Y);
+        double angleSpeed = OI.getInstance().getMainJoystick().getAxisValue(SmartJoystick.Axis.RIGHT_X);
 
-		double powers[] = {speed, speed, speed, speed};
-		double angles[] = {angleSpeed, angleSpeed, angleSpeed, angleSpeed};
+        double powers[] = {speed, speed, speed, speed};
+        double angles[] = {angleSpeed, angleSpeed, angleSpeed, angleSpeed};
 
-		try {
-			Chassis.getInstance().moveMotors(powers, angles);
-		} catch (MotorPowerOutOfRangeException e) {
-			e.printStackTrace();
-		}
-	}
+        Chassis.getInstance().moveMotors(powers, angles, false); //TODO: change fieldOriented to be right
+    }
 
 }
