@@ -5,6 +5,7 @@ import edu.greenblitz.gblib.command.GBCommand;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 
 public class OneModuleTestByJoystick extends GBCommand {
+
 	private SwerveModule module;
 	private final SmartJoystick joystick;
 	private final double POWER_SCALE = 0.5;

@@ -1,9 +1,7 @@
 package edu.greenblitz.bigRodika;
 
-import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
-import edu.greenblitz.bigRodika.subsystems.SingleModule;
 import edu.greenblitz.gblib.hid.SmartJoystick;
-import edu.greenblitz.bigRodika.subsystems.SwerveModule;
+
 
 public class OI {
     private static OI instance;
@@ -30,30 +28,18 @@ public class OI {
     }
 
     private void initTestButtons() {
-        SwerveModule swerve = SingleModule.getInstance().getModule();
-        mainJoystick.A.whenPressed(new ChassisCommand() {
-            @Override
-            public void initialize() {
-                super.initialize();
-                chassis.printAllEncoderValues();
-            }
 
-            @Override
-            public boolean isFinished() {
-                return true;
-            }
-        });
     }
 
     private void initOfficialButtons() {
 
-   }
+    }
 
     public SmartJoystick getMainJoystick() {
         return mainJoystick;
     }
 
-    public SmartJoystick getSideStick()  {
+    public SmartJoystick getSideStick() {
         return secondJoyStick;
     }
 }
