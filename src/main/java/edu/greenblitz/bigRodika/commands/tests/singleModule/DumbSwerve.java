@@ -10,20 +10,20 @@ public class DumbSwerve extends GBCommand {
 	SwerveModule swerve;
 	SmartJoystick main;
 	public static final double turnFactor = 0.4;
-	
+
 	public DumbSwerve(SwerveModule swerve, SmartJoystick main) {
 		super(SingleModule.getInstance());
 		this.swerve = swerve;
 		this.main = main;
 	}
-	
+
 	@Override
 	public void execute() {
 		super.execute();
-		
+
 		double drive = main.getAxisValue(SmartJoystick.Axis.LEFT_Y);
 		double turn = main.getAxisValue(SmartJoystick.Axis.RIGHT_X) * turnFactor;
-		
+
 		swerve.moveMotors(drive, turn);
 		SmartDashboard.putNumber("power to angle", turn);
 	}

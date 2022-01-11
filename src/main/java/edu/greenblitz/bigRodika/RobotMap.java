@@ -3,7 +3,6 @@ package edu.greenblitz.bigRodika;
 import edu.greenblitz.gblib.gears.GearDependentValue;
 import org.greenblitz.motion.interpolation.Dataset;
 
-
 public class RobotMap {
 
     public static class Limbo2 {

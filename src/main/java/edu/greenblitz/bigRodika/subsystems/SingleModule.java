@@ -35,5 +35,4 @@ public class SingleModule extends GBSubsystem {
 
     public void initDefaultCommand() {
         setDefaultCommand(new DumbSwerve(this.module, OI.getInstance().getMainJoystick()));
-    }
-}
+    }}

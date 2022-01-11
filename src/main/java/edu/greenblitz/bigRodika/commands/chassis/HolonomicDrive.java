@@ -1,5 +1,6 @@
 package edu.greenblitz.bigRodika.commands.chassis;
 
+import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.bigRodika.subsystems.Chassis;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 import org.greenblitz.motion.base.Vector2D;
@@ -25,7 +26,12 @@ public class HolonomicDrive extends ChassisCommand {
         this(joystick, fieldOriented, 1.0);
     }
 
-    @Override
+	@Override
+	public void initialize() {
+		chassis.setModuleOpMode(OpMode.ANGLE_BY_PID);
+	}
+
+	@Override
     public void execute() {
         double xVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_X);
         double yVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_Y);

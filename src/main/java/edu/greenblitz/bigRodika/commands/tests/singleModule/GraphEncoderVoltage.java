@@ -7,23 +7,23 @@ import org.greenblitz.debug.RemoteCSVTarget;
 import java.util.*;
 
 public class GraphEncoderVoltage extends GBCommand {
-	
+
 	private static final long TIMEOUT = 200;
 	private RemoteCSVTarget logger;
 	private LinkedList<Pair<Long, Double>> values;
 	private long t0;
-	
+
 	public GraphEncoderVoltage() {
 		this.logger = RemoteCSVTarget.initTarget("SwerveEncoderVoltage", "time", "volt");
 		this.values = new LinkedList<>();
 	}
-	
+
 	@Override
 	public void initialize() {
 		super.initialize();
 		this.t0 = System.currentTimeMillis();
 	}
-	
+
 	@Override
 	public void execute() {
 		super.execute();
@@ -32,7 +32,7 @@ public class GraphEncoderVoltage extends GBCommand {
 //        logger.report((System.currentTimeMillis() - this.t0) / 1000.0, instance.getModule().getTicks());
 		values.add(new Pair<>(System.currentTimeMillis() - this.t0, instance.getModule().getAngleEncoderValue()));
 	}
-	
+
 	@Override
 	public void end(boolean interrupted) {
 		super.end(interrupted);
@@ -46,34 +46,34 @@ public class GraphEncoderVoltage extends GBCommand {
 				e.printStackTrace();
 			}
 		}
-		
+
 		System.out.println(size);
 	}
-	
+
 	private class Pair<F, E> {
 		private F first;
 		private E second;
-		
+
 		public Pair(F first, E second) {
 			this.first = first;
 			this.second = second;
 		}
-		
+
 		public F getFirst() {
 			return this.first;
 		}
-		
+
 		public void setFirst(F value) {
 			this.first = value;
 		}
-		
+
 		public E getSecond() {
 			return this.second;
 		}
-		
+
 		public void setSecond(E value) {
 			this.second = value;
 		}
 	}
-	
+
 }

@@ -9,17 +9,17 @@ public class OneModuleTestByJoystick extends GBCommand {
 	private SwerveModule module;
 	private final SmartJoystick joystick;
 	private final double POWER_SCALE = 0.5;
-	
+
 	public OneModuleTestByJoystick(SmartJoystick joystick, SwerveModule module) {
 		this.joystick = joystick;
 		this.module = module;
 	}
-	
+
 	@Override
 	public void initialize() {
 		module.moveMotors(0, 0);
 	}
-	
+
 	@Override
 	public void execute() {
 		double xVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_X);

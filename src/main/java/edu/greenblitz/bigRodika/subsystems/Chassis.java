@@ -5,11 +5,10 @@ import com.revrobotics.CANSparkMax;
 import edu.greenblitz.bigRodika.OI;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.chassis.HolonomicDrive;
-import edu.greenblitz.bigRodika.commands.swervemodule.AngleByPID;
 import edu.greenblitz.bigRodika.commands.tests.chassis.DumbHolonomic;
+import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.greenblitz.motion.base.Vector2D;
 
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Measurements.ALPHAS;
@@ -155,11 +154,11 @@ public class Chassis extends GBSubsystem {
         }
     }
 
-    public void setModuleAngleByPID() {
-        for (SwerveModule module : swerveModules) {
-            CommandScheduler.getInstance().schedule(new AngleByPID(module));
-        }
-    }
+	public void setModuleOpMode(OpMode opMode) {
+		for (SwerveModule module : swerveModules) {
+			module.setOpMode(opMode);
+		}
+	}
 
     public void arcadeDrive(double power, double rotate, boolean fieldOriented) {
         double[] powers = {power + rotate, power - rotate, power - rotate, power + rotate};
@@ -246,14 +245,6 @@ public class Chassis extends GBSubsystem {
     @Override
     public void periodic() {
         super.periodic();
-//        putString("Module 0", swerveModules[0].toString());
-//        putString("Module 1", swerveModules[1].toString());
-//        putString("Module 2", swerveModules[2].toString());
-//        putString("Module 3", swerveModules[3].toString());
-//        putNumber("Gyro Rate", gyro.getYawRate()    );
-//        putNumber("Raw Gyro", gyro.getRawYaw());
-//        putNumber("Normalized Gyro", gyro.getNormalizedYaw());
-
     }
 
     /*
@@ -314,5 +305,4 @@ public class Chassis extends GBSubsystem {
     public void initTestCommand() {
         setDefaultCommand(new DumbHolonomic());
     }
-
 }

@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
 import edu.greenblitz.bigRodika.RobotMap;
+import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,6 +30,7 @@ public class SwerveModule extends GBSubsystem {
     //	private long t0;
 //	private double time;
     private double driveTarget = -1;
+	private OpMode opMode;
 
     public double getAngleTarget() {
         return angleTarget;
@@ -46,13 +48,19 @@ public class SwerveModule extends GBSubsystem {
         this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
     }
 
-    public void init() {
-        angleTarget = getAngle();
+	public void init() {
+		setOpMode(OpMode.ANGLE_BY_POWER);
+		angleTarget = getAngle();
 //		t0 = System.currentTimeMillis();
-        configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
-        configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.01, 0.01);
-        this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
-    }
+		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
+		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.01, 0.01);
+		this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
+	}
+
+	public void setOpMode(OpMode newOpMode) {
+		this.opMode = newOpMode;
+		newOpMode.getCommand(this).schedule(true);
+	}
 
     public void configureDrive(double p, double i, double d) {
         CANPIDController controller = this.driveMotor.getPIDController();
@@ -184,16 +192,10 @@ public class SwerveModule extends GBSubsystem {
 
     @Override
     public void periodic() {
-        super.periodic();
+	    super.periodic();
 
-        SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
-        SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
-        SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
-//		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
-
-//		this.time = System.currentTimeMillis() - t0;
-
-//		logger.report(this.time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
-
+	    SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
+	    SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
+	    SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
     }
 }

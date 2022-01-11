@@ -1,13 +1,12 @@
 package edu.greenblitz.bigRodika.commands.tests.singleModule;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import edu.greenblitz.bigRodika.subsystems.SingleModule;
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
 import edu.greenblitz.gblib.command.GBCommand;
-import org.greenblitz.debug.RemoteCSVTarget;
 
 public class OneModuleTestByConstants extends GBCommand {
 
+<<<<<<< HEAD
     private static SwerveModule module = SingleModule.getInstance().getModule();
     private double angle, velocity;
 
@@ -30,4 +29,28 @@ public class OneModuleTestByConstants extends GBCommand {
     public void end(boolean interrupted) {
         module.moveMotors(0, 0);
     }
+=======
+	private static SwerveModule module = SingleModule.getInstance().getModule();
+	private double angle, velocity;
+
+	public OneModuleTestByConstants(double angle, double velocity) {
+		this.angle = angle;
+		this.velocity = velocity;
+	}
+
+	@Override
+	public void initialize() {
+		module.moveMotors(0, 0);
+	}
+
+	@Override
+	public void execute() {
+		module.setDrivePower(this.velocity);
+//        module.setAngle(this.angle); TODO: fix setAngle and uncomment this
+	}
+
+	public void end(boolean interrupted) {
+		module.moveMotors(0, 0);
+	}
+>>>>>>> swerve-refactor
 }
