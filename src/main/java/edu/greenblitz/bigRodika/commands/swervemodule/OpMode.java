@@ -18,10 +18,15 @@ public enum OpMode {
 					public void execute() {
 						module.setAnglePowerByPID();
 					}
+
+					@Override
+					public void end(boolean interrupted) {if(module.getReverseFactor()==-1){
+						module.invertReverseFactor();
+					}}
 				};
 			case ANGLE_BY_POWER:
 				return new SwerveOpMode(module) {};
-			default: //Still redundant (and still equivalent to a basic if) but a switch is more modular
+			default:
 				return new SwerveOpMode(module) {};
 		}
 	}

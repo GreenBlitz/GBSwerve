@@ -1,5 +1,6 @@
 package edu.greenblitz.bigRodika;
 
+import edu.greenblitz.bigRodika.commands.TestSingleModule;
 import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
 import edu.greenblitz.bigRodika.subsystems.SingleModule;
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
@@ -42,17 +43,7 @@ public class OI {
 
 	private void initTestButtons() {
 		SwerveModule swerve = SingleModule.getInstance().getModule();
-		mainJoystick.A.whenPressed(new ChassisCommand() {
-			@Override
-			public void initialize() {
-				super.initialize();
-				chassis.printAllEncoderValues();
-			}
+		mainJoystick.A.whileHeld(new TestSingleModule(2, 0, 0.065));
 
-			@Override
-			public boolean isFinished() {
-				return true;
-			}
-		});
 	}
 }
