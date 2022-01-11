@@ -6,16 +6,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SetSingleModuleSpeed extends GBCommand {
 
-    public SetSingleModuleSpeed() {
-        super(SingleModule.getInstance());
+	public SetSingleModuleSpeed() {
+		super(SingleModule.getInstance());
+	}
 
-    }
-
-    @Override
-    public void initialize() {
-        super.initialize();
+	@Override
+	public void initialize() {
+		super.initialize();
 
 
-        SingleModule.getInstance().getModule().setSpeed(SmartDashboard.getEntry("referenceSpeed").getNumber(-1).intValue());
-    }
+		SingleModule.getInstance().getModule().setSpeed(SmartDashboard.getEntry("referenceSpeed").getNumber(-1).intValue());
+	}
 }

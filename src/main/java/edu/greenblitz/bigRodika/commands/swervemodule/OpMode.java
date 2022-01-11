@@ -1,13 +1,11 @@
 package edu.greenblitz.bigRodika.commands.swervemodule;
 
-import edu.greenblitz.bigRodika.subsystems.GBSubsystem;
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
 import edu.greenblitz.gblib.command.GBCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public enum OpMode {
 	ANGLE_BY_PID, ANGLE_BY_POWER;
-	
+
 	public GBCommand getCommand(SwerveModule module) {
 		switch (this) {
 			case ANGLE_BY_PID:
@@ -24,8 +22,9 @@ public enum OpMode {
 				};
 			case ANGLE_BY_POWER:
 				return new SwerveOpMode(module) {};
+			default: //Still redundant (and still equivalent to a basic if) but a switch is more modular
+				return new SwerveOpMode(module) {};
 		}
-		return new SwerveOpMode(module) {};
 	}
 }
 

@@ -5,8 +5,9 @@ import edu.greenblitz.gblib.command.GBCommand;
 
 public abstract class SwerveOpMode extends GBCommand {
 	private SwerveModule module;
-	
+
 	public SwerveOpMode(SwerveModule module) {
 		this.module = module;
-		this.require(module);	}
+		this.require(module);
+	}
 }
