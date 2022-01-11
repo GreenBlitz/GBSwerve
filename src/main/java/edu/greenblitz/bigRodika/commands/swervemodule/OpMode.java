@@ -12,7 +12,11 @@ public enum OpMode {
 		switch (this) {
 			case ANGLE_BY_PID:
 				return new SwerveOpMode(module) {
-					
+					@Override
+					public void initialize() {
+						module.setAngle(module.getAngle());
+					}
+
 					@Override
 					public void execute() {
 						module.setAnglePowerByPID();
@@ -21,7 +25,7 @@ public enum OpMode {
 			case ANGLE_BY_POWER:
 				return new SwerveOpMode(module) {};
 		}
-		return null;
+		return new SwerveOpMode(module) {};
 	}
 }
 

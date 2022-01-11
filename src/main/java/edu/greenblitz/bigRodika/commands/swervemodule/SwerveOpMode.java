@@ -8,5 +8,5 @@ public abstract class SwerveOpMode extends GBCommand {
 	
 	public SwerveOpMode(SwerveModule module) {
 		this.module = module;
-	}
+		this.require(module);	}
 }

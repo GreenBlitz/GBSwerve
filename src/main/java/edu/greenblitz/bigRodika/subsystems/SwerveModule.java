@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
 import edu.greenblitz.bigRodika.RobotMap;
+import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +31,9 @@ public class SwerveModule extends GBSubsystem {
 //	private long t0;
 //	private double time;
 	private double driveTarget = -1;
-	
+	private OpMode opMode;
+
+
 	public double getAngleTarget() {
 		return angleTarget;
 	}
@@ -49,13 +52,21 @@ public class SwerveModule extends GBSubsystem {
 	}
 	
 	public void init() {
+		setOpMode(OpMode.ANGLE_BY_POWER);
 		angleTarget = getAngle();
 //		t0 = System.currentTimeMillis();
 		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
 		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.01, 0.01);
 		this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
 	}
-	
+
+	public void setOpMode(OpMode newOpMode){
+		this.opMode=newOpMode;
+		newOpMode.getCommand(this).schedule(true);
+	}
+
+
+
 	public void configureDrive(double p, double i, double d) {
 		CANPIDController controller = this.driveMotor.getPIDController();
 		

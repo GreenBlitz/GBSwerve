@@ -128,9 +128,9 @@ public class Chassis extends GBSubsystem {
 		}
 	}
 	
-	public void setModuleAngleByPID(){
+	public void setModuleOpMode(OpMode opMode){
 		for (SwerveModule module : swerveModules) {
-			CommandScheduler.getInstance().schedule(OpMode.ANGLE_BY_PID.getCommand(module));
+			module.setOpMode(opMode);
 		}
 	}
 	
