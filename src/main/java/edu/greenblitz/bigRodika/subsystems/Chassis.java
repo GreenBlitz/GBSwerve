@@ -3,7 +3,7 @@ package edu.greenblitz.bigRodika.subsystems;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import edu.greenblitz.bigRodika.RobotMap;
-import edu.greenblitz.bigRodika.commands.swervemodule.AngleByPID;
+import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.bigRodika.exceptions.MotorPowerOutOfRangeException;
 import edu.greenblitz.gblib.gyroscope.IGyroscope;
 import edu.greenblitz.gblib.gyroscope.PigeonGyro;
@@ -130,7 +130,7 @@ public class Chassis extends GBSubsystem {
 	
 	public void setModuleAngleByPID(){
 		for (SwerveModule module : swerveModules) {
-			CommandScheduler.getInstance().schedule(new AngleByPID(module));
+			CommandScheduler.getInstance().schedule(OpMode.ANGLE_BY_PID.getCommand(module));
 		}
 	}
 	
