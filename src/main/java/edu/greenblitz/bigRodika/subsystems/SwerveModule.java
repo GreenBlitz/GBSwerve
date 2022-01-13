@@ -20,7 +20,7 @@ public class SwerveModule extends GBSubsystem {
 
     private final CANSparkMax rotationMotor;
     private final CANSparkMax driveMotor;
-    private Object angleEncoder;
+    private Object angleEncoder; //TODO: improve me
     private final SparkEncoder driveEncoder;
     private CollapsingPIDController anglePID;
     private int ID;

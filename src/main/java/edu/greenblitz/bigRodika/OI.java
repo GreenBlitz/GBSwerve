@@ -28,10 +28,10 @@ public class OI {
     }
     private void initTestButtons() {
 		mainJoystick.A.whileHeld(new ParallelCommandGroup(
-				new ResetToZero(0.5,0),
-				new ResetToZero(0.5,1),
-				new ResetToZero(0.5,2),
-				new ResetToZero(0.5,3)
+				new ResetToZero(0.25,0),
+				new ResetToZero(0.25,1),
+				new ResetToZero(0.25,2),
+				new ResetToZero(0.25,3)
 		));
     }
 
