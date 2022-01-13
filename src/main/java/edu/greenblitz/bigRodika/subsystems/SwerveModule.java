@@ -21,7 +21,8 @@ public class SwerveModule extends GBSubsystem {
 
 	private final CANSparkMax rotationMotor;
 	private final CANSparkMax driveMotor;
-	private final AnalogInput angleEncoder;
+	private final AnalogInput angleAbsEncoder;
+	private SparkEncoder angleEncoder;
 	private final SparkEncoder driveEncoder;
 	private CollapsingPIDController anglePID;
 	private int ID;
@@ -32,6 +33,9 @@ public class SwerveModule extends GBSubsystem {
 	private double driveTarget = -1;
 	private OpMode opMode;
 	private int reverseFactor = 1;
+	private boolean isLamprey = true;
+
+	private static double EPSILON = 0.01;
 
 	public double getAngleTarget() {
 		return angleTarget;
@@ -45,13 +49,15 @@ public class SwerveModule extends GBSubsystem {
 		this.rotationMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTORS_REVERSED[ID]);
 		this.driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
 		this.driveMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTORS_REVERSED[ID]);
-		this.angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);
+		this.angleAbsEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);
 		this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+		this.isLamprey = true;
 	}
 
 	public void init() {
 		setOpMode(OpMode.ANGLE_BY_POWER);
-		angleTarget = getAngle();
+		//angleTarget = getAngle();
+		this.setAngle(0);
 //		t0 = System.currentTimeMillis();
 		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
 		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.01, 0.01);
@@ -122,7 +128,11 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public double getAngleEncoderValue() {
-		return angleEncoder.getVoltage();
+		if(isLamprey) {
+			return angleAbsEncoder.getVoltage();
+		}else{
+			return angleEncoder.getRawTicks();
+		}
 	}
 
 	// Angle is measured in radians
@@ -142,7 +152,11 @@ public class SwerveModule extends GBSubsystem {
 		return driveMotor;
 	}
 
-	private AnalogInput getAngleEncoder() {
+	private AnalogInput getAngleAbsEncoder() {
+		return angleAbsEncoder;
+	}
+
+	private SparkEncoder getAngleEncoder(){
 		return angleEncoder;
 	}
 
@@ -225,6 +239,12 @@ public class SwerveModule extends GBSubsystem {
 	@Override
 	public void periodic() {
 		super.periodic();
+
+		if(Math.abs(this.getAngle() - this.getAngleTarget()) < EPSILON){
+			this.angleEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, rotationMotor);
+			this.angleEncoder.reset();
+			this.isLamprey = false;
+		}
 
 		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
 		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
