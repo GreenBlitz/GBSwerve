@@ -308,6 +308,10 @@ public class Chassis extends GBSubsystem {
         }
     }
 
+	public SwerveModule[] getSwerveModules(){
+		return this.swerveModules;
+	}
+
     public void initDefaultCommand() {
         setDefaultCommand(new HolonomicDrive(OI.getInstance().getMainJoystick(), true, 0.4));
     }

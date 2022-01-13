@@ -1,6 +1,8 @@
 package edu.greenblitz.bigRodika;
 
+import edu.greenblitz.bigRodika.commands.tests.chassis.ResetToZero;
 import edu.greenblitz.gblib.hid.SmartJoystick;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 
 public class OI {
@@ -24,9 +26,13 @@ public class OI {
         }
         return instance;
     }
-
     private void initTestButtons() {
-
+		mainJoystick.A.whileHeld(new ParallelCommandGroup(
+				new ResetToZero(0.5,0),
+				new ResetToZero(0.5,1),
+				new ResetToZero(0.5,2),
+				new ResetToZero(0.5,3)
+		));
     }
 
     private void initOfficialButtons() {
