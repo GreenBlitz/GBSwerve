@@ -20,6 +20,7 @@ public class Chassis extends GBSubsystem {
     private final SwerveModule[] swerveModules = new SwerveModule[4];
 
     private final IGyroscope gyro;
+	private OpMode opMode;
 
     private Chassis() {
 
@@ -45,46 +46,40 @@ public class Chassis extends GBSubsystem {
         return instance;
     }
 
-    public void moveMotors(double[] powers, double[] angles, boolean fieldOriented) {
-        if (fieldOriented) {
-            for (int i = 0; i < angles.length; i++) {
-                // TODO: 14/10/2020 check clockwise = positive in gyro
-//                angles[i] = angles[i] - getAngle();
-            }
-        }
+    public void moveMotors(double[] drive, double[] rotation, boolean fieldOriented) {
+	    if(opMode != OpMode.BY_POWER){
+		    System.out.println("power is being set in non power opMode");
+	    }
         // Using regular for so that we can change the values
-        for (int i = 0; i < powers.length; i++) {
-            if (powers[i] > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-                powers[i] = RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
-            } else if (powers[i] < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-                powers[i] = -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
+        for (int i = 0; i < drive.length; i++) {
+            if (drive[i] > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+                drive[i] = RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
+            } else if (drive[i] < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+                drive[i] = -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
             }
         }
-        moveMotorsLimited(powers, angles);
+        moveMotorsLimited(drive, rotation);
     }
 
-    public void moveMotor(int id, double power, double angle, boolean fieldOriented) {
-        if (fieldOriented) {
-            //TODO: fix for single motor
-            //angles[i] = angles[i] - getAngle() ?
-        }
+    public void moveMotor(int id, double drive, double rotation, boolean fieldOriented) {
+        
 
-        if (power > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-            power = RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
-        } else if (power < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-            power = -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
+        if (drive > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+            drive = RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
+        } else if (drive < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
+            drive = -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
         }
-        moveMotorLimited(id, power, angle);
+        moveMotorLimited(id, drive, rotation);
     }
 
-    public void moveMotorsLimited(double[] powers, double[] angles) {
+    public void moveMotorsLimited(double[] drive, double[] rotation) {
         for (SwerveModule swerveModule : swerveModules) {
-            swerveModule.moveMotors(powers[swerveModule.getID()], angles[swerveModule.getID()]);
+            swerveModule.moveMotors(drive[swerveModule.getID()], rotation[swerveModule.getID()]);
         }
     }
 
-    public void moveMotorLimited(int id, double power, double angle) {
-        swerveModules[id].moveMotors(power, angle);
+    public void moveMotorLimited(int id, double drive, double rotation) {
+        swerveModules[id].moveMotors(drive, rotation);
     }
 
     public void moveDriveMotors(double[] powers) {
@@ -119,25 +114,7 @@ public class Chassis extends GBSubsystem {
             swerveModule.moveMotors(0, 0);
         }
     }
-
-    public void rotateWheelsBySpeedAcceleration(double[] speeds, double[] accelerations) {
-        double[] powers = new double[speeds.length];
-        // Not using for each as we need to use both powers and speeds
-        for (int i = 0; i < speeds.length; i++) {
-            powers[i] = speeds[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KV + accelerations[i] * RobotMap.Limbo2.Chassis.MiniCIM.ROTATION_KA;
-        }
-        for (int i = 0; i < powers.length; i++) {
-            if (powers[i] > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-                powers[i] = RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
-            } else if (powers[i] < -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
-                powers[i] = -RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
-            }
-        }
-        for (SwerveModule swerveModule : swerveModules) {
-            swerveModule.setAngle(powers[swerveModule.getID()]);
-        }
-    }
-
+    
     public void stopMotor(int id) {
         swerveModules[id].moveMotors(0, 0);
     }
@@ -290,6 +267,7 @@ public class Chassis extends GBSubsystem {
     }
 
     public void fullSwerve(double Vx, double Vy, double omega) {
+        setModuleOpMode(OpMode.BY_PID);
         for (int i = 0; i < swerveModules.length; i++) {
             SwerveModule s = swerveModules[i];
             double[] params = calculateSwerveMovement(Vx, Vy, omega, ALPHAS[i]);

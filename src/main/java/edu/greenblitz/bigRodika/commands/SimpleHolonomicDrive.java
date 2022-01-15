@@ -31,6 +31,11 @@ public class SimpleHolonomicDrive extends ChassisCommand {
         double yVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_Y);
         double power = getLinearPower(xVal, yVal);
         double angle = getDriveAngle(xVal, yVal);
+	    if (fieldOriented) {
+		        // TODO: 14/10/2020 check clockwise = positive in gyro
+//                angle = angle - chassis.getAngle();
+	    }
+
         chassis.moveMotors(new double[]{power, power, power, power}, new double[]{angle, angle, angle, angle}, false);
         //TODO: change fieldOriented to be right
     }

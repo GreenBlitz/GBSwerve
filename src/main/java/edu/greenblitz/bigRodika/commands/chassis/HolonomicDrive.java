@@ -28,7 +28,7 @@ public class HolonomicDrive extends ChassisCommand {
 
 	@Override
 	public void initialize() {
-		chassis.setModuleOpMode(OpMode.ANGLE_BY_PID);
+		chassis.setModuleOpMode(OpMode.BY_PID);
 	}
 
 	@Override

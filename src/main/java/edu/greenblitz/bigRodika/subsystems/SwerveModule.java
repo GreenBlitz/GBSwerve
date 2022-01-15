@@ -50,7 +50,7 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public void init() {
-		setOpMode(OpMode.ANGLE_BY_POWER);
+		setOpMode(OpMode.BY_POWER);
 		angleTarget = getAngle();
 //		t0 = System.currentTimeMillis();
 		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
@@ -61,6 +61,14 @@ public class SwerveModule extends GBSubsystem {
 	public void setOpMode(OpMode newOpMode) {
 		this.opMode = newOpMode;
 		newOpMode.getCommand(this).schedule(true);
+	}
+
+	public void setDrivePIDActive(boolean isActive) {
+		if (isActive) {
+			getDrivePID().setOutputRange(1.0, 1.0);
+		} else {
+			getDrivePID().setOutputRange(0, 0);
+		}
 	}
 
 	public void configureDrive(double p, double i, double d) {
@@ -83,6 +91,9 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public void setSpeed(double speed) {
+		if(opMode != OpMode.BY_PID){
+			System.out.println("trying to set speed but pid is disabled");
+		}
 		this.driveTarget = speed * reverseFactor;
 		getDriveMotor().getPIDController().setReference(driveTarget, ControlType.kVelocity);
 		System.out.println(SPEED_TO_FF.linearlyInterpolate(driveTarget)[0]);
@@ -164,14 +175,23 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public void setDrivePower(double drivePower) {
+		if(opMode != OpMode.BY_POWER){
+			System.out.println("power is being set in non power opMode");
+		}
 		getDriveMotor().set(drivePower * reverseFactor);
 	}
 
 	public void setAnglePower(double anglePower) {
+		if(opMode != OpMode.BY_POWER){
+			System.out.println("power is being set in non power opMode");
+		}
 		getRotationMotor().set(anglePower);
 	}
 
 	public void setAnglePowerByPID() {
+		if(opMode != OpMode.BY_PID){
+			System.out.println("pid is run not in pid opMode");
+		}
 		int newReverseFactor = decideSpinDirection();
 		if (newReverseFactor != reverseFactor) {
 			setAngle(Math.PI + angleTarget);
