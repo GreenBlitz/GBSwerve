@@ -7,6 +7,7 @@ import com.revrobotics.ControlType;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
+import edu.greenblitz.util.VersatileAngleEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.greenblitz.debug.RemoteCSVTarget;
@@ -21,7 +22,7 @@ public class SwerveModule extends GBSubsystem {
 
 	private final CANSparkMax rotationMotor;
 	private final CANSparkMax driveMotor;
-	private Object angleEncoder;
+	private VersatileAngleEncoder angleEncoder;
 	private final SparkEncoder driveEncoder;
 	private CollapsingPIDController anglePID;
 	private int ID;
@@ -32,7 +33,6 @@ public class SwerveModule extends GBSubsystem {
 	private double driveTarget = -1;
 	private OpMode opMode;
 	private int reverseFactor = 1;
-	private boolean isLampray;
 	private final double EPSILON = 0.005;
 
 	public double getAngleTarget() {
@@ -47,9 +47,8 @@ public class SwerveModule extends GBSubsystem {
 		this.rotationMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTORS_REVERSED[ID]);
 		this.driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
 		this.driveMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTORS_REVERSED[ID]);
-		this.angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);
+		this.angleEncoder = new VersatileAngleEncoder(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID], rotationMotor);
 		this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
-		this.isLampray = true;
 	}
 
 	public void init() {
@@ -72,6 +71,10 @@ public class SwerveModule extends GBSubsystem {
 		} else {
 			getDrivePID().setOutputRange(0, 0);
 		}
+	}
+
+	public void setIsLamprey(boolean isLamprey){
+		angleEncoder.setLampray(isLamprey);
 	}
 
 	public void configureDrive(double p, double i, double d) {
@@ -138,7 +141,7 @@ public class SwerveModule extends GBSubsystem {
 
 	// Angle is measured in radians
 	public double getAngle() {
-		return ((getAngleEncoderValue() - LAMPREY_ANALOG_ZERO[ID]) % VOLTAGE_TO_ROTATIONS) / VOLTAGE_TO_ROTATIONS * 2 * Math.PI;
+		return ((getAngleEncoderValue()) % VOLTAGE_TO_ROTATIONS) / VOLTAGE_TO_ROTATIONS * 2 * Math.PI;
 	}
 
 	public int getID() {
@@ -243,22 +246,12 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public double getAngleEncoderValue() {
-		if(isLampray) {
-			return ((AnalogInput)angleEncoder).getVoltage();
-		}else{
-			return ((SparkEncoder)angleEncoder).getRawTicks();
-		}
+		return angleEncoder.getEncoderValue();
 	}
 
 	@Override
 	public void periodic() {
 		super.periodic();
-
-		if(isLampray && Math.abs(this.getAngle() - this.getAngleTarget()) < EPSILON){
-			this.angleEncoder = new SparkEncoder(NORMALIZER_SPARK,rotationMotor);
-			((SparkEncoder)this.angleEncoder).reset();
-			this.isLampray = false;
-		}
 
 		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
 		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());

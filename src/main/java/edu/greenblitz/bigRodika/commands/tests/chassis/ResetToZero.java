@@ -1,10 +1,13 @@
 package edu.greenblitz.bigRodika.commands.tests.chassis;
 
+import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
+import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.bigRodika.subsystems.Chassis;
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
 import edu.greenblitz.gblib.command.GBCommand;
+import org.greenblitz.motion.pid.PIDObject;
 
-public class ResetToZero extends GBCommand {
+public class ResetToZero extends ChassisCommand {
 	private double epsilon;
 	private int id;
 
@@ -17,19 +20,19 @@ public class ResetToZero extends GBCommand {
 	}
 
 	@Override
-	public void execute() {
-		SwerveModule s = Chassis.getInstance().getSwerveModules()[id];
-		if(s.getAngle() > 0){
-			s.moveMotors(0, -getP());
-		}else{
-			s.moveMotors(0, getP());
-		}
+	public void initialize() {
+		chassis.getSwerveModules()[id].configureRotation(P[id], 0,0,0,0);
+		chassis.getSwerveModules()[id].setOpMode(OpMode.BY_PID);
+		chassis.getSwerveModules()[id].setIsLamprey(true);
+		chassis.getSwerveModules()[id].setAngle(0);
+
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		SwerveModule s = Chassis.getInstance().getSwerveModules()[id];
-		s.moveMotors(0, 0);
+		chassis.stopMotor(id);
+		chassis.getSwerveModules()[id].init();
+		chassis.getSwerveModules()[id].setIsLamprey(false);
 	}
 
 	@Override
@@ -38,11 +41,4 @@ public class ResetToZero extends GBCommand {
 		return Math.abs(s.getAngle()) < epsilon;
 	}
 
-	public double getP(){
-		SwerveModule s = Chassis.getInstance().getSwerveModules()[id];
-		double angle = s.getAngle(); //% Math.PI;
-		//Robot should use % for the angle only when near 0 or PI radians
-		//TODO: Add % for the needed case
-		return angle * P[id];
-	}
 }
