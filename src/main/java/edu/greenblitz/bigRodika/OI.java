@@ -1,5 +1,6 @@
 package edu.greenblitz.bigRodika;
 
+import edu.greenblitz.bigRodika.commands.tests.GetLamNeoRelation;
 import edu.greenblitz.bigRodika.commands.tests.chassis.ResetToZero;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -33,6 +34,8 @@ public class OI {
 				new ResetToZero(0.25,2),
 				new ResetToZero(0.25,3)
 		));
+
+		mainJoystick.B.whenPressed(new GetLamNeoRelation(0));
     }
 
     private void initOfficialButtons() {
