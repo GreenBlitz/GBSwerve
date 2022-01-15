@@ -56,7 +56,7 @@ public class RobotMap {
                 public static final double DRIVE_GEAR_RATIO = 0.125;
                 public static final double ROTATION_GEAR_RATIO = 1.0 / 6;
 
-                public static final boolean[] DRIVE_MOTORS_REVERSED = {false, false, false, false};
+                public static final boolean[] DRIVE_MOTORS_REVERSED = {false, false, true, true};
                 public static final boolean[] ROTATION_MOTORS_REVERSED = {false, false, false, false};
                 public static final int[] DRIVE_MOTOR_PORTS = {6, 9, 8, 3};
                 public static final int[] ROTATION_MOTOR_PORTS = {1, 5, 7, 4};

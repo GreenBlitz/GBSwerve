@@ -1,10 +1,9 @@
 package edu.greenblitz.bigRodika;
 
-import edu.greenblitz.bigRodika.commands.TestSingleModule;
-import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
-import edu.greenblitz.bigRodika.subsystems.SingleModule;
-import edu.greenblitz.bigRodika.subsystems.SwerveModule;
+
+import edu.greenblitz.bigRodika.commands.tests.chassis.ResetToZero;
 import edu.greenblitz.gblib.hid.SmartJoystick;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 
 public class OI {
@@ -22,16 +21,20 @@ public class OI {
 	}
 
 
-	public static OI getInstance() {
-		if (instance == null) {
-			instance = new OI();
-		}
-		return instance;
-	}
-
-	private void initOfficialButtons() {
-
-	}
+    public static OI getInstance() {
+        if (instance == null) {
+            instance = new OI();
+        }
+        return instance;
+    }
+    private void initTestButtons() {
+		mainJoystick.A.whileHeld(new ParallelCommandGroup(
+				new ResetToZero(0.25,0),
+				new ResetToZero(0.25,1),
+				new ResetToZero(0.25,2),
+				new ResetToZero(0.25,3)
+		));
+    }
 
 	public SmartJoystick getMainJoystick() {
 		return mainJoystick;
@@ -41,9 +44,4 @@ public class OI {
 		return secondJoyStick;
 	}
 
-	private void initTestButtons() {
-		SwerveModule swerve = SingleModule.getInstance().getModule();
-		mainJoystick.A.whileHeld(new TestSingleModule(2, 0, 0.065));
-
-	}
 }

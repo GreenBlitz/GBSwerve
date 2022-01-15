@@ -21,7 +21,7 @@ public class SwerveModule extends GBSubsystem {
 
 	private final CANSparkMax rotationMotor;
 	private final CANSparkMax driveMotor;
-	private final AnalogInput angleEncoder;
+	private Object angleEncoder;
 	private final SparkEncoder driveEncoder;
 	private CollapsingPIDController anglePID;
 	private int ID;
@@ -32,6 +32,8 @@ public class SwerveModule extends GBSubsystem {
 	private double driveTarget = -1;
 	private OpMode opMode;
 	private int reverseFactor = 1;
+	private boolean isLampray;
+	private final double EPSILON = 0.005;
 
 	public double getAngleTarget() {
 		return angleTarget;
@@ -47,6 +49,7 @@ public class SwerveModule extends GBSubsystem {
 		this.driveMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTORS_REVERSED[ID]);
 		this.angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);
 		this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+		this.isLampray = true;
 	}
 
 	public void init() {
@@ -132,9 +135,6 @@ public class SwerveModule extends GBSubsystem {
 		SmartDashboard.putNumber("angle target", angleTarget);
 	}
 
-	public double getAngleEncoderValue() {
-		return angleEncoder.getVoltage();
-	}
 
 	// Angle is measured in radians
 	public double getAngle() {
@@ -153,7 +153,7 @@ public class SwerveModule extends GBSubsystem {
 		return driveMotor;
 	}
 
-	private AnalogInput getAngleEncoder() {
+	private Object getAngleEncoder() {
 		return angleEncoder;
 	}
 
@@ -242,12 +242,35 @@ public class SwerveModule extends GBSubsystem {
 	public void initDefaultCommand() {
 	}
 
+	public double getAngleEncoderValue() {
+		if(isLampray) {
+			return ((AnalogInput)angleEncoder).getVoltage();
+		}else{
+			return ((SparkEncoder)angleEncoder).getRawTicks();
+		}
+	}
+
 	@Override
 	public void periodic() {
 		super.periodic();
 
+		if(isLampray && Math.abs(this.getAngle() - this.getAngleTarget()) < EPSILON){
+			this.angleEncoder = new SparkEncoder(NORMALIZER_SPARK,rotationMotor);
+			((SparkEncoder)this.angleEncoder).reset();
+			this.isLampray = false;
+		}
+
 		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
 		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
 		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
+//		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
+
+//		this.time = System.currentTimeMillis() - t0;
+
+//		logger.report(this.time / 1000.0, this.getAngle(), this.getLinVel(), angleTarget);
+
 	}
 }
+
+
+
