@@ -9,7 +9,7 @@ import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.SwerveModule.NORM
 public class VersatileAngleEncoder {
 	private AnalogInput lamprey;
 	private SparkEncoder neoEncoder;
-	private boolean isLampray;
+	private boolean isLampray = false;
 
 	public VersatileAngleEncoder(int lampreyID, CANSparkMax motor){
 		lamprey = new AnalogInput(lampreyID);

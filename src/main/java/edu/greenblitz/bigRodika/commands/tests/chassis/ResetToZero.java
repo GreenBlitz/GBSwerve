@@ -12,20 +12,19 @@ public class ResetToZero extends ChassisCommand {
 	private int id;
 
 	//TODO: Improve P config
-	private final static double[] P = {0.1,0.1,0.07,0.06};
+	private final static double[] P = {0.1, 0.1, 0.07, 0.06};
 
-	public ResetToZero(double epsilon, int i){
+	public ResetToZero(double epsilon, int i) {
 		this.epsilon = epsilon;
 		this.id = i;
 	}
 
 	@Override
 	public void initialize() {
-		chassis.getSwerveModules()[id].configureRotation(P[id], 0,0,0,0);
+		chassis.getSwerveModules()[id].configureRotation(P[id], 0, 0, epsilon, 0);
 		chassis.getSwerveModules()[id].setOpMode(OpMode.BY_PID);
 		chassis.getSwerveModules()[id].setIsLamprey(true);
 		chassis.getSwerveModules()[id].setAngle(0);
-
 	}
 
 	@Override

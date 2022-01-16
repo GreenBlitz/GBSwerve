@@ -43,12 +43,15 @@ public class Chassis extends GBSubsystem {
     }
 
     public static Chassis getInstance() {
+		/*if (instance == null){
+			init();
+		}*/
         return instance;
     }
 
     public void moveMotors(double[] drive, double[] rotation, boolean fieldOriented) {
 	    if(opMode != OpMode.BY_POWER){
-		    System.out.println("power is being set in non power opMode");
+		    System.out.println("power is being set in non power opMode (Chassis)");
 	    }
         // Using regular for so that we can change the values
         for (int i = 0; i < drive.length; i++) {
@@ -110,12 +113,13 @@ public class Chassis extends GBSubsystem {
     }
 
     public void stopMotors() {
-        for (SwerveModule swerveModule : swerveModules) {
-            swerveModule.moveMotors(0, 0);
+        for (int id = 0; id < 4; id ++) {
+            stopMotor(id);
         }
     }
     
     public void stopMotor(int id) {
+		swerveModules[id].setOpMode(OpMode.BY_POWER);
         swerveModules[id].moveMotors(0, 0);
     }
 

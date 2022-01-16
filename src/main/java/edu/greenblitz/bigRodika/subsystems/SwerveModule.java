@@ -67,7 +67,7 @@ public class SwerveModule extends GBSubsystem {
 
 	public void setDrivePIDActive(boolean isActive) {
 		if (isActive) {
-			getDrivePID().setOutputRange(1.0, 1.0);
+			getDrivePID().setOutputRange(-0.3, 0.3);
 		} else {
 			getDrivePID().setOutputRange(0, 0);
 		}
@@ -144,6 +144,10 @@ public class SwerveModule extends GBSubsystem {
 		return ((getAngleEncoderValue()) % VOLTAGE_TO_ROTATIONS) / VOLTAGE_TO_ROTATIONS * 2 * Math.PI;
 	}
 
+	public boolean isOnAngle(){
+		return anglePID.isFinished(getAngle());
+	}
+
 	public int getID() {
 		return ID;
 	}
@@ -179,14 +183,14 @@ public class SwerveModule extends GBSubsystem {
 
 	public void setDrivePower(double drivePower) {
 		if(opMode != OpMode.BY_POWER){
-			System.out.println("power is being set in non power opMode");
+			System.out.println("power is being set in non power opMode  (drive)");
 		}
 		getDriveMotor().set(drivePower * reverseFactor);
 	}
 
 	public void setAnglePower(double anglePower) {
 		if(opMode != OpMode.BY_POWER){
-			System.out.println("power is being set in non power opMode");
+			System.out.println("power is being set in non power opMode  (rotation)");
 		}
 		getRotationMotor().set(anglePower);
 	}
@@ -207,7 +211,7 @@ public class SwerveModule extends GBSubsystem {
 		currAngle = maxAngle(maxAngle(currAngle, currAngleA, getAngleTarget()), currAngleB, getAngleTarget());
 
 		SmartDashboard.putNumber("min err angle", currAngle);
-		getRotationMotor().set(anglePID.calculatePID(currAngle));
+		getRotationMotor().set(Math.min(anglePID.calculatePID(currAngle), 0.1));
 		SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
 	}
 
@@ -256,6 +260,7 @@ public class SwerveModule extends GBSubsystem {
 		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
 		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
 		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
+		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());
 //		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
 
 //		this.time = System.currentTimeMillis() - t0;

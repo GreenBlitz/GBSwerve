@@ -28,12 +28,7 @@ public class OI {
         return instance;
     }
     private void initTestButtons() {
-		mainJoystick.A.whileHeld(new ParallelCommandGroup(
-				new ResetToZero(0.25,0),
-				new ResetToZero(0.25,1),
-				new ResetToZero(0.25,2),
-				new ResetToZero(0.25,3)
-		));
+	    mainJoystick.A.whenPressed(new ResetToZero(0.25, 0), false);
     }
 
 	public SmartJoystick getMainJoystick() {
