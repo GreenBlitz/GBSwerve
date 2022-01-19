@@ -47,6 +47,8 @@ public class SwerveModule extends GBSubsystem {
 		this.rotationMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.ROTATION_MOTORS_REVERSED[ID]);
 		this.driveMotor = new CANSparkMax(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTOR_PORTS[ID], CANSparkMaxLowLevel.MotorType.kBrushless);
 		this.driveMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTORS_REVERSED[ID]);
+		this.driveMotor.setSmartCurrentLimit(40);
+		this.rotationMotor.setSmartCurrentLimit(40);
 		this.angleEncoder = new VersatileAngleEncoder(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID], rotationMotor);
 		this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 	}
@@ -141,7 +143,7 @@ public class SwerveModule extends GBSubsystem {
 
 	// Angle is measured in radians
 	public double getAngle() {
-		return ((getAngleEncoderValue()) % VOLTAGE_TO_ROTATIONS) / VOLTAGE_TO_ROTATIONS * 2 * Math.PI;
+		return angleEncoder.getAngle();
 	}
 
 	public boolean isOnAngle(){
@@ -199,9 +201,11 @@ public class SwerveModule extends GBSubsystem {
 		if(opMode != OpMode.BY_PID){
 			System.out.println("pid is run not in pid opMode");
 		}
-		int newReverseFactor = decideSpinDirection();
-		if (newReverseFactor != reverseFactor) {
-			setAngle(Math.PI + angleTarget);
+		if (!angleEncoder.isLampray()){
+			int newReverseFactor = decideSpinDirection();
+			if (newReverseFactor != reverseFactor) {
+				setAngle(Math.PI + angleTarget);
+			}
 		}
 
 
@@ -214,6 +218,8 @@ public class SwerveModule extends GBSubsystem {
 		getRotationMotor().set(Math.min(anglePID.calculatePID(currAngle), 0.1));
 		SmartDashboard.putNumber("angle pid", anglePID.calculatePID(getAngle()));
 	}
+
+
 
 
 	/**
