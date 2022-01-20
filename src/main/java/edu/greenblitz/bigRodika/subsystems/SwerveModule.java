@@ -22,9 +22,10 @@ public class SwerveModule extends GBSubsystem {
 
 	private final CANSparkMax rotationMotor;
 	private final CANSparkMax driveMotor;
-	private VersatileAngleEncoder angleEncoder;
+	private SparkEncoder angleEncoder;
 	private final SparkEncoder driveEncoder;
 	private CollapsingPIDController anglePID;
+	private CANPIDController drivePID;
 	private int ID;
 	private boolean isDriveInverted, isRotateInverted;
 	private RemoteCSVTarget logger;
@@ -49,8 +50,9 @@ public class SwerveModule extends GBSubsystem {
 		this.driveMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTORS_REVERSED[ID]);
 		this.driveMotor.setSmartCurrentLimit(40);
 		this.rotationMotor.setSmartCurrentLimit(40);
-		this.angleEncoder = new VersatileAngleEncoder(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID], rotationMotor);
-		this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+		this.angleEncoder = new SparkEncoder(NORMALIZER_SPARK, rotationMotor);
+		this.angleEncoder.reset();
+		this.driveEncoder = new SparkEncoder(NORMALIZER_SPARK, driveMotor);
 	}
 
 	public void init() {
@@ -58,7 +60,7 @@ public class SwerveModule extends GBSubsystem {
 		angleTarget = getAngle();
 //		t0 = System.currentTimeMillis();
 		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
-		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.01, 0.01);
+		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, ANGLE_TOLERANCE, 0.01);
 		this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
 	}
 
@@ -75,16 +77,12 @@ public class SwerveModule extends GBSubsystem {
 		}
 	}
 
-	public void setIsLamprey(boolean isLamprey){
-		angleEncoder.setLampray(isLamprey);
-	}
-
 	public void configureDrive(double p, double i, double d) {
-		CANPIDController controller = this.driveMotor.getPIDController();
+		this.drivePID= this.driveMotor.getPIDController();
 
-		controller.setP(p);
-		controller.setI(i);
-		controller.setD(d);
+		drivePID.setP(p);
+		drivePID.setI(i);
+		drivePID.setD(d);
 	}
 
 	public void configureRotation(double p, double i, double d, double tolerance, double thresh) {
@@ -95,7 +93,7 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	private CANPIDController getDrivePID() {
-		return getDriveMotor().getPIDController();
+		return drivePID;
 	}
 
 	public void setSpeed(double speed) {
@@ -103,8 +101,7 @@ public class SwerveModule extends GBSubsystem {
 			System.out.println("trying to set speed but pid is disabled");
 		}
 		this.driveTarget = speed * reverseFactor;
-		getDriveMotor().getPIDController().setReference(driveTarget, ControlType.kVelocity);
-		System.out.println(SPEED_TO_FF.linearlyInterpolate(driveTarget)[0]);
+		getDrivePID().setReference(driveTarget, ControlType.kVelocity);
 		getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(driveTarget)[0]);
 	}
 
@@ -143,7 +140,7 @@ public class SwerveModule extends GBSubsystem {
 
 	// Angle is measured in radians
 	public double getAngle() {
-		return angleEncoder.getAngle();
+		return ((angleEncoder.getRawTicks()) % TICKS_PER_ANGLE_ROTATION) / TICKS_PER_ANGLE_ROTATION * 2 * Math.PI;
 	}
 
 	public boolean isOnAngle(){
@@ -201,11 +198,9 @@ public class SwerveModule extends GBSubsystem {
 		if(opMode != OpMode.BY_PID){
 			System.out.println("pid is run not in pid opMode");
 		}
-		if (!angleEncoder.isLampray()){
-			int newReverseFactor = decideSpinDirection();
-			if (newReverseFactor != reverseFactor) {
-				setAngle(Math.PI + angleTarget);
-			}
+		int newReverseFactor = decideSpinDirection();
+		if (newReverseFactor != reverseFactor) {
+			setAngle(Math.PI + angleTarget);
 		}
 
 
@@ -256,7 +251,7 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public double getAngleEncoderValue() {
-		return angleEncoder.getEncoderValue();
+		return angleEncoder.getRawTicks();
 	}
 
 	@Override
