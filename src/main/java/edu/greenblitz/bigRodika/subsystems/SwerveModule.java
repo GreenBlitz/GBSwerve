@@ -8,7 +8,6 @@ import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.greenblitz.util.VersatileAngleEncoder;
-import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.greenblitz.debug.RemoteCSVTarget;
 import org.greenblitz.motion.pid.CollapsingPIDController;
@@ -76,7 +75,7 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public void setIsLamprey(boolean isLamprey){
-		angleEncoder.setLampray(isLamprey);
+		angleEncoder.setLamprey(isLamprey);
 	}
 
 	public void configureDrive(double p, double i, double d) {
@@ -201,7 +200,7 @@ public class SwerveModule extends GBSubsystem {
 		if(opMode != OpMode.BY_PID){
 			System.out.println("pid is run not in pid opMode");
 		}
-		if (!angleEncoder.isLampray()){
+		if (!angleEncoder.isLamprey()){
 			int newReverseFactor = decideSpinDirection();
 			if (newReverseFactor != reverseFactor) {
 				setAngle(Math.PI + angleTarget);
@@ -255,7 +254,7 @@ public class SwerveModule extends GBSubsystem {
 	public void initDefaultCommand() {
 	}
 
-	public double getAngleEncoderValue() {
+	public int getAngleEncoderValue() {
 		return angleEncoder.getEncoderValue();
 	}
 
@@ -263,10 +262,10 @@ public class SwerveModule extends GBSubsystem {
 	public void periodic() {
 		super.periodic();
 
-		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
-		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
-		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
-		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());
+//		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
+//		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
+//		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
+//		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());
 //		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
 
 //		this.time = System.currentTimeMillis() - t0;

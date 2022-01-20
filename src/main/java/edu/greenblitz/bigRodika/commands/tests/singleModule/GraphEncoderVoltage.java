@@ -10,7 +10,7 @@ public class GraphEncoderVoltage extends GBCommand {
 
 	private static final long TIMEOUT = 200;
 	private RemoteCSVTarget logger;
-	private LinkedList<Pair<Long, Double>> values;
+	private LinkedList<Pair<Long, Integer>> values;
 	private long t0;
 
 	public GraphEncoderVoltage() {

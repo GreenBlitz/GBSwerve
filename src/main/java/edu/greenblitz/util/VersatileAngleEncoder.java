@@ -4,40 +4,48 @@ import com.revrobotics.CANSparkMax;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
 
-import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.VOLTAGE_TO_ROTATIONS;
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.Modules.TICKS_PER_ROTATION;
 import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK;
 
 public class VersatileAngleEncoder {
 	private AnalogInput lamprey;
 	private SparkEncoder neoEncoder;
-	private boolean isLampray = false;
+	private boolean isLamprey = false;
 
 	public VersatileAngleEncoder(int lampreyID, CANSparkMax motor){
 		lamprey = new AnalogInput(lampreyID);
 		neoEncoder = new SparkEncoder(NORMALIZER_SPARK, motor);
+		neoEncoder.reset();
 	}
 
-	public void setLampray(boolean lampray) {
-		isLampray = lampray;
+	public void setLamprey(boolean lamprey) {
+		isLamprey = lamprey;
 	}
 
-	public boolean isLampray() {
-		return isLampray;
+	public boolean isLamprey() {
+		return isLamprey;
 	}
 
-	public double getEncoderValue(){
-		if(isLampray) {
-			return lamprey.getVoltage();
+	public int getEncoderValue(){
+		if(isLamprey) {
+			return lamprey.getValue();
 		}else{
-			return neoEncoder.getRawTicks();
+			return ((neoEncoder.getRawTicks()) % (TICKS_PER_ROTATION * 6));
 		}
 	}
 	public double getAngle(){
-		if(isLampray) {
-			return lamprey.getVoltage() * 3.3/(2*Math.PI);
+		if(isLamprey) {
+			return lamprey.getVoltage() / 360 * (2*Math.PI);
 		}else{
-			return ((neoEncoder.getRawTicks()) % VOLTAGE_TO_ROTATIONS) / VOLTAGE_TO_ROTATIONS * 2 * Math.PI;
+			return ((neoEncoder.getRawTicks()) % (TICKS_PER_ROTATION * 6)) / (TICKS_PER_ROTATION * 6.0) * 2 * Math.PI;
 		}
 	}
 
+	public double getAngleByNeo(){
+		return ((neoEncoder.getRawTicks()) % (TICKS_PER_ROTATION * 6)) / (TICKS_PER_ROTATION * 6.0) * 2 * Math.PI;
+	}
+
+	public double getAngleByLamprey(){
+			return lamprey.getVoltage() / 360 * (2*Math.PI);
+		}
 }

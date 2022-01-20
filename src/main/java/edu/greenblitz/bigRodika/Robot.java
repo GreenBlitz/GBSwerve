@@ -2,6 +2,7 @@ package edu.greenblitz.bigRodika;
 
 import edu.greenblitz.bigRodika.subsystems.Chassis;
 
+import edu.greenblitz.bigRodika.subsystems.SingleModule;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -9,7 +10,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-	    Chassis.init();
+	    SingleModule.getInstance();
         OI.getInstance();
     }
 
