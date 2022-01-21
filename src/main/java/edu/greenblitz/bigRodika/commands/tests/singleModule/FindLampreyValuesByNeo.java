@@ -13,25 +13,33 @@ import java.util.HashSet;
 
 public class FindLampreyValuesByNeo extends GBCommand {
 	private RemoteCSVTarget target;
-	private HashMap<Double, ArrayList<Integer>> buffer;
+	private HashMap<Double, ArrayList<Double>> buffer;
 	private HashSet<Integer> isItInThereYet;
 	private double power;
 	private int targetTicks;
 
-	public FindLampreyValuesByNeo(double power){
+	private int currentID;
+
+	public FindLampreyValuesByNeo(double power, int id){
 		this.power = power;
 		buffer = new HashMap<>();
 		isItInThereYet = new HashSet<>();
+		this.currentID = id;
 	}
 
 	@Override
 	public void initialize() {
-		target = RemoteCSVTarget.initTarget("neoToLamprey", "neo value", "lamprey median");
+		String fileName = "neoToLamprey" + Integer.toString(this.currentID);
+		target = RemoteCSVTarget.initTarget(fileName, "neo value", "lamprey median");
 		SingleModule.getInstance().getModule().setOpMode(OpMode.BY_POWER);
 	}
 
 	@Override
 	public void execute() {
+		SingleModule.getInstance().getModule().setIsLamprey(true);
+		SmartDashboard.putNumber("Lamprey Angle Mentors", SingleModule.getInstance().getModule().getAngle() / (2*Math.PI) * 360);
+		SmartDashboard.putNumber("Raw Analog In", SingleModule.getInstance().getModule().getRawLamprey());
+
 		SingleModule.getInstance().getModule().setAnglePower(power);
 		SingleModule.getInstance().getModule().setIsLamprey(false);
 		double neoRadians = SingleModule.getInstance().getModule().getAngle();
@@ -46,7 +54,7 @@ public class FindLampreyValuesByNeo extends GBCommand {
 		SmartDashboard.putNumber("target ticks", targetTicks);
 
 		SingleModule.getInstance().getModule().setIsLamprey(true);
-		int lampreyVoltage = SingleModule.getInstance().getModule().getAngleEncoderValue();
+		double lampreyVoltage = SingleModule.getInstance().getModule().getAngle();
 		if (!buffer.containsKey(neoRadians)) {
 			buffer.put(neoRadians, new ArrayList<>(15));
 			isItInThereYet.add(neoTicks);
@@ -61,7 +69,9 @@ public class FindLampreyValuesByNeo extends GBCommand {
 		SingleModule.getInstance().getModule().setAnglePower(0);
 		for (int i = 0; i < buffer.size(); i++) {
 			Collections.sort(buffer.get(keys[i]));
-			target.report(Double.parseDouble(keys[i].toString()), buffer.get(keys[i]).get(buffer.get(keys[i]).size()/2));
+			target.report(Double.parseDouble(keys[i].toString()),
+					buffer.get(keys[i]).get(buffer.get(keys[i]).size()/2),
+					buffer.get(keys[i]).size());
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {

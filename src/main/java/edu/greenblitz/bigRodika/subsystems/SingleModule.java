@@ -1,6 +1,7 @@
 package edu.greenblitz.bigRodika.subsystems;
 
 import edu.greenblitz.bigRodika.OI;
+import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.tests.singleModule.DumbSwerve;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -10,7 +11,7 @@ public class SingleModule extends GBSubsystem {
 
     private SingleModule() {
         SmartDashboard.putNumber("referenceSpeed", -1);
-        module = new SwerveModule(2);
+        module = new SwerveModule(RobotMap.Limbo2.Chassis.SwerveModule.MEATBALL);
 
     }
 

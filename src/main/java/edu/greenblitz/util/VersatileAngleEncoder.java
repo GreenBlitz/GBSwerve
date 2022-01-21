@@ -13,7 +13,8 @@ public class VersatileAngleEncoder {
 	private boolean isLamprey = false;
 
 	public VersatileAngleEncoder(int lampreyID, CANSparkMax motor){
-		lamprey = new AnalogInput(lampreyID);
+		lamprey = new AnalogInput(lampreyID);   //TODO: Anda: Add variable specific to each object that stores the maximum of ADC that each encoder gave.
+		lamprey.setAverageBits(2);
 		neoEncoder = new SparkEncoder(NORMALIZER_SPARK, motor);
 		neoEncoder.reset();
 	}
@@ -35,7 +36,7 @@ public class VersatileAngleEncoder {
 	}
 	public double getAngle(){
 		if(isLamprey) {
-			return lamprey.getVoltage() / 360 * (2*Math.PI);
+			return (((double)lamprey.getAverageValue()) / 4076)  * (2*Math.PI);
 		}else{
 			return ((neoEncoder.getRawTicks()) % (TICKS_PER_ROTATION * 6)) / (TICKS_PER_ROTATION * 6.0) * 2 * Math.PI;
 		}
@@ -46,6 +47,10 @@ public class VersatileAngleEncoder {
 	}
 
 	public double getAngleByLamprey(){
-			return lamprey.getVoltage() / 360 * (2*Math.PI);
+			return (((double)lamprey.getAverageValue()) / 4076)  * (2*Math.PI);
 		}
+
+	public int getLampreyADCValue(){
+		return lamprey.getAverageValue();
+	}
 }

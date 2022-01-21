@@ -32,7 +32,8 @@ public class OI {
     private void initTestButtons() {
 //	    mainJoystick.A.whenPressed(new ResetToZero(0.005));
 //	    mainJoystick.B.whileHeld(new TestSingleModule(3,0,0.165));
-	    mainJoystick.A.whileHeld(new FindLampreyValuesByNeo(0.0));
+	    mainJoystick.A.whileHeld(new FindLampreyValuesByNeo(0.0  , RobotMap.Limbo2.Chassis.SwerveModule.MEATBALL));
+
     }
 
 	public SmartJoystick getMainJoystick() {

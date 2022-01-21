@@ -145,6 +145,10 @@ public class SwerveModule extends GBSubsystem {
 		return angleEncoder.getAngle();
 	}
 
+	public int getRawLamprey(){
+		return angleEncoder.getLampreyADCValue();
+	}
+
 	public boolean isOnAngle(){
 		return anglePID.isFinished(getAngle());
 	}
