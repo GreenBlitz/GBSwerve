@@ -49,6 +49,20 @@ public class Chassis extends GBSubsystem {
         return instance;
     }
 
+	public void setTargets(double[] speeds, double[] angles){
+		for (int i = 0; i < swerveModules.length; i++) {
+			swerveModules[i].setSpeed(speeds[i]);
+			swerveModules[i].setAngle(angles[i]);
+		}
+	}
+
+	public void resetTargets(){
+		for (int i = 0; i < swerveModules.length; i++) {
+			swerveModules[i].setSpeed(0);
+			swerveModules[i].setAngle(swerveModules[i].getAngle());
+		}
+	}
+
     public void moveMotors(double[] drive, double[] rotation, boolean fieldOriented) {
 	    if(opMode != OpMode.BY_POWER){
 		    System.out.println("power is being set in non power opMode (Chassis)");

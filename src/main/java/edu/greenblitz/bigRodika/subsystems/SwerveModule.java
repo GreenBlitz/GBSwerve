@@ -8,6 +8,7 @@ import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.gblib.encoder.SparkEncoder;
 import edu.greenblitz.util.VersatileAngleEncoder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.greenblitz.debug.RemoteCSVTarget;
 import org.greenblitz.motion.pid.CollapsingPIDController;
@@ -24,6 +25,7 @@ public class SwerveModule extends GBSubsystem {
 	private VersatileAngleEncoder angleEncoder;
 	private final SparkEncoder driveEncoder;
 	private CollapsingPIDController anglePID;
+	private CANPIDController drivePID;
 	private int ID;
 	private boolean isDriveInverted, isRotateInverted;
 	private RemoteCSVTarget logger;
@@ -57,7 +59,7 @@ public class SwerveModule extends GBSubsystem {
 		angleTarget = getAngle();
 //		t0 = System.currentTimeMillis();
 		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
-		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, 0.01, 0.01);
+		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, ANGLE_TOLERANCE, 0.01);
 		this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
 	}
 
@@ -79,11 +81,11 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public void configureDrive(double p, double i, double d) {
-		CANPIDController controller = this.driveMotor.getPIDController();
+		this.drivePID= this.driveMotor.getPIDController();
 
-		controller.setP(p);
-		controller.setI(i);
-		controller.setD(d);
+		drivePID.setP(p);
+		drivePID.setI(i);
+		drivePID.setD(d);
 	}
 
 	public void configureRotation(double p, double i, double d, double tolerance, double thresh) {
@@ -94,7 +96,7 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	private CANPIDController getDrivePID() {
-		return getDriveMotor().getPIDController();
+		return drivePID;
 	}
 
 	public void setSpeed(double speed) {
@@ -102,8 +104,7 @@ public class SwerveModule extends GBSubsystem {
 			System.out.println("trying to set speed but pid is disabled");
 		}
 		this.driveTarget = speed * reverseFactor;
-		getDriveMotor().getPIDController().setReference(driveTarget, ControlType.kVelocity);
-		System.out.println(SPEED_TO_FF.linearlyInterpolate(driveTarget)[0]);
+		getDrivePID().setReference(driveTarget, ControlType.kVelocity);
 		getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(driveTarget)[0]);
 	}
 
@@ -143,10 +144,6 @@ public class SwerveModule extends GBSubsystem {
 	// Angle is measured in radians
 	public double getAngle() {
 		return angleEncoder.getAngle();
-	}
-
-	public int getRawLamprey(){
-		return angleEncoder.getLampreyADCValue();
 	}
 
 	public boolean isOnAngle(){
@@ -204,11 +201,9 @@ public class SwerveModule extends GBSubsystem {
 		if(opMode != OpMode.BY_PID){
 			System.out.println("pid is run not in pid opMode");
 		}
-		if (!angleEncoder.isLamprey()){
-			int newReverseFactor = decideSpinDirection();
-			if (newReverseFactor != reverseFactor) {
-				setAngle(Math.PI + angleTarget);
-			}
+		int newReverseFactor = decideSpinDirection();
+		if (newReverseFactor != reverseFactor) {
+			setAngle(Math.PI + angleTarget);
 		}
 
 
@@ -266,10 +261,10 @@ public class SwerveModule extends GBSubsystem {
 	public void periodic() {
 		super.periodic();
 
-//		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
-//		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
-//		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
-//		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());
+		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
+		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
+		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
+		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());
 //		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
 
 //		this.time = System.currentTimeMillis() - t0;

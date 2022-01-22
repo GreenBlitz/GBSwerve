@@ -1,3 +1,4 @@
+/*
 package edu.greenblitz.bigRodika.commands.tests.chassis;
 
 import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
@@ -56,3 +57,4 @@ public class ResetToZero extends ChassisCommand {
 	}
 
 }
+*/
