@@ -57,6 +57,8 @@ public class RobotMap {
                 public static final double TICKS_TO_METERS = WHEEL_PERIMETER / TICKS_PER_ROTATION; // TODO: insert gear conversion in swerve module to constant
                 public static final double DRIVE_GEAR_RATIO = 0.125;
                 public static final double ROTATION_GEAR_RATIO = 1.0 / 6;
+				public static final int[] LAMPREY_ADC_MAX = {4096, 4076, 4096, 4096}; //Maximum value that ADC at analog port gives for 359~360 degrees of Lamprey
+				public static final int[] LAMPREY_AVG_AMT = {2, 2, 2, 2}; //Amount (2^LAMPREY_AVG_AMT[ID]) of samples averaged to smooth the output of Lamprey
 
                 public static final boolean[] DRIVE_MOTORS_REVERSED = {false, false, true, true};
                 public static final boolean[] ROTATION_MOTORS_REVERSED = {false, false, false, false};

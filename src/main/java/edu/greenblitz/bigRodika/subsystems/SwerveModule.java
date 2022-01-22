@@ -22,7 +22,8 @@ public class SwerveModule extends GBSubsystem {
 
 	private final CANSparkMax rotationMotor;
 	private final CANSparkMax driveMotor;
-	private VersatileAngleEncoder angleEncoder;
+	private AnalogInput angleEncoder;
+	private int ADCMax;
 	private final SparkEncoder driveEncoder;
 	private CollapsingPIDController anglePID;
 	private CANPIDController drivePID;
@@ -50,7 +51,8 @@ public class SwerveModule extends GBSubsystem {
 		this.driveMotor.setInverted(RobotMap.Limbo2.Chassis.Modules.DRIVE_MOTORS_REVERSED[ID]);
 		this.driveMotor.setSmartCurrentLimit(40);
 		this.rotationMotor.setSmartCurrentLimit(40);
-		this.angleEncoder = new VersatileAngleEncoder(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID], rotationMotor);
+		this.angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);
+		this.angleEncoder.setAverageBits(LAMPREY_AVG_AMT[ID]);
 		this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
 	}
 
@@ -76,9 +78,6 @@ public class SwerveModule extends GBSubsystem {
 		}
 	}
 
-	public void setIsLamprey(boolean isLamprey){
-		angleEncoder.setLamprey(isLamprey);
-	}
 
 	public void configureDrive(double p, double i, double d) {
 		this.drivePID= this.driveMotor.getPIDController();
@@ -143,7 +142,7 @@ public class SwerveModule extends GBSubsystem {
 
 	// Angle is measured in radians
 	public double getAngle() {
-		return angleEncoder.getAngle();
+		return ((double)(angleEncoder.getAverageValue()) / LAMPREY_ADC_MAX[ID]) * (2 * Math.PI);
 	}
 
 	public boolean isOnAngle(){
@@ -254,7 +253,7 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public int getAngleEncoderValue() {
-		return angleEncoder.getEncoderValue();
+		return angleEncoder.getAverageValue();
 	}
 
 	@Override
