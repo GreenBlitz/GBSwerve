@@ -11,7 +11,6 @@ import edu.greenblitz.gblib.hid.SmartJoystick;
 public class SimpleHolonomicDrive extends ChassisCommand {
 
     private final SmartJoystick joystick;
-    private final Chassis chassis;
     private boolean fieldOriented = true;
 
     private static final double POWER_CONST = 1.0;

@@ -4,6 +4,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import edu.greenblitz.bigRodika.OI;
 import edu.greenblitz.bigRodika.RobotMap;
+import edu.greenblitz.bigRodika.commands.SimpleHolonomicDrive;
 import edu.greenblitz.bigRodika.commands.chassis.HolonomicDrive;
 import edu.greenblitz.bigRodika.commands.tests.chassis.DumbHolonomic;
 import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
@@ -303,7 +304,7 @@ public class Chassis extends GBSubsystem {
 	}
 
     public void initDefaultCommand() {
-        setDefaultCommand(new HolonomicDrive(OI.getInstance().getMainJoystick(), true, 0.4));
+        setDefaultCommand(new SimpleHolonomicDrive(OI.getInstance().getMainJoystick()));
     }
 
     public void initTestCommand() {

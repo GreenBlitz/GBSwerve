@@ -1,6 +1,8 @@
 package edu.greenblitz.bigRodika;
 
 
+import edu.greenblitz.bigRodika.commands.Rotate;
+import edu.greenblitz.bigRodika.commands.SimpleHolonomicDrive;
 import edu.greenblitz.bigRodika.commands.TestSingleModule;
 import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
 import edu.greenblitz.bigRodika.commands.chassis.DriveByConstantSpeed;
@@ -32,10 +34,10 @@ public class OI {
         return instance;
     }
     private void initTestButtons() {
-		mainJoystick.A.whileHeld(new GoToAngle(8*Math.PI/4));
-	    mainJoystick.B.whileHeld(new GoToAngle(5*Math.PI/4));
-		mainJoystick.X.whileHeld(new GoToAngle(3*Math.PI/4));
-	    mainJoystick.Y.whileHeld(new GoToAngle(Math.PI/2));
+		mainJoystick.A.whileHeld(new Rotate(0.3));
+		mainJoystick.B.whileHeld(new Rotate(-0.3));
+		mainJoystick.X.whileHeld(new Rotate(0.5));
+		mainJoystick.Y.whileHeld(new Rotate(-0.1));
     }
 
 	public SmartJoystick getMainJoystick() {
