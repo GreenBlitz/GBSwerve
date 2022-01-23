@@ -32,10 +32,10 @@ public class OI {
         return instance;
     }
     private void initTestButtons() {
-		mainJoystick.A.whileHeld(new GoToAngle(0*Math.PI/4));
+		mainJoystick.A.whileHeld(new GoToAngle(8*Math.PI/4));
 	    mainJoystick.B.whileHeld(new GoToAngle(5*Math.PI/4));
-	    mainJoystick.X.whileHeld(new GoToAngle(3*Math.PI/4));
-	    mainJoystick.Y.whileHeld(new GoToAngle(2*Math.PI/4));
+		mainJoystick.X.whileHeld(new GoToAngle(3*Math.PI/4));
+	    mainJoystick.Y.whileHeld(new GoToAngle(Math.PI/2));
     }
 
 	public SmartJoystick getMainJoystick() {

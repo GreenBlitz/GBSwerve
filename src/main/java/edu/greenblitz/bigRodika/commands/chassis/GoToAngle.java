@@ -7,8 +7,6 @@ import edu.greenblitz.bigRodika.subsystems.SwerveModule;
 
 public class GoToAngle extends ChassisCommand{
 	private final double angle;
-	private static final SwerveModule[] modules = new SwerveModule[]{Chassis.getInstance().getSwerveModules()[0],
-			Chassis.getInstance().getSwerveModules()[1], Chassis.getInstance().getSwerveModules()[2]};
 
 	public GoToAngle(double angle){
 		this.angle = angle;
@@ -18,12 +16,12 @@ public class GoToAngle extends ChassisCommand{
 	@Override
 	public void initialize() {
 		chassis.setModuleOpMode(OpMode.BY_PID);
-		chassis.setTargets(new double[]{0,0,0,0}, new double[]{angle,angle,angle,chassis.getSwerveModules()[3].getAngle()});
+		chassis.setTargets(new double[]{0,0,0,0}, new double[]{angle,angle,angle,angle});
 	}
 
 	@Override
 	public void execute() {
-		chassis.setTargets(new double[]{0,0,0,0}, new double[]{angle,angle,angle,chassis.getSwerveModules()[3].getAngle()});
+		chassis.setTargets(new double[]{0,0,0,0}, new double[]{angle,angle,angle,angle});
 	}
 
 	@Override
@@ -34,7 +32,7 @@ public class GoToAngle extends ChassisCommand{
 	@Override
 	public boolean isFinished() {
 		boolean isFinished = true;
-		for(SwerveModule module:modules){
+		for(SwerveModule module: chassis.getSwerveModules()){
 			isFinished = isFinished && module.isOnAngle();
 		}
 		return isFinished;
