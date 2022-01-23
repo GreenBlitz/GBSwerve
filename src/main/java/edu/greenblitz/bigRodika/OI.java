@@ -4,6 +4,7 @@ package edu.greenblitz.bigRodika;
 import edu.greenblitz.bigRodika.commands.TestSingleModule;
 import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
 import edu.greenblitz.bigRodika.commands.chassis.DriveByConstantSpeed;
+import edu.greenblitz.bigRodika.commands.chassis.GoToAngle;
 import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -31,23 +32,10 @@ public class OI {
         return instance;
     }
     private void initTestButtons() {
-		mainJoystick.A.whileHeld(new DriveByConstantSpeed(0.1));
-	    mainJoystick.B.whileHeld(new ChassisCommand(){
-		    @Override
-		    public void initialize() {
-			    chassis.setModuleOpMode(OpMode.BY_POWER);
-		    }
-
-		    @Override
-		    public void execute() {
-			    chassis.moveMotors(new double[] {0.3,0.3,0.3,0.3}, new double[] {0,0,0,0}, false);
-		    }
-
-		    @Override
-		    public void end(boolean interrupted) {
-			    chassis.stopMotors();
-		    }
-	    });
+		mainJoystick.A.whileHeld(new GoToAngle(0*Math.PI/4));
+	    mainJoystick.B.whileHeld(new GoToAngle(5*Math.PI/4));
+	    mainJoystick.X.whileHeld(new GoToAngle(3*Math.PI/4));
+	    mainJoystick.Y.whileHeld(new GoToAngle(2*Math.PI/4));
     }
 
 	public SmartJoystick getMainJoystick() {

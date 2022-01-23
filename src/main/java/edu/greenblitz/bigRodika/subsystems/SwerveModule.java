@@ -64,7 +64,7 @@ public class SwerveModule extends GBSubsystem {
 		angleTarget = getAngle();
 //		t0 = System.currentTimeMillis();
 		configureDrive(DRIVE_P, DRIVE_I, DRIVE_D);
-		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, ANGLE_TOLERANCE, 0.01);
+		configureRotation(ANGLE_P, ANGLE_I, ANGLE_D, ANGLE_TOLERANCE, 0.05);
 		this.logger = RemoteCSVTarget.initTarget(String.format("SwerveModule%d", ID), "time", "moduleAngle", "moduleSpeed", "target");
 	}
 
@@ -93,7 +93,7 @@ public class SwerveModule extends GBSubsystem {
 
 	public void configureRotation(double p, double i, double d, double tolerance, double thresh) {
 		anglePID = new CollapsingPIDController(new PIDObject(p, i, d), thresh);
-		anglePID.configure(getAngle(), angleTarget, -0.3, 0.3, 0);
+		anglePID.configure(getAngle(), angleTarget, -0.2, 0.2, 0);
 		SmartDashboard.putNumber("angle target", getAngle());
 		anglePID.setTolerance((goal, current) -> Math.abs(goal - current) < tolerance);
 	}
@@ -113,7 +113,7 @@ public class SwerveModule extends GBSubsystem {
 
 	public int decideSpinDirection() {
 		double currentAngle = getAngle();
-		double clockWise = currentAngle - angleTarget;
+		double clockWise = (currentAngle - angleTarget)%(Math.PI);
 		double counterClockWise = Math.PI - clockWise;
 		double newAngleTarget = angleTarget;
 		int reverseFactor;
@@ -208,6 +208,7 @@ public class SwerveModule extends GBSubsystem {
 		int newReverseFactor = decideSpinDirection();
 		if (newReverseFactor != reverseFactor) {
 			setAngle(Math.PI + angleTarget);
+			reverseFactor=newReverseFactor;
 		}
 
 
@@ -266,11 +267,11 @@ public class SwerveModule extends GBSubsystem {
 		super.periodic();
 
 		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
-		SmartDashboard.putNumber(String.format("Angle%d (degrees): ", this.ID), (this.getAngle() / (Math.PI * 2) * 360 ));
+		SmartDashboard.putNumber(String.format("Angle%d : ", this.ID), (this.getAngle()));
 		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
 		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());
-		SmartDashboard.putNumber(String.format("max%d: ", this.ID), Math.max(this.getAngleEncoderValue(), SmartDashboard.getNumber(String.format("max%d: ", this.ID), 0)));
-		SmartDashboard.putNumber(String.format("min%d: ", this.ID), Math.min(this.getAngleEncoderValue(), SmartDashboard.getNumber(String.format("min%d: ", this.ID), 4096)));
+		SmartDashboard.putBoolean(String.format("onTarget%d: ", this.ID),this.isOnAngle());
+		SmartDashboard.putNumber(String.format("reverseFactor%d: ", this.ID),this.reverseFactor);
 //		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
 
 //		this.time = System.currentTimeMillis() - t0;

@@ -77,7 +77,7 @@ public class RobotMap {
             public static class SwerveModule {
 				public static final int MEATBALL = 1;
                 public static final double DRIVE_P = 0, DRIVE_I = 0, DRIVE_D = 0, DRIVE_MIN = -0.3, DRIVE_MAX = 0.3,
-		                ANGLE_P = 0, ANGLE_I = 0.000, ANGLE_D = 0.0, ANGLE_TOLERANCE = 0.01/*RAD*/;
+		                ANGLE_P = 0.35, ANGLE_I = 0.000, ANGLE_D = 0.0, ANGLE_TOLERANCE = 0.03/*RAD*/;
 
                 public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<Double>(42.0, 2048.0); // TODO: GearDependentValues are deprecated, should be a constant value.
                 public static Dataset SPEED_TO_FF = new Dataset(2);
