@@ -78,6 +78,10 @@ public class Chassis extends GBSubsystem {
         moveMotorsLimited(drive, rotation);
     }
 
+    public void moveMotors(double drive, double rotation, boolean fieldOriented){
+        moveMotors(new double[]{drive,drive,drive,drive}, new double[]{rotation,rotation,rotation,rotation}, fieldOriented);
+    }
+
     public void moveMotor(int id, double drive, double rotation, boolean fieldOriented) {
         
 

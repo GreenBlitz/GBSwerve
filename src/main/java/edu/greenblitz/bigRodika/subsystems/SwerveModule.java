@@ -34,7 +34,7 @@ public class SwerveModule extends GBSubsystem {
 //	private double time;
 	private double driveTarget = -1;
 	private OpMode opMode;
-	private int reverseFactor = 1;
+//	private int reverseFactor = 1;
 	private final double EPSILON = 0.005;
 
 
@@ -106,35 +106,35 @@ public class SwerveModule extends GBSubsystem {
 		if(opMode != OpMode.BY_PID){
 			System.out.println("trying to set speed but pid is disabled");
 		}
-		this.driveTarget = speed * reverseFactor;
+		this.driveTarget = speed; /* reverseFactor;*/
 		getDrivePID().setReference(driveTarget/DRIVE_GEAR_RATIO, ControlType.kVelocity);
 		getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(driveTarget)[0]);
 	}
 
-	public int decideSpinDirection() {
-		double currentAngle = getAngle();
-		double clockWise = (currentAngle - angleTarget)%(Math.PI);
-		double counterClockWise = Math.PI - clockWise;
-		double newAngleTarget = angleTarget;
-		int reverseFactor;
-		if (clockWise >= counterClockWise) {
-//			setAngle(Math.PI + newAngleTarget);
-			reverseFactor = -1;
-		} else {
-//			setAngle(newAngleTarget);
-			reverseFactor = 1;
-		}
-		return reverseFactor;
-	}
-
-	public void invertReverseFactor() {
-		reverseFactor = -reverseFactor;
-		setSpeed(driveTarget);
-	}
-
-	public int getReverseFactor() {
-		return reverseFactor;
-	}
+//	public int decideSpinDirection() {
+//		double currentAngle = getAngle();
+//		double clockWise = (currentAngle - angleTarget)%(Math.PI);
+//		double counterClockWise = Math.PI - clockWise;
+//		double newAngleTarget = angleTarget;
+//		int reverseFactor;
+//		if (clockWise >= counterClockWise) {
+////			setAngle(Math.PI + newAngleTarget);
+//			reverseFactor = -1;
+//		} else {
+////			setAngle(newAngleTarget);
+//			reverseFactor = 1;
+//		}
+//		return reverseFactor;
+//	}
+//
+//	public void invertReverseFactor() {
+//		reverseFactor = -reverseFactor;
+//		setSpeed(driveTarget);
+//	}
+//
+//	public int getReverseFactor() {
+//		return reverseFactor;
+//	}
 
 	public void setAngle(double angle) {
 		angle = angle % (2 * Math.PI);
@@ -191,7 +191,7 @@ public class SwerveModule extends GBSubsystem {
 		if(opMode != OpMode.BY_POWER){
 			System.out.println("power is being set in non power opMode  (drive)");
 		}
-		getDriveMotor().set(drivePower * reverseFactor);
+		getDriveMotor().set(drivePower); /* reverseFactor);*/
 	}
 
 	public void setAnglePower(double anglePower) {
@@ -205,11 +205,11 @@ public class SwerveModule extends GBSubsystem {
 		if(opMode != OpMode.BY_PID){
 			System.out.println("pid is run not in pid opMode");
 		}
-		int newReverseFactor = decideSpinDirection();
-		if (newReverseFactor != reverseFactor) {
-			setAngle(Math.PI + angleTarget);
-			reverseFactor=newReverseFactor;
-		}
+//		int newReverseFactor = decideSpinDirection();
+//		if (newReverseFactor != reverseFactor) {
+//			setAngle(Math.PI + angleTarget);
+//			reverseFactor=newReverseFactor;
+//		}
 
 
 		double currAngle = getAngle();
@@ -271,7 +271,7 @@ public class SwerveModule extends GBSubsystem {
 		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
 		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());
 		SmartDashboard.putBoolean(String.format("onTarget%d: ", this.ID),this.isOnAngle());
-		SmartDashboard.putNumber(String.format("reverseFactor%d: ", this.ID),this.reverseFactor);
+//		SmartDashboard.putNumber(String.format("reverseFactor%d: ", this.ID),this.reverseFactor);
 //		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
 
 //		this.time = System.currentTimeMillis() - t0;

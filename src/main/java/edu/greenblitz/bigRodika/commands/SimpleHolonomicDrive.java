@@ -12,12 +12,13 @@ public class SimpleHolonomicDrive extends ChassisCommand {
 
     private final SmartJoystick joystick;
     private final Chassis chassis;
-    private final double POWER_CONST = 1.0;
     private boolean fieldOriented = true;
+
+    private static final double POWER_CONST = 1.0;
 
     public SimpleHolonomicDrive(SmartJoystick joystick) {
         this.joystick = joystick;
-        chassis = Chassis.getInstance();
+        this.chassis = Chassis.getInstance();
     }
 
     @Override
@@ -36,7 +37,7 @@ public class SimpleHolonomicDrive extends ChassisCommand {
 //                angle = angle - chassis.getAngle();
 	    }
 
-        chassis.moveMotors(new double[]{power, power, power, power}, new double[]{angle, angle, angle, angle}, false);
+        chassis.moveMotors(power, angle, false);
         //TODO: change fieldOriented to be right
     }
 
