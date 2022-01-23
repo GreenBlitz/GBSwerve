@@ -37,6 +37,8 @@ public class SwerveModule extends GBSubsystem {
 	private int reverseFactor = 1;
 	private final double EPSILON = 0.005;
 
+
+
 	public double getAngleTarget() {
 		return angleTarget;
 	}
@@ -54,6 +56,7 @@ public class SwerveModule extends GBSubsystem {
 		this.angleEncoder = new AnalogInput(RobotMap.Limbo2.Chassis.Modules.LAMPREY_ANALOG_PORTS[ID]);
 		this.angleEncoder.setAverageBits(LAMPREY_AVG_AMT[ID]);
 		this.driveEncoder = new SparkEncoder(RobotMap.Limbo2.Chassis.SwerveModule.NORMALIZER_SPARK, driveMotor);
+		setOpMode(OpMode.BY_POWER);
 	}
 
 	public void init() {
@@ -72,7 +75,7 @@ public class SwerveModule extends GBSubsystem {
 
 	public void setDrivePIDActive(boolean isActive) {
 		if (isActive) {
-			getDrivePID().setOutputRange(-0.3, 0.3);
+			getDrivePID().setOutputRange(DRIVE_MIN, DRIVE_MAX);
 		} else {
 			getDrivePID().setOutputRange(0, 0);
 		}
@@ -82,6 +85,7 @@ public class SwerveModule extends GBSubsystem {
 	public void configureDrive(double p, double i, double d) {
 		this.drivePID= this.driveMotor.getPIDController();
 
+		drivePID.setOutputRange(DRIVE_MIN, DRIVE_MAX);
 		drivePID.setP(p);
 		drivePID.setI(i);
 		drivePID.setD(d);
@@ -103,7 +107,7 @@ public class SwerveModule extends GBSubsystem {
 			System.out.println("trying to set speed but pid is disabled");
 		}
 		this.driveTarget = speed * reverseFactor;
-		getDrivePID().setReference(driveTarget, ControlType.kVelocity);
+		getDrivePID().setReference(driveTarget/DRIVE_GEAR_RATIO, ControlType.kVelocity);
 		getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(driveTarget)[0]);
 	}
 
@@ -142,7 +146,8 @@ public class SwerveModule extends GBSubsystem {
 
 	// Angle is measured in radians
 	public double getAngle() {
-		return ((double)(angleEncoder.getAverageValue()) / LAMPREY_ADC_MAX[ID]) * (2 * Math.PI);
+		double remappedVal = ((double)(angleEncoder.getAverageValue() - LAMPREY_ADC_MIN[ID]) / LAMPREY_ADC_DIFF[ID]);
+		return remappedVal * (2 * Math.PI);
 	}
 
 	public boolean isOnAngle(){
@@ -170,7 +175,7 @@ public class SwerveModule extends GBSubsystem {
 	}
 
 	public double getLinVel() {
-		return driveEncoder.getTickRate() * TICKS_TO_METERS * DRIVE_GEAR_RATIO;
+		return driveEncoder.getTickRate() * TICKS_TO_METERS;
 	}
 
 	public void setAsFollowerOf(CANSparkMax motor) {
@@ -261,9 +266,11 @@ public class SwerveModule extends GBSubsystem {
 		super.periodic();
 
 		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
-		SmartDashboard.putNumber(String.format("Angle%d: ", this.ID), this.getAngle());
+		SmartDashboard.putNumber(String.format("Angle%d (degrees): ", this.ID), (this.getAngle() / (Math.PI * 2) * 360 ));
 		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
 		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());
+		SmartDashboard.putNumber(String.format("max%d: ", this.ID), Math.max(this.getAngleEncoderValue(), SmartDashboard.getNumber(String.format("max%d: ", this.ID), 0)));
+		SmartDashboard.putNumber(String.format("min%d: ", this.ID), Math.min(this.getAngleEncoderValue(), SmartDashboard.getNumber(String.format("min%d: ", this.ID), 4096)));
 //		SmartDashboard.putNumber(String.format("Drive Encoder Ticks%d: ", this.ID), this.driveEncoder.getRawTicks());
 
 //		this.time = System.currentTimeMillis() - t0;

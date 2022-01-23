@@ -2,7 +2,9 @@ package edu.greenblitz.bigRodika;
 
 
 import edu.greenblitz.bigRodika.commands.TestSingleModule;
-import edu.greenblitz.bigRodika.commands.tests.singleModule.FindLampreyValuesByNeo;
+import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
+import edu.greenblitz.bigRodika.commands.chassis.DriveByConstantSpeed;
+import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
@@ -29,10 +31,23 @@ public class OI {
         return instance;
     }
     private void initTestButtons() {
-//	    mainJoystick.A.whenPressed(new ResetToZero(0.005));
-//	    mainJoystick.B.whileHeld(new TestSingleModule(3,0,0.165));
-	    mainJoystick.A.whileHeld(new FindLampreyValuesByNeo(0.0  , RobotMap.Limbo2.Chassis.SwerveModule.MEATBALL));
+		mainJoystick.A.whileHeld(new DriveByConstantSpeed(0.1));
+	    mainJoystick.B.whileHeld(new ChassisCommand(){
+		    @Override
+		    public void initialize() {
+			    chassis.setModuleOpMode(OpMode.BY_POWER);
+		    }
 
+		    @Override
+		    public void execute() {
+			    chassis.moveMotors(new double[] {0.3,0.3,0.3,0.3}, new double[] {0,0,0,0}, false);
+		    }
+
+		    @Override
+		    public void end(boolean interrupted) {
+			    chassis.stopMotors();
+		    }
+	    });
     }
 
 	public SmartJoystick getMainJoystick() {

@@ -54,13 +54,17 @@ public class RobotMap {
                 public static final double VOLTAGE_TO_ROTATIONS = 3.2690426340000003;
                 public static final double WHEEL_PERIMETER = 0.31918581360576;
                 public static final int TICKS_PER_ROTATION = 42;
-                public static final double TICKS_TO_METERS = WHEEL_PERIMETER / TICKS_PER_ROTATION; // TODO: insert gear conversion in swerve module to constant
-                public static final double DRIVE_GEAR_RATIO = 0.125;
+	            public static final double DRIVE_GEAR_RATIO = 0.125;
+	            public static final double TICKS_TO_METERS = WHEEL_PERIMETER / (TICKS_PER_ROTATION/DRIVE_GEAR_RATIO); // TODO: insert gear conversion in swerve module to constant
                 public static final double ROTATION_GEAR_RATIO = 1.0 / 6;
-				public static final int[] LAMPREY_ADC_MAX = {4096, 4076, 4096, 4096}; //Maximum value that ADC at analog port gives for 359~360 degrees of Lamprey
+				public static final int[] LAMPREY_ADC_MAX = {4070, 4076, 4068, 4096}; //Maximum value that ADC at analog port gives for 359~360 degrees of Lamprey
+	            public static final int[] LAMPREY_ADC_MIN = {7, 50, 0, 0};  //Minimum value that ADC at analog port gives for 359~360 degrees of Lamprey
+	            //Constant for faster computation (I hate doing arithmetics with same result inside a loop @Anda)
+				public static final int[] LAMPREY_ADC_DIFF = {LAMPREY_ADC_MAX[0] - LAMPREY_ADC_MIN[0], LAMPREY_ADC_MAX[1] - LAMPREY_ADC_MIN[1],
+																LAMPREY_ADC_MAX[2] - LAMPREY_ADC_MIN[2], LAMPREY_ADC_MAX[3] - LAMPREY_ADC_MIN[3]};
 				public static final int[] LAMPREY_AVG_AMT = {2, 2, 2, 2}; //Amount (2^LAMPREY_AVG_AMT[ID]) of samples averaged to smooth the output of Lamprey
 
-                public static final boolean[] DRIVE_MOTORS_REVERSED = {false, false, true, true};
+                public static final boolean[] DRIVE_MOTORS_REVERSED = {false, false, false, false};
                 public static final boolean[] ROTATION_MOTORS_REVERSED = {false, false, false, false};
                 public static final int[] DRIVE_MOTOR_PORTS = {6, 9, 8, 3};
                 public static final int[] ROTATION_MOTOR_PORTS = {1, 5, 7, 4};
@@ -72,7 +76,9 @@ public class RobotMap {
 
             public static class SwerveModule {
 				public static final int MEATBALL = 1;
-                public static final double DRIVE_P = 0, DRIVE_I = 0, DRIVE_D = 0, ANGLE_P = 0, ANGLE_I = 0.000, ANGLE_D = 0.0, ANGLE_TOLERANCE = 0.01/*RAD*/;
+                public static final double DRIVE_P = 0, DRIVE_I = 0, DRIVE_D = 0, DRIVE_MIN = -0.3, DRIVE_MAX = 0.3,
+		                ANGLE_P = 0, ANGLE_I = 0.000, ANGLE_D = 0.0, ANGLE_TOLERANCE = 0.01/*RAD*/;
+
                 public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<Double>(42.0, 2048.0); // TODO: GearDependentValues are deprecated, should be a constant value.
                 public static Dataset SPEED_TO_FF = new Dataset(2);
 

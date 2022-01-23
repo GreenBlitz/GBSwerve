@@ -43,9 +43,9 @@ public class Chassis extends GBSubsystem {
     }
 
     public static Chassis getInstance() {
-		/*if (instance == null){
+		if (instance == null){
 			init();
-		}*/
+		}
         return instance;
     }
 

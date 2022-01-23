@@ -1,3 +1,4 @@
+/* deprecated lamprey was fixed
 package edu.greenblitz.bigRodika.commands.tests.singleModule;
 
 import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
@@ -36,9 +37,6 @@ public class FindLampreyValuesByNeo extends GBCommand {
 
 	@Override
 	public void execute() {
-		SingleModule.getInstance().getModule().setIsLamprey(true);
-		SmartDashboard.putNumber("Lamprey Angle Mentors", SingleModule.getInstance().getModule().getAngle() / (2*Math.PI) * 360);
-		SmartDashboard.putNumber("Raw Analog In", SingleModule.getInstance().getModule().getRawLamprey());
 
 		SingleModule.getInstance().getModule().setAnglePower(power);
 		SingleModule.getInstance().getModule().setIsLamprey(false);
@@ -87,4 +85,4 @@ public class FindLampreyValuesByNeo extends GBCommand {
 		return angle/360*(2*Math.PI);
 	}
 
-}
+}*/

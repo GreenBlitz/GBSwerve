@@ -10,7 +10,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-	    SingleModule.getInstance();
+	    Chassis.getInstance();
         OI.getInstance();
     }
 
