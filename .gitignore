@@ -6,6 +6,8 @@
 .idea/**/shelf
 ,idea/**/codeStyleConfig.xml
 
+local.properties
+
 .gradle/
 
 # Generated files
