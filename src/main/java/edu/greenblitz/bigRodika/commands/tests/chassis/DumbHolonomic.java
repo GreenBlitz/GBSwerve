@@ -20,7 +20,7 @@ public class DumbHolonomic extends GBCommand {
         super.execute();
 
         double speed = OI.getInstance().getMainJoystick().getAxisValue(SmartJoystick.Axis.LEFT_Y);
-        double angleSpeed = OI.getInstance().getMainJoystick().getAxisValue(SmartJoystick.Axis.RIGHT_X) / 5;
+        double angleSpeed = OI.getInstance().getMainJoystick().getAxisValue(SmartJoystick.Axis.LEFT_X) / 5;
 
         double powers[] = {speed, speed, speed, speed};
         double angles[] = {angleSpeed, angleSpeed, angleSpeed, angleSpeed};

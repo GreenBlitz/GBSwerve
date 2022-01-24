@@ -108,7 +108,7 @@ public class SwerveModule extends GBSubsystem {
 		}
 		this.driveTarget = speed; /* reverseFactor;*/
 		getDrivePID().setReference(driveTarget/DRIVE_GEAR_RATIO, ControlType.kVelocity);
-		getDrivePID().setFF(SPEED_TO_FF.linearlyInterpolate(driveTarget)[0]);
+		getDrivePID().setFF(speedToFF(driveTarget));
 	}
 
 //	public int decideSpinDirection() {
@@ -267,6 +267,7 @@ public class SwerveModule extends GBSubsystem {
 		super.periodic();
 
 		SmartDashboard.putNumber(String.format("Drive Vel%d: ", this.ID), this.getLinVel());
+		SmartDashboard.putNumber(String.format("Drive Target%d: ", this.ID), this.driveTarget);
 		SmartDashboard.putNumber(String.format("Angle%d : ", this.ID), (this.getAngle()));
 		SmartDashboard.putNumber(String.format("Encoder Voltage%d: ", this.ID), this.getAngleEncoderValue());
 		SmartDashboard.putString(String.format("opMode%d: ", this.ID), this.opMode.toString());

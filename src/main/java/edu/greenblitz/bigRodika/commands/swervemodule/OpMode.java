@@ -2,6 +2,7 @@ package edu.greenblitz.bigRodika.commands.swervemodule;
 
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
 import edu.greenblitz.gblib.command.GBCommand;
+
 public enum OpMode {
 	BY_PID, BY_POWER;
 
@@ -29,15 +30,19 @@ public enum OpMode {
 					}
 
 					@Override
-					public void end(boolean interrupted) {if(module.getReverseFactor()==-1){
-						module.invertReverseFactor();
+					public void end(boolean interrupted) {
+						//if (module.getReverseFactor() == -1) {
+							//module.invertReverseFactor();
+						//}
 						module.setDrivePIDActive(false);
-					}}
+					}
 				};
 			case BY_POWER:
-				return new SwerveOpMode(module) {};
+				return new SwerveOpMode(module) {
+				};
 			default:
-				return new SwerveOpMode(module) {};
+				return new SwerveOpMode(module) {
+				};
 		}
 	}
 }

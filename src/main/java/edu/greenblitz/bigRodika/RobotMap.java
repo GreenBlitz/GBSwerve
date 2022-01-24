@@ -80,7 +80,8 @@ public class RobotMap {
 		                ANGLE_P = 0.35, ANGLE_I = 0.000, ANGLE_D = 0.0, ANGLE_TOLERANCE = 0.03/*RAD*/;
 
                 public static final GearDependentValue<Double> NORMALIZER_SPARK = new GearDependentValue<Double>(42.0, 2048.0); // TODO: GearDependentValues are deprecated, should be a constant value.
-                public static Dataset SPEED_TO_FF = new Dataset(2);
+                public static final double MAX_SPEED = 4.049262404948307;
+	            public static Dataset SPEED_TO_FF = new Dataset(2);
 
                 static {
                     SwerveModule.SPEED_TO_FF.addDatapoint(-0.000000000000001, new double[]{0.0});
@@ -96,6 +97,10 @@ public class RobotMap {
                     SwerveModule.SPEED_TO_FF.addDatapoint(3.6464959043498486, new double[]{0.9});
                     SwerveModule.SPEED_TO_FF.addDatapoint(4.049262404948307, new double[]{1});
                 }
+
+				public static double speedToFF(double speed){
+					return Math.signum(speed) * SPEED_TO_FF.linearlyInterpolate(Math.abs(speed))[0];
+				}
             }
         }
 

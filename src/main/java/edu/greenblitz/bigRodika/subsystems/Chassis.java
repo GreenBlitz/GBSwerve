@@ -304,10 +304,10 @@ public class Chassis extends GBSubsystem {
 	}
 
     public void initDefaultCommand() {
-        setDefaultCommand(new SimpleHolonomicDrive(OI.getInstance().getMainJoystick()));
+        setDefaultCommand(new HolonomicDrive(OI.getInstance().getMainJoystick(), true));
     }
 
     public void initTestCommand() {
-        setDefaultCommand(new DumbHolonomic());
+        setDefaultCommand(new SimpleHolonomicDrive(OI.getInstance().getMainJoystick()));
     }
 }

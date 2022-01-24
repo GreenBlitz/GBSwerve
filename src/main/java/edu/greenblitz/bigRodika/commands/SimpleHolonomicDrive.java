@@ -1,8 +1,12 @@
 package edu.greenblitz.bigRodika.commands;
 
+import edu.greenblitz.bigRodika.RobotMap;
 import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
+import edu.greenblitz.bigRodika.commands.swervemodule.OpMode;
 import edu.greenblitz.bigRodika.subsystems.Chassis;
 import edu.greenblitz.gblib.hid.SmartJoystick;
+
+import static edu.greenblitz.bigRodika.RobotMap.Limbo2.Chassis.SwerveModule.*;
 
 /**
  * @author Orel
@@ -11,18 +15,19 @@ import edu.greenblitz.gblib.hid.SmartJoystick;
 public class SimpleHolonomicDrive extends ChassisCommand {
 
     private final SmartJoystick joystick;
-    private boolean fieldOriented = true;
 
     private static final double POWER_CONST = 1.0;
+	private static final double EPSILON = 0.05;
 
     public SimpleHolonomicDrive(SmartJoystick joystick) {
+		super();
         this.joystick = joystick;
-        this.chassis = Chassis.getInstance();
     }
 
     @Override
     public void initialize() {
         chassis.toBrake();
+		chassis.setModuleOpMode(OpMode.BY_PID);
     }
 
     @Override
@@ -30,21 +35,20 @@ public class SimpleHolonomicDrive extends ChassisCommand {
         double xVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_X);
         double yVal = joystick.getAxisValue(SmartJoystick.Axis.LEFT_Y);
         double power = getLinearPower(xVal, yVal);
+		double speed = power * MAX_SPEED;
         double angle = getDriveAngle(xVal, yVal);
-	    if (fieldOriented) {
-		        // TODO: 14/10/2020 check clockwise = positive in gyro
-//                angle = angle - chassis.getAngle();
-	    }
-
-        chassis.moveMotors(power, angle, false);
-        //TODO: change fieldOriented to be right
+		double[] angles = angle != -10 ? new double[]{angle, angle, angle, angle}: chassis.getAngles();
+        chassis.setTargets(new double[]{speed, speed, speed, speed}, angles);
     }
 
     public double getLinearPower(double xVal, double yVal) {
-        return Math.sqrt(Math.pow(xVal, 2) + Math.pow(2, yVal));
+		return Math.hypot(xVal, yVal);
     }
 
     public double getDriveAngle(double xVal, double yVal) {
+		if(getLinearPower(xVal, yVal) < EPSILON){
+			return -10;
+		}
         return Math.atan(yVal / xVal);
     }
 

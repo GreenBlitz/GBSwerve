@@ -37,6 +37,8 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         CommandScheduler.getInstance().cancelAll();
+		Chassis.getInstance().initTestCommand();
+
         //Chassis.getInstance().initTestCommand();
 //        SingleModule.getInstance().initDefaultCommand();
     }
