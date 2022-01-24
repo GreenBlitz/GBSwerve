@@ -113,16 +113,16 @@ public class SwerveModule extends GBSubsystem {
 
 	public int decideSpinDirection() {
 		double currentAngle = getAngle();
-		double clockWise = (currentAngle - angleTarget)%(Math.PI);
-		double counterClockWise = Math.PI - clockWise;
-		double newAngleTarget = angleTarget;
+		double front = (currentAngle - angleTarget)%(2*Math.PI);
+		front = Math.min(front, (angleTarget-currentAngle)%(2*Math.PI));
+		currentAngle += Math.PI;
+		double back = (currentAngle - angleTarget)%(2*Math.PI);
+		back = Math.min(back, (angleTarget-currentAngle)%(2*Math.PI));
 		int reverseFactor;
-		if (clockWise >= counterClockWise) {
-//			setAngle(Math.PI + newAngleTarget);
-			reverseFactor = -1;
-		} else {
-//			setAngle(newAngleTarget);
+		if (front <= back) {
 			reverseFactor = 1;
+		} else {
+			reverseFactor = -1;
 		}
 		return reverseFactor;
 	}
