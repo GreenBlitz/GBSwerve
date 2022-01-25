@@ -25,7 +25,7 @@ public class DumbHolonomic extends GBCommand {
         double powers[] = {speed, speed, speed, speed};
         double angles[] = {angleSpeed, angleSpeed, angleSpeed, angleSpeed};
 
-        Chassis.getInstance().moveMotors(powers, angles, false); //TODO: change fieldOriented to be right
-    }
+        Chassis.getInstance().moveMotors(powers, angles);
+	}
 
 }

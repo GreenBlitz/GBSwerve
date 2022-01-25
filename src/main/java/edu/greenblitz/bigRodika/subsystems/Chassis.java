@@ -63,7 +63,7 @@ public class Chassis extends GBSubsystem {
 		}
 	}
 
-    public void moveMotors(double[] drive, double[] rotation, boolean fieldOriented) {
+    public void moveMotors(double[] drive, double[] rotation) {
 	    if(opMode != OpMode.BY_POWER){
 		    System.out.println("power is being set in non power opMode (Chassis)");
 	    }
@@ -78,8 +78,12 @@ public class Chassis extends GBSubsystem {
         moveMotorsLimited(drive, rotation);
     }
 
-    public void moveMotor(int id, double drive, double rotation, boolean fieldOriented) {
-        
+    public void moveMotors(double drive, double rotation){
+        moveMotors(new double[]{drive,drive,drive,drive}, new double[]{rotation,rotation,rotation,rotation});
+    }
+
+    public void moveMotor(int id, double drive, double rotation) {
+
 
         if (drive > RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER) {
             drive = RobotMap.Limbo2.Chassis.Modules.MOTOR_LIMITER;
@@ -155,10 +159,10 @@ public class Chassis extends GBSubsystem {
 		}
 	}
 
-    public void arcadeDrive(double power, double rotate, boolean fieldOriented) {
+    public void arcadeDrive(double power, double rotate) {
         double[] powers = {power + rotate, power - rotate, power - rotate, power + rotate};
         double[] angles = {0, 0, 0, 0};
-        moveMotors(powers, angles, fieldOriented);
+        moveMotors(powers, angles);
     }
 
     public double[] getVelocities() {
@@ -304,5 +308,6 @@ public class Chassis extends GBSubsystem {
 
     public void initTestCommand() {
         setDefaultCommand(new DumbHolonomic());
+
     }
 }

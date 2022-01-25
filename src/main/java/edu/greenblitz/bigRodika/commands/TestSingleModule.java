@@ -22,13 +22,13 @@ public class TestSingleModule extends GBCommand {
 
     @Override
     public void initialize() {
-        Chassis.getInstance().moveMotor(id, power, angle, false); //TODO: change fieldOriented to be right
-    }
+        Chassis.getInstance().moveMotor(id, power, angle);
+	}
 
     @Override
     public void execute() {
-        Chassis.getInstance().moveMotor(id, power, angle, false); //TODO: change fieldOriented to be right
-    }
+        Chassis.getInstance().moveMotor(id, power, angle);
+	}
 
     @Override
     public void end(boolean interrupted) {
