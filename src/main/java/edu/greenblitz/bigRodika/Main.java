@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 
 import java.util.function.Supplier;
 
-public class main {
+public class Main {
 	private static RobotSupplier robotFactory = new RobotSupplier();
 
 	public static void main(String... args) {

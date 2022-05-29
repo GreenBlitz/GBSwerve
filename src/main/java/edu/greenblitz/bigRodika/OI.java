@@ -1,8 +1,7 @@
 package edu.greenblitz.bigRodika;
 
-import edu.greenblitz.bigRodika.commands.TestSingleModule;
-import edu.greenblitz.bigRodika.commands.chassis.ChassisCommand;
-import edu.greenblitz.bigRodika.subsystems.SingleModule;
+import edu.greenblitz.bigRodika.commands.SwerveLin;
+import edu.greenblitz.bigRodika.commands.SwerveRot;
 import edu.greenblitz.bigRodika.subsystems.SwerveModule;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 
@@ -42,8 +41,8 @@ public class OI {
 	}
 
 	private void initTestButtons() {
-		SwerveModule swerve = SingleModule.getInstance().getModule();
-		mainJoystick.A.whileHeld(new TestSingleModule(2, 0, 0.065));
+		mainJoystick.A.whileHeld(new SwerveLin(0.3));
+		mainJoystick.B.whileHeld(new SwerveRot(0.3));
 
 	}
 }
