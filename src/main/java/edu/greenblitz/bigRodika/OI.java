@@ -1,8 +1,7 @@
 package edu.greenblitz.bigRodika;
 
-import edu.greenblitz.bigRodika.commands.SwerveLin;
-import edu.greenblitz.bigRodika.commands.SwerveRot;
-import edu.greenblitz.bigRodika.subsystems.SwerveModule;
+import edu.greenblitz.bigRodika.commands.MoveSwerve;
+import edu.greenblitz.bigRodika.commands.TurnToAngle;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 
 
@@ -41,8 +40,10 @@ public class OI {
 	}
 
 	private void initTestButtons() {
-		mainJoystick.A.whileHeld(new SwerveLin(0.3));
-		mainJoystick.B.whileHeld(new SwerveRot(0.3));
-
+		mainJoystick.A.whileHeld(new MoveSwerve(0.06,0));
+		mainJoystick.B.whileHeld(new MoveSwerve(-0.06,0));
+		mainJoystick.X.whileHeld(new MoveSwerve(0.3,0));
+		mainJoystick.Y.whileHeld(new MoveSwerve(0,0.6));
+		mainJoystick.POV_UP.whenPressed(new TurnToAngle(90));
 	}
 }
