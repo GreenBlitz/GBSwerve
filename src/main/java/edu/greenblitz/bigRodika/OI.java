@@ -40,10 +40,12 @@ public class OI {
 	}
 
 	private void initTestButtons() {
-		mainJoystick.A.whileHeld(new MoveSwerve(0.06,0));
+		mainJoystick.A.whileHeld(new MoveSwerve(0.1,0));
 		mainJoystick.B.whileHeld(new MoveSwerve(-0.06,0));
 		mainJoystick.X.whileHeld(new MoveSwerve(0.3,0));
-		mainJoystick.Y.whileHeld(new MoveSwerve(0,0.6));
+		mainJoystick.Y.whileHeld(new MoveSwerve(0.15,0));
 		mainJoystick.POV_UP.whenPressed(new TurnToAngle(90));
+		mainJoystick.POV_DOWN.whenPressed(new TurnToAngle(180));
+		mainJoystick.POV_LEFT.whenPressed(new TurnToAngle(359));
 	}
 }

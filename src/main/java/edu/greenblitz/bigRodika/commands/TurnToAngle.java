@@ -1,33 +1,36 @@
 package edu.greenblitz.bigRodika.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class TurnToAngle extends SwerveCommand {
-	double angle;
-	double marginOfError = 5;
+	double angle; // 50
 
 	public TurnToAngle(double angle) {
 		this.angle = angle;
 	}
 
 	@Override
-	public void execute() {
-
-			swerveModule.moveMotors(0, 0.08);
+	public void initialize() {
+		super.initialize();
+		swerveModule.moveToAngleByPID(angle); //was on 100 target is 50 overshoot arrive at -1
 
 	}
-
 
 	@Override
 	public void end(boolean interrupted) {
-		swerveModule.moveMotors(0,0);
+		swerveModule.moveMotors(0, 0);
+		SmartDashboard.putBoolean("finished", true);
 	}
 
-	@Override
+	/*@Override
 	public boolean isFinished() {
-		if((swerveModule.getRelativePosition()-marginOfError) % 360 < angle && (swerveModule.getRelativePosition()+marginOfError)%360 > angle){
-			return true;
-		}
-		return false;
-	}
+		double R = swerveModule.getRelativePosition();
+		double moe = marginOfError;
+		if ((angle + moe > 360 )||(angle - moe < 0)) {
+			return ((R < (angle + moe) % 360) || (R > (angle - moe) % 360)) ;
+		} else
+			return ((R < (angle + moe)) && (R > (angle - moe))) ;
+	}*/
 }
 
 
