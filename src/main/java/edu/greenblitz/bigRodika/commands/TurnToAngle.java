@@ -3,7 +3,7 @@ package edu.greenblitz.bigRodika.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class TurnToAngle extends SwerveCommand {
-	double angle; // 50
+	double angle;
 
 	public TurnToAngle(double angle) {
 		this.angle = angle;
@@ -12,7 +12,7 @@ public class TurnToAngle extends SwerveCommand {
 	@Override
 	public void initialize() {
 		super.initialize();
-		swerveModule.moveToAngleByPID(angle); //was on 100 target is 50 overshoot arrive at -1
+		swerveModule.moveToAngleByPID(angle);
 
 	}
 

@@ -2,6 +2,7 @@ package edu.greenblitz.bigRodika;
 
 import edu.greenblitz.bigRodika.commands.MoveSwerve;
 import edu.greenblitz.bigRodika.commands.TurnToAngle;
+import edu.greenblitz.bigRodika.commands.TurnToAngleByMotionMagic;
 import edu.greenblitz.gblib.hid.SmartJoystick;
 
 
@@ -42,10 +43,10 @@ public class OI {
 	private void initTestButtons() {
 		mainJoystick.A.whileHeld(new MoveSwerve(0.1,0));
 		mainJoystick.B.whileHeld(new MoveSwerve(-0.1,0));
-		mainJoystick.X.whileHeld(new MoveSwerve(0.3,0));
+		mainJoystick.X.whileHeld(new MoveSwerve(0.5,0));
 		mainJoystick.Y.whileHeld(new MoveSwerve(0.15,0));
-		mainJoystick.POV_UP.whenPressed(new TurnToAngle(90));
-		mainJoystick.POV_DOWN.whenPressed(new TurnToAngle(180));
-		mainJoystick.POV_LEFT.whenPressed(new TurnToAngle(359));
+		mainJoystick.POV_UP.whenPressed(new TurnToAngleByMotionMagic(90));
+		mainJoystick.POV_DOWN.whenPressed(new TurnToAngleByMotionMagic(180));
+		mainJoystick.POV_LEFT.whenPressed(new TurnToAngleByMotionMagic(359));
 	}
 }

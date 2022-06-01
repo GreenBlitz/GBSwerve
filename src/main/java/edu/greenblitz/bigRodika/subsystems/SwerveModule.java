@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
 import edu.greenblitz.bigRodika.RobotMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,14 +22,17 @@ public class SwerveModule extends GBSubsystem{
 		this.driveMotor = new TalonFX(1);
 		this.driveMotor.setInverted(false);
 		configure(driveMotor);
+
 		this.rotationMotor = new TalonFX(3);
 		this.rotationMotor.setInverted(false);
 		configure(rotationMotor);
 		rotationMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		rotationMotor.configSelectedFeedbackCoefficient(360/ RobotMap.Limbo2.Chassis.SwerveModule.TICKS_PER_ROTATION);
+
 		this.rotationEncoder = new CANCoder(4);
 		rotationMotor.setSelectedSensorPosition(rotationEncoder.getAbsolutePosition());
-		setRotationalPID(3,0.005,100, 0.5, 2);
+		setRotationalPID(3,0.005, 20,100, 0.5, 2);
+
 
 	}
 
@@ -36,6 +40,7 @@ public class SwerveModule extends GBSubsystem{
 		motor.configOpenloopRamp(0.75);
 		motor.configClosedloopRamp(0.75);
 		motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 35, 100));
+		motor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_100Ms);
 	}
 
 
@@ -55,16 +60,29 @@ public class SwerveModule extends GBSubsystem{
 
 	}
 
-	public void setRotationalPID(double kp,double ki, double kd, double peakOutput, double tolerance){
+	/**
+	 * sets pid and max speed max acceleration for motion magic
+	 * @param kp
+	 * @param ki
+	 * @param kd
+	 * @param peakOutput maximum percent out 0-1.0
+	 * @param tolerance acceptable error
+	 */
+
+	public void setRotationalPID(double kp,double ki, double iZone, double kd, double peakOutput, double tolerance){
+		this.rotationMotor.configMotionCruiseVelocity(RobotMap.Limbo2.Chassis.SwerveModule.MAX_SPEED);
+		this.rotationMotor.configMotionAcceleration(RobotMap.Limbo2.Chassis.SwerveModule.MAX_ACC);
 		this.rotationMotor.config_kP(0, kp);
 		this.rotationMotor.config_kI(0, ki);
+		this.rotationMotor.config_IntegralZone(0, iZone);
 		this.rotationMotor.config_kD(0, kd);
 		this.rotationMotor.configAllowableClosedloopError(0, tolerance);
 		this.rotationMotor.configClosedLoopPeakOutput(0,peakOutput);
 		SmartDashboard.putNumber("kp", kp);
 		SmartDashboard.putNumber("ki", ki);
+		SmartDashboard.putNumber("iZone", iZone);
 		SmartDashboard.putNumber("kd", kd);
-		SmartDashboard.putNumber("peak output", 1);
+		SmartDashboard.putNumber("peak output", peakOutput);
 		SmartDashboard.putNumber("tolerance", tolerance);
 	}
 
@@ -82,9 +100,16 @@ public class SwerveModule extends GBSubsystem{
 		this.rotationMotor.set(TalonFXControlMode.Position,angle);
 	}
 
-//	public void moveToAngleByMotionMagic(){
-//		rotationMotor.set(TalonFXControlMode.MotionMagic, );
-//	}
+	/**
+	 * motion magic generates a trapezoid  profile and follows it
+	 * @param angle the angle target takes between 0 - 359
+	 */
+
+	public void moveToAngleByMotionMagic(double angle){
+		rotationMotor.set(TalonFXControlMode.MotionMagic, angle);
+		rotationMotor.config_kF(0, 512/ RobotMap.Limbo2.Chassis.SwerveModule.MAX_SPEED);
+	}
+
 
 	/**
 	 * @param curr current angle in continues terms
@@ -111,19 +136,22 @@ public class SwerveModule extends GBSubsystem{
 		}
 	}
 
+	private long t0;
+	boolean tested = false;
+
 	@Override
 	public void periodic(){
 		SmartDashboard.putNumber("angle",getAngle());
-		SmartDashboard.putNumber("error",rotationMotor.getClosedLoopError());
-		SmartDashboard.putNumber("target",rotationMotor.getClosedLoopTarget());
-		SmartDashboard.putNumber("encoder", rotationEncoder.getPosition());
 		SmartDashboard.putNumber("motor", rotationMotor.getSelectedSensorPosition());
+		SmartDashboard.putNumber("speed", rotationMotor.getSelectedSensorVelocity());
+
 		double kp = SmartDashboard.getNumber("kp", 0);
 		double ki = SmartDashboard.getNumber("ki", 0);
+		double iZone = SmartDashboard.getNumber("iZone", 0);
 		double kd = SmartDashboard.getNumber("kd", 0);
 		double peakOutput = SmartDashboard.getNumber("peak output", 1);
 		double tolerance = SmartDashboard.getNumber("tolerance", 2);
-		setRotationalPID(kp, ki, kd, peakOutput, tolerance);
+		setRotationalPID(kp, ki, iZone, kd, peakOutput, tolerance);
 
 	}
 }
