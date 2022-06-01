@@ -27,8 +27,8 @@ public class SwerveModule extends GBSubsystem{
 		rotationMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 		rotationMotor.configSelectedFeedbackCoefficient(360/ RobotMap.Limbo2.Chassis.SwerveModule.TICKS_PER_ROTATION);
 		this.rotationEncoder = new CANCoder(4);
-		rotationMotor.configIntegratedSensorOffset(rotationEncoder.getAbsolutePosition());
-		setRotationalPID(10,0,0,2);
+		rotationMotor.setSelectedSensorPosition(rotationEncoder.getAbsolutePosition());
+		setRotationalPID(3,0.005,100, 0.5, 2);
 
 	}
 
@@ -55,12 +55,17 @@ public class SwerveModule extends GBSubsystem{
 
 	}
 
-	public void setRotationalPID(double kp,double ki, double kd, double tolerance){
+	public void setRotationalPID(double kp,double ki, double kd, double peakOutput, double tolerance){
 		this.rotationMotor.config_kP(0, kp);
 		this.rotationMotor.config_kI(0, ki);
 		this.rotationMotor.config_kD(0, kd);
 		this.rotationMotor.configAllowableClosedloopError(0, tolerance);
-		this.rotationMotor.configClosedLoopPeakOutput(0,0.5);
+		this.rotationMotor.configClosedLoopPeakOutput(0,peakOutput);
+		SmartDashboard.putNumber("kp", kp);
+		SmartDashboard.putNumber("ki", ki);
+		SmartDashboard.putNumber("kd", kd);
+		SmartDashboard.putNumber("peak output", 1);
+		SmartDashboard.putNumber("tolerance", tolerance);
 	}
 
 	public double getAngle(){
@@ -76,6 +81,10 @@ public class SwerveModule extends GBSubsystem{
 		this.targetAngle = angle;
 		this.rotationMotor.set(TalonFXControlMode.Position,angle);
 	}
+
+//	public void moveToAngleByMotionMagic(){
+//		rotationMotor.set(TalonFXControlMode.MotionMagic, );
+//	}
 
 	/**
 	 * @param curr current angle in continues terms
@@ -107,8 +116,14 @@ public class SwerveModule extends GBSubsystem{
 		SmartDashboard.putNumber("angle",getAngle());
 		SmartDashboard.putNumber("error",rotationMotor.getClosedLoopError());
 		SmartDashboard.putNumber("target",rotationMotor.getClosedLoopTarget());
+		SmartDashboard.putNumber("encoder", rotationEncoder.getPosition());
 		SmartDashboard.putNumber("motor", rotationMotor.getSelectedSensorPosition());
-
+		double kp = SmartDashboard.getNumber("kp", 0);
+		double ki = SmartDashboard.getNumber("ki", 0);
+		double kd = SmartDashboard.getNumber("kd", 0);
+		double peakOutput = SmartDashboard.getNumber("peak output", 1);
+		double tolerance = SmartDashboard.getNumber("tolerance", 2);
+		setRotationalPID(kp, ki, kd, peakOutput, tolerance);
 
 	}
 }

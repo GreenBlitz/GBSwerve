@@ -19,7 +19,6 @@ public class TurnToAngle extends SwerveCommand {
 	@Override
 	public void end(boolean interrupted) {
 		swerveModule.moveMotors(0, 0);
-		SmartDashboard.putBoolean("finished", true);
 	}
 
 	/*@Override
